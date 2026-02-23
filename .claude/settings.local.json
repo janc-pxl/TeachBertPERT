@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C \"C:/Users/20003936/gitpxl/TeachBertPERT\" status)",
+      "Bash(git -C \"C:/Users/20003936/gitpxl/TeachBertPERT\" init)",
+      "WebFetch(domain:i.imgur.com)"
+    ]
+  }
+}

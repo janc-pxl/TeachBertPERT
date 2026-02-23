@@ -1,0 +1,3125 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PERT — Interactieve Leerwebpagina</title>
+  <style>
+    /* ─── SUB / SUP FIX ─────────────────────────────────────── */
+    sub { vertical-align: sub;   font-size: .75em; }
+    sup { vertical-align: super; font-size: .75em; }
+
+    /* ─── DESIGN TOKENS ─────────────────────────────────────── */
+    :root {
+      --primary:  #1e2a4a;
+      --accent:   #e63946;
+      --green:    #2a9d8f;
+      --blue:     #457b9d;
+      --orange:   #e76f51;
+      --bg:       #f0f2f5;
+      --card:     #ffffff;
+      --border:   #dde2ea;
+      --text:     #1a1a2e;
+      --muted:    #6b7280;
+    }
+
+    /* ─── RESET & BASE ──────────────────────────────────────── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    /* ─── NAVIGATION ────────────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      padding: 0 1.5rem;
+      box-shadow: 0 2px 14px rgba(0,0,0,.3);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    nav::-webkit-scrollbar { display: none; }
+
+    .nav-logo {
+      font-size: 1.25rem;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: 4px;
+      padding: 0.85rem 1.25rem 0.85rem 0;
+      border-right: 1px solid rgba(255,255,255,.2);
+      margin-right: 0.5rem;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .nav-link {
+      color: rgba(255,255,255,.6);
+      text-decoration: none;
+      padding: 0.85rem 0.8rem;
+      font-size: 0.85rem;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      transition: color .15s;
+      flex-shrink: 0;
+    }
+    .nav-link:hover          { color: #fff; }
+    .nav-link.active         { color: #fff; border-bottom-color: var(--accent); }
+    .nav-link.disabled       { color: rgba(255,255,255,.3); cursor: default; pointer-events: none; }
+
+    /* ─── LAYOUT ────────────────────────────────────────────── */
+    main {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 5rem;
+    }
+
+    /* ─── SECTION HEADER ────────────────────────────────────── */
+    .section-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 0.22rem 0.6rem;
+      border-radius: 4px;
+      margin-bottom: 0.55rem;
+    }
+    .section-header h1 {
+      font-size: 2.1rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 0.4rem;
+    }
+    .section-header p {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 600px;
+      margin-bottom: 2rem;
+    }
+
+    /* ─── CARDS ─────────────────────────────────────────────── */
+    .card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 1.75rem;
+      margin-bottom: 1.25rem;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 6px rgba(0,0,0,.05);
+    }
+    .card-title {
+      font-size: 1.08rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* ─── DEFINITIE BLOCK ───────────────────────────────────── */
+    .definitie {
+      background: #eef5fb;
+      border-left: 4px solid var(--blue);
+      border-radius: 0 10px 10px 0;
+      padding: 1.1rem 1.4rem;
+      margin-bottom: 1.25rem;
+    }
+    .definitie .def-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--blue);
+      margin-bottom: 0.35rem;
+    }
+    .definitie p { font-size: 0.95rem; }
+
+    /* ─── DETAILS (collapsible) ─────────────────────────────── */
+    details { margin-top: 0.85rem; }
+    summary {
+      font-size: 0.87rem;
+      color: var(--blue);
+      cursor: pointer;
+      font-weight: 600;
+      list-style: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      user-select: none;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::before { content: '▸'; display: inline-block; transition: transform .2s; }
+    details[open] summary::before { transform: rotate(90deg); }
+    .detail-body {
+      margin-top: 0.75rem;
+      padding: 0.9rem 1.1rem;
+      background: var(--bg);
+      border-radius: 8px;
+      font-size: 0.87rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ─── NODE ANATOMY ──────────────────────────────────────── */
+    .node-anatomy {
+      display: flex;
+      gap: 2.5rem;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .node-svg-wrap { flex-shrink: 0; text-align: center; }
+    .node-hint { font-size: 0.77rem; color: var(--muted); margin-top: 0.4rem; }
+
+    /* SVG section hover/active */
+    .node-section { transition: opacity .2s, filter .2s; cursor: pointer; }
+    .node-section:hover { filter: brightness(.88); }
+
+    /* Info panel */
+    .node-info-panel { flex: 1; min-width: 220px; }
+    .nip-item { display: none; }
+    .nip-item.active { display: block; animation: fadeIn .2s ease; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+    .nip-tag {
+      display: inline-block;
+      padding: 0.2rem 0.7rem;
+      border-radius: 20px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: .4px;
+      margin-bottom: 0.6rem;
+    }
+    .nip-tag-label { background: #e9ecef; color: #495057; }
+    .nip-tag-te    { background: #d4edda; color: #155724; }
+    .nip-tag-tl    { background: #cce5ff; color: #004085; }
+
+    .nip-item h3 { font-size: .98rem; font-weight: 700; color: var(--primary); margin-bottom: .4rem; }
+    .nip-item p  { font-size: .88rem; color: var(--muted); }
+
+    .nip-rule {
+      margin-top: .75rem;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 8px;
+      padding: .6rem .9rem;
+      font-size: .85rem;
+      color: #92400e;
+    }
+    .nip-placeholder { color: var(--muted); font-size: .9rem; padding: 1rem; background: var(--bg); border-radius: 8px; text-align: center; }
+
+    /* ─── CONCEPTS GRID ─────────────────────────────────────── */
+    .concepts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 1rem;
+    }
+    .concept-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      text-align: center;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .concept-card:hover {
+      border-color: var(--blue);
+      box-shadow: 0 3px 12px rgba(69,123,157,.12);
+    }
+    .concept-card svg { display: block; margin: 0 auto .9rem; overflow: visible; }
+    .concept-card h3  { font-size: .92rem; font-weight: 700; color: var(--primary); margin-bottom: .35rem; }
+    .concept-card p   { font-size: .82rem; color: var(--muted); line-height: 1.5; }
+
+    /* ─── TIME FORMULA ──────────────────────────────────────── */
+    .formula-display {
+      background: var(--primary);
+      color: #fff;
+      border-radius: 10px;
+      padding: 1.1rem 1.5rem;
+      text-align: center;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.3rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .time-types {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: .75rem;
+      margin-bottom: 1.5rem;
+    }
+    .time-type-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: .85rem .5rem;
+      text-align: center;
+    }
+    .time-type-card .sym  { font-size: 1.15rem; font-weight: 800; margin-bottom: .25rem; }
+    .time-type-card .name { font-size: .78rem; font-weight: 600; color: var(--text); margin-bottom: .15rem; }
+    .time-type-card .desc { font-size: .74rem; color: var(--muted); line-height: 1.4; }
+    .sym-to { color: var(--green); }
+    .sym-tl { color: var(--blue); }
+    .sym-tp { color: var(--orange); }
+
+    /* ─── CALCULATOR ────────────────────────────────────────── */
+    .calc-wrap {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+    }
+    .calc-label-row {
+      font-size: .8rem;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: .5rem;
+    }
+    .calc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr auto 1.3fr;
+      gap: .75rem;
+      align-items: end;
+    }
+    .calc-field label {
+      display: block;
+      font-size: .76rem;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: .3rem;
+      text-align: center;
+    }
+    .calc-field input {
+      width: 100%;
+      padding: .55rem .4rem;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      text-align: center;
+      font-family: inherit;
+      background: #fff;
+      transition: border-color .15s;
+    }
+    .calc-field input:focus { outline: none; border-color: var(--blue); }
+
+    .calc-arrow { font-size: 1.4rem; color: var(--muted); text-align: center; padding-bottom: .45rem; }
+
+    .calc-result-box {
+      background: #fff;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: .55rem .75rem;
+      text-align: center;
+      transition: border-color .25s;
+    }
+    .calc-result-box.has-value { border-color: var(--green); }
+    .calc-result-box .res-label   { font-size: .76rem; font-weight: 700; color: var(--muted); margin-bottom: .15rem; }
+    .calc-result-box .res-value   { font-size: 1.5rem; font-weight: 800; color: var(--green); }
+    .calc-result-box .res-formula { font-size: .7rem; color: var(--muted); margin-top: .1rem; min-height: 1em; }
+
+    /* ─── FORWARD / BACKWARD PASS ───────────────────────────── */
+    .pass-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    .pass-card { border-radius: 10px; padding: 1.25rem; }
+    .pass-card.forward  { background: #ecfdf5; border: 1px solid #a7f3d0; }
+    .pass-card.backward { background: #eff6ff; border: 1px solid #bfdbfe; }
+
+    .pass-title {
+      font-size: .95rem; font-weight: 700; color: var(--primary);
+      margin-bottom: .6rem; display: flex; align-items: center; gap: .4rem;
+    }
+    .pass-desc { font-size: .84rem; color: var(--muted); margin-bottom: .75rem; }
+    .pass-rule {
+      background: rgba(255,255,255,.8);
+      border-radius: 8px;
+      padding: .6rem .85rem;
+      font-size: .85rem;
+      margin-bottom: .5rem;
+    }
+    .pass-rule:last-child { margin-bottom: 0; }
+
+    /* ─── SLACK TABLE ───────────────────────────────────────── */
+    .slack-formula {
+      background: var(--primary);
+      color: #fff;
+      border-radius: 10px;
+      padding: .9rem 1.5rem;
+      text-align: center;
+      font-family: Georgia, serif;
+      font-size: 1.1rem;
+      margin-bottom: 1.25rem;
+    }
+    .slack-table { width: 100%; border-collapse: collapse; font-size: .87rem; }
+    .slack-table thead th {
+      padding: .7rem 1rem;
+      text-align: left;
+      font-size: .74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      background: var(--primary);
+      color: #fff;
+    }
+    .slack-table thead th:first-child  { border-radius: 8px 0 0 0; }
+    .slack-table thead th:last-child   { border-radius: 0 8px 0 0; }
+    .slack-table tbody td { padding: .75rem 1rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .slack-table tbody tr:last-child td { border-bottom: none; }
+
+    .slack-pos  { background: #f0fdf4; }
+    .slack-zero { background: #fff1f2; }
+    .slack-neg  { background: #fffbeb; }
+
+    .badge { display: inline-block; padding: .2rem .65rem; border-radius: 20px; font-size: .78rem; font-weight: 700; }
+    .badge-pos  { background: #16a34a; color: #fff; }
+    .badge-zero { background: var(--accent); color: #fff; }
+    .badge-neg  { background: #d97706; color: #fff; }
+
+    /* ─── CRITICAL PATH ─────────────────────────────────────── */
+    .crit-list { list-style: none; margin-top: .75rem; }
+    .crit-list li {
+      padding: .5rem .75rem .5rem 2rem;
+      border-bottom: 1px solid var(--border);
+      font-size: .88rem;
+      color: var(--muted);
+      position: relative;
+    }
+    .crit-list li::before {
+      content: '→';
+      color: var(--accent);
+      font-weight: 700;
+      position: absolute;
+      left: .75rem;
+      top: .5rem;
+    }
+    .crit-list li:last-child { border-bottom: none; }
+
+    /* ─── VIDEO SECTION ─────────────────────────────────────── */
+    .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+    .video-wrap { aspect-ratio: 16/9; border-radius: 10px; overflow: hidden; background: #000; }
+    .video-wrap iframe { width: 100%; height: 100%; border: none; }
+
+    /* ─── PLACEHOLDERS ──────────────────────────────────────── */
+    .section-placeholder {
+      background: var(--card);
+      border-radius: 14px;
+      border: 2px dashed var(--border);
+      padding: 3rem;
+      text-align: center;
+      margin-top: 3rem;
+      color: var(--muted);
+    }
+    .section-placeholder .ph-emoji { font-size: 2.5rem; margin-bottom: .75rem; }
+    .section-placeholder h2  { color: var(--primary); margin-bottom: .5rem; }
+    .section-placeholder p   { font-size: .9rem; }
+
+    /* ─── RESPONSIVE ────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .pass-grid        { grid-template-columns: 1fr; }
+      .calc-grid        { grid-template-columns: 1fr 1fr 1fr; }
+      .calc-arrow       { display: none; }
+      .calc-result-box  { grid-column: 1 / -1; }
+      .concepts-grid    { grid-template-columns: 1fr 1fr; }
+      .node-anatomy     { gap: 1.25rem; }
+    }
+    @media (max-width: 400px) {
+      .concepts-grid { grid-template-columns: 1fr; }
+      .time-types    { grid-template-columns: 1fr; }
+    }
+
+    /* ─── DEMO SECTION ──────────────────────────────────────── */
+    .demo-card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 1.75rem;
+      margin-bottom: 1.25rem;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 6px rgba(0,0,0,.05);
+    }
+    .demo-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: .75rem;
+      margin-bottom: 1.25rem;
+    }
+    .demo-step-counter { font-size: .78rem; font-weight: 700; color: var(--muted); letter-spacing: .8px; text-transform: uppercase; }
+    .demo-card-title   { font-size: 1rem; font-weight: 700; color: var(--primary); margin-top: .2rem; }
+
+    .demo-phase-badge {
+      display: inline-block;
+      padding: .25rem .85rem;
+      border-radius: 20px;
+      font-size: .78rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .phase-start    { background: #e9ecef; color: #495057; }
+    .phase-forward  { background: #d4edda; color: #155724; }
+    .phase-backward { background: #cce5ff; color: #004085; }
+    .phase-result   { background: #fde8e8; color: #9b1c1c; }
+
+    .demo-network-wrap {
+      background: #f8f9fb;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 1.25rem;
+    }
+    .demo-network-wrap svg { display: block; width: 100%; height: auto; }
+
+    .demo-explanation {
+      background: var(--bg);
+      border-left: 3px solid var(--blue);
+      border-radius: 0 8px 8px 0;
+      padding: .9rem 1.1rem;
+      font-size: .9rem;
+      line-height: 1.7;
+      margin-bottom: 1.25rem;
+      min-height: 72px;
+    }
+    .demo-nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .demo-dots {
+      display: flex;
+      gap: .3rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      flex: 1;
+    }
+    .demo-dot {
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: background .2s, transform .15s;
+      cursor: default;
+    }
+    .demo-dot.done   { background: #86efac; }
+    .demo-dot.active { background: var(--blue); transform: scale(1.4); }
+
+    .demo-btn {
+      padding: .55rem 1.2rem;
+      border: none;
+      border-radius: 8px;
+      font-size: .88rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background .15s, opacity .15s;
+      white-space: nowrap;
+    }
+    .demo-btn:disabled { opacity: .35; cursor: not-allowed; }
+    .demo-btn-prev { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+    .demo-btn-prev:not(:disabled):hover { background: #e2e5ea; }
+    .demo-btn-next { background: var(--blue); color: #fff; }
+    .demo-btn-next:not(:disabled):hover { background: #2d6a8f; }
+    .demo-btn-reset {
+      background: none; border: none;
+      font-size: .8rem; color: var(--muted);
+      cursor: pointer; font-family: inherit;
+      text-decoration: underline; padding: 0;
+    }
+    .demo-btn-reset:hover { color: var(--text); }
+
+    .demo-footer { text-align: center; margin-top: .75rem; }
+
+    /* ─── EXERCISE 1 ───────────────────────────────────────── */
+    .ex1-wrap {
+      background: #f8f9fb;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 1.25rem;
+      position: relative;
+    }
+    .ex1-wrap svg { display: block; width: 100%; height: auto; }
+
+    .ex1-input {
+      width: 32px;
+      height: 20px;
+      border: 1.5px solid var(--border);
+      border-radius: 4px;
+      font-size: 11px;
+      font-family: 'Segoe UI', sans-serif;
+      font-weight: 700;
+      text-align: center;
+      background: #fff;
+      padding: 0;
+      outline: none;
+      transition: border-color .2s, background .2s;
+      -moz-appearance: textfield;
+    }
+    .ex1-input::-webkit-inner-spin-button,
+    .ex1-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    .ex1-input:focus { border-color: var(--blue); }
+    .ex1-input.correct { border-color: #16a34a; background: #f0fdf4; }
+    .ex1-input.wrong   { border-color: #dc2626; background: #fef2f2; color: #dc2626; }
+    .ex1-input.readonly { background: #e9ecef; color: var(--muted); cursor: default; }
+
+    .ex1-edge-hit {
+      cursor: pointer;
+      stroke: transparent;
+      stroke-width: 18;
+      fill: none;
+    }
+    .ex1-edge-hit:hover + line,
+    .ex1-edge-hit:hover + path { stroke: var(--blue); stroke-width: 2.5; }
+
+    .ex1-edge-line { pointer-events: none; transition: stroke .2s, stroke-width .2s; }
+    .ex1-edge-line.selected { stroke: var(--accent) !important; stroke-width: 3 !important; }
+
+    .ex1-edge-lbl { pointer-events: none; transition: fill .2s; }
+    .ex1-edge-lbl.selected { fill: var(--accent) !important; }
+
+    .ex1-controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .ex1-check-btn {
+      padding: .6rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-size: .9rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      background: var(--blue);
+      color: #fff;
+      transition: background .15s;
+    }
+    .ex1-check-btn:hover { background: #2d6a8f; }
+    .ex1-reset-btn {
+      background: none; border: none;
+      font-size: .82rem; color: var(--muted);
+      cursor: pointer; font-family: inherit;
+      text-decoration: underline; padding: 0;
+    }
+    .ex1-reset-btn:hover { color: var(--text); }
+
+    .ex1-feedback {
+      flex: 1;
+      font-size: .88rem;
+      font-weight: 600;
+      min-width: 200px;
+    }
+    .ex1-feedback.success { color: #16a34a; }
+    .ex1-feedback.partial { color: #d97706; }
+    .ex1-feedback.fail    { color: #dc2626; }
+
+    .ex1-correct-overlay {
+      position: absolute;
+      font-size: 9px;
+      font-weight: 700;
+      color: #dc2626;
+      pointer-events: none;
+      display: none;
+    }
+
+    .ex1-instructions {
+      background: var(--bg);
+      border-left: 3px solid var(--blue);
+      border-radius: 0 8px 8px 0;
+      padding: .8rem 1.1rem;
+      font-size: .88rem;
+      line-height: 1.6;
+      margin-bottom: 1.25rem;
+      color: var(--muted);
+    }
+
+    /* ─── EXERCISE 3 ───────────────────────────────────────── */
+    .ex3-te-table { width: 100%; border-collapse: collapse; font-size: .87rem; margin-bottom: .5rem; }
+    .ex3-te-table thead th {
+      padding: .7rem .5rem; text-align: center; font-size: .72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .5px; background: var(--primary); color: #fff;
+    }
+    .ex3-te-table thead th:first-child { border-radius: 8px 0 0 0; }
+    .ex3-te-table thead th:last-child  { border-radius: 0 8px 0 0; }
+    .ex3-te-table tbody td { padding: .55rem .4rem; border-bottom: 1px solid var(--border); text-align: center; vertical-align: middle; }
+    .ex3-te-table tbody tr:last-child td { border-bottom: none; }
+    .ex3-te-input {
+      width: 50px; padding: .35rem .2rem; border: 2px solid var(--border); border-radius: 6px;
+      font-size: .9rem; text-align: center; font-family: inherit; font-weight: 700; background: #fff;
+      transition: border-color .2s, background .2s; -moz-appearance: textfield;
+    }
+    .ex3-te-input::-webkit-inner-spin-button,
+    .ex3-te-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    .ex3-te-input:focus { outline: none; border-color: var(--blue); }
+    .ex3-te-input.correct { border-color: #16a34a; background: #f0fdf4; }
+    .ex3-te-input.wrong   { border-color: #dc2626; background: #fef2f2; color: #dc2626; }
+
+    .ex3-toolbar {
+      display: flex; gap: .5rem; padding: .75rem; background: var(--bg);
+      border: 1px solid var(--border); border-radius: 10px 10px 0 0; flex-wrap: wrap;
+    }
+    .ex3-tool {
+      display: inline-flex; align-items: center; gap: .35rem;
+      padding: .45rem .85rem; border: 2px solid var(--border); border-radius: 8px;
+      background: #fff; font-size: .82rem; font-weight: 600; cursor: pointer;
+      font-family: inherit; transition: all .15s; color: var(--text);
+    }
+    .ex3-tool:hover { border-color: var(--blue); color: var(--blue); }
+    .ex3-tool.active { border-color: var(--blue); background: #eef5fb; color: var(--blue); }
+
+    .ex3-canvas-wrap {
+      background: #f8f9fb; border: 1px solid var(--border); border-top: none;
+      border-radius: 0 0 10px 10px; overflow: hidden; position: relative;
+    }
+    .ex3-canvas-wrap svg { display: block; width: 100%; height: auto; }
+    .ex3-canvas-wrap.tool-node   { cursor: crosshair; }
+    .ex3-canvas-wrap.tool-edge   { cursor: crosshair; }
+    .ex3-canvas-wrap.tool-delete { cursor: pointer; }
+
+    .ex3-node-group { cursor: grab; }
+    .ex3-node-group.dragging { cursor: grabbing; }
+    .ex3-node-group.source-highlight circle:last-of-type {
+      stroke: var(--blue) !important; stroke-width: 3.5 !important; stroke-dasharray: 5 3;
+    }
+
+    .ex3-edge-popup {
+      position: absolute; background: #fff; border: 1px solid var(--border); border-radius: 10px;
+      padding: 1rem; box-shadow: 0 4px 16px rgba(0,0,0,.12); z-index: 10; min-width: 190px;
+    }
+    .ex3-edge-popup label { display: block; font-size: .76rem; font-weight: 700; color: var(--muted); margin-bottom: .25rem; }
+    .ex3-edge-popup input, .ex3-edge-popup select {
+      width: 100%; padding: .4rem .5rem; border: 2px solid var(--border); border-radius: 6px;
+      font-size: .85rem; font-family: inherit; margin-bottom: .6rem;
+    }
+    .ex3-edge-popup input:focus, .ex3-edge-popup select:focus { outline: none; border-color: var(--blue); }
+    .ex3-edge-popup-btns { display: flex; gap: .5rem; }
+    .ex3-edge-popup-btns button {
+      flex: 1; padding: .4rem; border: none; border-radius: 6px;
+      font-size: .82rem; font-weight: 600; cursor: pointer; font-family: inherit;
+    }
+    .ex3-popup-ok { background: var(--blue); color: #fff; }
+    .ex3-popup-ok:hover { background: #2d6a8f; }
+    .ex3-popup-cancel { background: var(--bg); color: var(--text); border: 1px solid var(--border) !important; }
+
+    .ex3-locked { position: relative; pointer-events: none; opacity: .45; filter: grayscale(.4); }
+    .ex3-lock-overlay {
+      position: absolute; inset: 0; z-index: 5; display: flex; align-items: center; justify-content: center;
+      background: rgba(240,242,245,.7); border-radius: 14px; pointer-events: auto;
+    }
+    .ex3-lock-msg {
+      background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem 1.8rem;
+      text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,.08);
+    }
+    .ex3-lock-msg strong { color: var(--primary); }
+    .ex3-lock-msg p { font-size: .88rem; color: var(--muted); margin-top: .3rem; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!--  NAVIGATION                                               -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<nav>
+  <div class="nav-logo">PERT</div>
+  <a href="#theorie"   class="nav-link active">Theorie</a>
+  <a href="#demo"      class="nav-link">Demo</a>
+  <a href="#oefening1" class="nav-link">Oefening 1</a>
+  <a href="#oefening2" class="nav-link disabled">Oefening 2</a>
+  <a href="#oefening3" class="nav-link">Oefening 3</a>
+  <a href="#oefening4" class="nav-link disabled">Oefening 4</a>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!--  MAIN CONTENT                                             -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<main>
+
+  <!-- ────────────────────────────────────────────────────── -->
+  <!--  SECTIE 1 — THEORIE                                    -->
+  <!-- ────────────────────────────────────────────────────── -->
+  <section id="theorie">
+
+    <div class="section-header">
+      <div class="section-badge">Sectie 1</div>
+      <h1>Theorie</h1>
+      <p>Leer de basisconcepten van PERT: knooppunten, activiteiten, tijdsberekeningen en het kritieke pad.</p>
+    </div>
+
+    <!-- ── DEFINITIE ─────────────────────────────────────── -->
+    <div class="definitie">
+      <div class="def-label">Definitie — PERT</div>
+      <p>
+        <strong>PERT</strong> (Program Evaluation and Review Technique) is een hulpmiddel voor de
+        bedrijfsleiding bij de analyse en planning van projecten. Hierbij wordt gebruik gemaakt van
+        een grafische voorstelling — het <strong>netwerk</strong> — om de samenhang tussen de
+        verschillende werkzaamheden aan te geven.
+      </p>
+      <details>
+        <summary>Wist je dat? — Geschiedenis van PERT</summary>
+        <div class="detail-body">
+          De PERT-methode werd uitgevonden door de <em>United States Department of Defense's US Navy
+          Special Projects Office</em> in <strong>1958</strong> als onderdeel van het
+          <strong>Polaris-project</strong> (de ontwikkeling van nucleaire onderzeeërs).
+          PERT lijkt sterk op de <em>kritieke pad methode</em> (CPM), maar bij PERT wordt een
+          kansberekening toegepast op de duurtijden, terwijl CPM uitgaat van vaste tijden.
+        </div>
+      </details>
+    </div>
+
+    <!-- ── CARD: KNOOPPUNT ANATOMIE ──────────────────────── -->
+    <div class="card">
+      <div class="card-title">🔵 Anatomie van een knooppunt</div>
+      <p style="color:var(--muted); font-size:.9rem; margin-bottom:1.4rem;">
+        Een <strong>knooppunt</strong> (milestone) is een cirkel verdeeld in drie vlakken.
+        Klik op een vlak om de betekenis ervan te bekijken.
+      </p>
+
+      <div class="node-anatomy">
+
+        <!-- Interactive SVG node -->
+        <div class="node-svg-wrap">
+          <svg id="anatomy-svg" width="160" height="160" viewBox="0 0 160 160" role="img" aria-label="Interactief knooppunt">
+            <defs>
+              <clipPath id="clip-left">
+                <rect x="0"  y="0"  width="80" height="160"/>
+              </clipPath>
+              <clipPath id="clip-top-right">
+                <rect x="80" y="0"  width="80" height="80"/>
+              </clipPath>
+              <clipPath id="clip-bot-right">
+                <rect x="80" y="80" width="80" height="80"/>
+              </clipPath>
+            </defs>
+
+            <!-- Coloured background sections (clipped to each third) -->
+            <circle id="bg-label" cx="80" cy="80" r="72"
+                    fill="#e9ecef" clip-path="url(#clip-left)"
+                    class="node-section" data-section="label"/>
+            <circle id="bg-te"    cx="80" cy="80" r="72"
+                    fill="#d4edda" clip-path="url(#clip-top-right)"
+                    class="node-section" data-section="te"/>
+            <circle id="bg-tl"    cx="80" cy="80" r="72"
+                    fill="#cce5ff" clip-path="url(#clip-bot-right)"
+                    class="node-section" data-section="tl"/>
+
+            <!-- Outer border -->
+            <circle cx="80" cy="80" r="72" fill="none" stroke="#333" stroke-width="2.5"/>
+
+            <!-- Dividing lines -->
+            <line x1="80" y1="8"   x2="80" y2="152" stroke="#333" stroke-width="2"/>
+            <line x1="80" y1="80"  x2="152" y2="80" stroke="#333" stroke-width="2"/>
+
+            <!-- Static text labels -->
+            <text x="43"  y="84"  text-anchor="middle" font-family="Segoe UI,sans-serif"
+                  font-size="15" font-weight="700" fill="#444" pointer-events="none">MS</text>
+            <text x="116" y="54"  text-anchor="middle" font-family="Segoe UI,sans-serif"
+                  font-size="14" font-weight="700" fill="#155724" pointer-events="none">T<tspan font-size="10" dy="2">E</tspan></text>
+            <text x="116" y="112" text-anchor="middle" font-family="Segoe UI,sans-serif"
+                  font-size="14" font-weight="700" fill="#004085" pointer-events="none">T<tspan font-size="10" dy="2">L</tspan></text>
+
+            <!-- Transparent click targets on top -->
+            <circle cx="80" cy="80" r="72" fill="transparent"
+                    clip-path="url(#clip-left)"      class="node-click" data-section="label" style="cursor:pointer"/>
+            <circle cx="80" cy="80" r="72" fill="transparent"
+                    clip-path="url(#clip-top-right)" class="node-click" data-section="te"    style="cursor:pointer"/>
+            <circle cx="80" cy="80" r="72" fill="transparent"
+                    clip-path="url(#clip-bot-right)" class="node-click" data-section="tl"    style="cursor:pointer"/>
+          </svg>
+          <p class="node-hint">↑ Klik op een vlak</p>
+        </div>
+
+        <!-- Info panel -->
+        <div class="node-info-panel">
+
+          <div class="nip-item active" id="nip-default">
+            <p class="nip-placeholder">Selecteer een vlak van het knooppunt om de betekenis ervan te bekijken.</p>
+          </div>
+
+          <div class="nip-item" id="nip-label">
+            <span class="nip-tag nip-tag-label">Naam / Nummer</span>
+            <h3>Knooppuntnaam (MS)</h3>
+            <p>
+              Het linker vlak bevat de naam of het volgnummer van het knooppunt
+              (<em>milestone</em>). Een knooppunt stelt het <strong>begin of einde</strong> van
+              een activiteit voor. Het neemt zelf <strong>geen tijd, arbeid of grondstoffen</strong>
+              in beslag — het is een moment, geen taak.
+            </p>
+          </div>
+
+          <div class="nip-item" id="nip-te">
+            <span class="nip-tag nip-tag-te">T<sub>E</sub> — Vroegst mogelijke tijdstip</span>
+            <h3>Earliest Expected Time</h3>
+            <p>
+              Het vroegst mogelijke tijdstip waarop dit knooppunt bereikt kan worden.
+              Berekend via de <strong>voorwaartse gang</strong> (links → rechts):
+              tel de duurtijden van alle inkomende activiteiten op bij de T<sub>E</sub>
+              van het vorige knooppunt.
+            </p>
+            <div class="nip-rule">
+              📌 <strong>Regel:</strong> Bij meerdere inkomende paden neem je de
+              <strong>grootste</strong> som (= het traagste pad bepaalt de vroegste aankomst).
+            </div>
+          </div>
+
+          <div class="nip-item" id="nip-tl">
+            <span class="nip-tag nip-tag-tl">T<sub>L</sub> — Laatste toelaatbare tijdstip</span>
+            <h3>Latest Allowable Time</h3>
+            <p>
+              Het laatste tijdstip waarop dit knooppunt bereikt <em>mag</em> worden zonder de
+              globale projectduur te overschrijden. Berekend via de
+              <strong>achterwaartse gang</strong> (rechts → links):
+              trek de duurtijden van de uitgaande activiteiten af van de T<sub>L</sub>
+              van het volgende knooppunt.
+            </p>
+            <div class="nip-rule">
+              📌 <strong>Regel:</strong> Bij meerdere uitgaande activiteiten neem je de
+              <strong>kleinste</strong> waarde (= de strengste deadline bepaalt de T<sub>L</sub>).
+            </div>
+          </div>
+
+        </div><!-- /node-info-panel -->
+      </div><!-- /node-anatomy -->
+    </div><!-- /card -->
+
+    <!-- ── CARD: BEGRIPPEN ───────────────────────────────── -->
+    <div class="card">
+      <div class="card-title">📖 Begrippen</div>
+      <div class="concepts-grid">
+
+        <!-- 1. Knooppunt -->
+        <div class="concept-card">
+          <svg width="110" height="90" viewBox="0 0 110 90">
+            <circle cx="55" cy="45" r="36" fill="#fff" stroke="#333" stroke-width="2"/>
+            <line x1="55" y1="9"  x2="55" y2="81" stroke="#333" stroke-width="1.5"/>
+            <line x1="55" y1="45" x2="91" y2="45" stroke="#333" stroke-width="1.5"/>
+            <text x="35" y="49" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="11" font-weight="700" fill="#444">MS</text>
+            <text x="73" y="33" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10" font-weight="700" fill="#155724">T<tspan font-size="8" dy="1">E</tspan></text>
+            <text x="73" y="62" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10" font-weight="700" fill="#004085">T<tspan font-size="8" dy="1">L</tspan></text>
+          </svg>
+          <h3>Knooppunt</h3>
+          <p>Begin of einde van een activiteit. Neemt geen tijd, arbeid of grondstoffen in beslag.</p>
+        </div>
+
+        <!-- 2. Activiteit -->
+        <div class="concept-card">
+          <svg width="180" height="70" viewBox="0 0 180 70">
+            <!-- left node -->
+            <circle cx="22" cy="35" r="18" fill="#fff" stroke="#333" stroke-width="2"/>
+            <line x1="22" y1="17" x2="22" y2="53" stroke="#333" stroke-width="1.5"/>
+            <line x1="22" y1="35" x2="40" y2="35" stroke="#333" stroke-width="1.5"/>
+            <!-- arrow -->
+            <line x1="41" y1="35" x2="130" y2="35" stroke="#333" stroke-width="2"/>
+            <polygon points="130,29 144,35 130,41" fill="#333"/>
+            <text x="87" y="24" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10" fill="#555">Activiteit X — 5 weken</text>
+            <!-- right node -->
+            <circle cx="158" cy="35" r="18" fill="#fff" stroke="#333" stroke-width="2"/>
+            <line x1="158" y1="17" x2="158" y2="53" stroke="#333" stroke-width="1.5"/>
+            <line x1="158" y1="35" x2="176" y2="35" stroke="#333" stroke-width="1.5"/>
+          </svg>
+          <h3>Activiteit</h3>
+          <p>Uitvoering van een taak. Vraagt tijd, mensen en middelen. Voorgesteld door een pijl.</p>
+        </div>
+
+        <!-- 3. Netwerk -->
+        <div class="concept-card">
+          <svg width="180" height="90" viewBox="0 0 180 90">
+            <!-- nodes: A, B, C, D -->
+            <circle cx="20"  cy="45" r="14" fill="#fff" stroke="#333" stroke-width="1.8"/>
+            <circle cx="80"  cy="20" r="14" fill="#fff" stroke="#333" stroke-width="1.8"/>
+            <circle cx="80"  cy="70" r="14" fill="#fff" stroke="#333" stroke-width="1.8"/>
+            <circle cx="160" cy="45" r="14" fill="#fff" stroke="#333" stroke-width="1.8"/>
+            <!-- arrows -->
+            <line x1="34"  y1="39" x2="64"  y2="24" stroke="#333" stroke-width="1.5"/>
+            <polygon points="64,24 57,30 68,32" fill="#333"/>
+            <line x1="34"  y1="51" x2="64"  y2="66" stroke="#333" stroke-width="1.5"/>
+            <polygon points="64,66 57,60 68,58" fill="#333"/>
+            <line x1="94"  y1="24" x2="142" y2="40" stroke="#333" stroke-width="1.5"/>
+            <polygon points="142,40 134,36 138,46" fill="#333"/>
+            <line x1="94"  y1="66" x2="142" y2="51" stroke="#333" stroke-width="1.5"/>
+            <polygon points="142,51 134,54 138,44" fill="#333"/>
+            <!-- labels -->
+            <text x="20"  y="49" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="9" fill="#555">I</text>
+            <text x="80"  y="24" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="9" fill="#555">II</text>
+            <text x="80"  y="74" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="9" fill="#555">III</text>
+            <text x="160" y="49" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="9" fill="#555">IV</text>
+          </svg>
+          <h3>Netwerk</h3>
+          <p>Brengt de logische volgorde van activiteiten in beeld: welke gaan vooraf, volgen of verlopen gelijktijdig.</p>
+        </div>
+
+        <!-- 4. Schijnactiviteit -->
+        <div class="concept-card">
+          <svg width="180" height="70" viewBox="0 0 180 70">
+            <circle cx="22"  cy="35" r="18" fill="#fff" stroke="#333" stroke-width="2"/>
+            <line x1="22"  y1="17" x2="22"  y2="53" stroke="#333" stroke-width="1.5"/>
+            <line x1="22"  y1="35" x2="40"  y2="35" stroke="#333" stroke-width="1.5"/>
+            <!-- dashed arrow -->
+            <line x1="41" y1="35" x2="130" y2="35" stroke="#555" stroke-width="2" stroke-dasharray="7,5"/>
+            <polygon points="130,29 144,35 130,41" fill="#555"/>
+            <text x="87" y="24" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="11" fill="#555" font-style="italic">wachttijd</text>
+            <circle cx="158" cy="35" r="18" fill="#fff" stroke="#333" stroke-width="2"/>
+            <line x1="158" y1="17" x2="158" y2="53" stroke="#333" stroke-width="1.5"/>
+            <line x1="158" y1="35" x2="176" y2="35" stroke="#333" stroke-width="1.5"/>
+          </svg>
+          <h3>Schijnactiviteit</h3>
+          <p>Technische wachttijd. Neemt <em>alleen tijd</em> in beslag, geen mankracht of materialen.</p>
+        </div>
+
+        <!-- 5. Relatielijn (0-lijn) -->
+        <div class="concept-card">
+          <svg width="180" height="70" viewBox="0 0 180 70">
+            <circle cx="22"  cy="35" r="18" fill="#fff" stroke="#333" stroke-width="2"/>
+            <line x1="22"  y1="17" x2="22"  y2="53" stroke="#333" stroke-width="1.5"/>
+            <line x1="22"  y1="35" x2="40"  y2="35" stroke="#333" stroke-width="1.5"/>
+            <!-- dashed 0-line -->
+            <line x1="41" y1="35" x2="130" y2="35" stroke="#888" stroke-width="2" stroke-dasharray="5,4"/>
+            <polygon points="130,29 144,35 130,41" fill="#888"/>
+            <text x="87" y="24" text-anchor="middle" font-family="Georgia,serif" font-size="15" font-weight="700" fill="#888">0</text>
+            <circle cx="158" cy="35" r="18" fill="#fff" stroke="#333" stroke-width="2"/>
+            <line x1="158" y1="17" x2="158" y2="53" stroke="#333" stroke-width="1.5"/>
+            <line x1="158" y1="35" x2="176" y2="35" stroke="#333" stroke-width="1.5"/>
+          </svg>
+          <h3>Relatielijn (0-lijn)</h3>
+          <p>Geeft een noodzakelijk verband aan. Neemt <em>geen tijd, mensen of middelen</em> in beslag.</p>
+        </div>
+
+      </div><!-- /concepts-grid -->
+    </div><!-- /card -->
+
+    <!-- ── CARD: TIJDSFACTOR ──────────────────────────────── -->
+    <div class="card">
+      <div class="card-title">⏱ Tijdsfactor &amp; t<sub>e</sub>-berekening</div>
+      <p style="color:var(--muted); font-size:.9rem; margin-bottom:1.1rem;">
+        Bij PERT worden <strong>drie schattingen</strong> gebruikt om de verwachte duurtijd van
+        een activiteit te berekenen — zo wordt rekening gehouden met onzekerheid.
+      </p>
+
+      <div class="formula-display">
+        t<sub>e</sub> = (t<sub>o</sub> + 4 · t<sub>l</sub> + t<sub>p</sub>) / 6
+      </div>
+
+      <div class="time-types">
+        <div class="time-type-card">
+          <div class="sym sym-to">t<sub>o</sub></div>
+          <div class="name">Optimistisch</div>
+          <div class="desc">De kortst mogelijke duurtijd (best case scenario)</div>
+        </div>
+        <div class="time-type-card">
+          <div class="sym sym-tl">t<sub>l</sub></div>
+          <div class="name">Realistisch</div>
+          <div class="desc">De meest waarschijnlijke duurtijd (most likely)</div>
+        </div>
+        <div class="time-type-card">
+          <div class="sym sym-tp">t<sub>p</sub></div>
+          <div class="name">Pessimistisch</div>
+          <div class="desc">De langst mogelijke duurtijd (worst case scenario)</div>
+        </div>
+      </div>
+
+      <!-- Calculator -->
+      <div class="calc-wrap">
+        <p class="calc-label-row">🧮 Mini-calculator — vul de drie schattingen in:</p>
+        <div class="calc-grid">
+          <div class="calc-field">
+            <label>t<sub>o</sub> (optimistisch)</label>
+            <input type="number" id="calc-to" placeholder="0" min="0" step="0.5"/>
+          </div>
+          <div class="calc-field">
+            <label>t<sub>l</sub> (realistisch)</label>
+            <input type="number" id="calc-tl" placeholder="0" min="0" step="0.5"/>
+          </div>
+          <div class="calc-field">
+            <label>t<sub>p</sub> (pessimistisch)</label>
+            <input type="number" id="calc-tp" placeholder="0" min="0" step="0.5"/>
+          </div>
+          <div class="calc-arrow">→</div>
+          <div class="calc-result-box" id="calc-result-box">
+            <div class="res-label">t<sub>e</sub> (verwacht)</div>
+            <div class="res-value" id="calc-result">—</div>
+            <div class="res-formula" id="calc-formula"></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /card -->
+
+    <!-- ── CARD: VOORWAARTSE & ACHTERWAARTSE GANG ─────────── -->
+    <div class="card">
+      <div class="card-title">🔄 Voorwaartse en achterwaartse gang</div>
+      <p style="color:var(--muted); font-size:.9rem; margin-bottom:1.1rem;">
+        Om T<sub>E</sub> en T<sub>L</sub> te berekenen, doorloop je het netwerk twee keer:
+        eerst van links naar rechts, daarna van rechts naar links.
+      </p>
+
+      <div class="pass-grid">
+
+        <div class="pass-card forward">
+          <div class="pass-title">➡ Voorwaartse gang</div>
+          <p class="pass-desc">
+            Bereken <strong>T<sub>E</sub></strong> voor elk knooppunt, van links naar rechts.
+          </p>
+          <div class="pass-rule">
+            📍 Startpunt: T<sub>E</sub> van het eerste knooppunt = <strong>0</strong>.
+          </div>
+          <div class="pass-rule">
+            📐 Bereken: T<sub>E</sub>(vorig) + duurtijd activiteit voor elk inkomend pad.
+          </div>
+          <div class="pass-rule">
+            ✅ <strong>Neem de grootste waarde</strong> bij meerdere inkomende paden.
+          </div>
+        </div>
+
+        <div class="pass-card backward">
+          <div class="pass-title">⬅ Achterwaartse gang</div>
+          <p class="pass-desc">
+            Bereken <strong>T<sub>L</sub></strong> voor elk knooppunt, van rechts naar links.
+          </p>
+          <div class="pass-rule">
+            📍 Eindpunt: T<sub>L</sub> van het laatste knooppunt = T<sub>E</sub> van dat knooppunt.
+          </div>
+          <div class="pass-rule">
+            📐 Bereken: T<sub>L</sub>(volgend) − duurtijd activiteit voor elke uitgaande activiteit.
+          </div>
+          <div class="pass-rule">
+            ✅ <strong>Neem de kleinste waarde</strong> bij meerdere uitgaande activiteiten.
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /card -->
+
+    <!-- ── CARD: SPELING ──────────────────────────────────── -->
+    <div class="card">
+      <div class="card-title">📊 Speling (Slack)</div>
+      <p style="color:var(--muted); font-size:.9rem; margin-bottom:1rem;">
+        Speling is de maximale vertraging die een activiteit mag oplopen
+        zonder de totale projectduur te beïnvloeden.
+      </p>
+
+      <div class="slack-formula">
+        Speling = T<sub>L</sub> − T<sub>E</sub>
+      </div>
+
+      <table class="slack-table">
+        <thead>
+          <tr>
+            <th>Type speling</th>
+            <th>Formule</th>
+            <th>Betekenis &amp; gevolg</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="slack-pos">
+            <td><span class="badge badge-pos">Positief</span></td>
+            <td>T<sub>L</sub> &gt; T<sub>E</sub></td>
+            <td>De activiteit mag uitgesteld worden. Minder mensen en middelen nodig.</td>
+          </tr>
+          <tr class="slack-zero">
+            <td><span class="badge badge-zero">Nul → kritiek</span></td>
+            <td>T<sub>L</sub> = T<sub>E</sub></td>
+            <td>Geen vertraging toegestaan. Dit knooppunt ligt op het <strong>kritieke pad</strong>.</td>
+          </tr>
+          <tr class="slack-neg">
+            <td><span class="badge badge-neg">Negatief</span></td>
+            <td>T<sub>L</sub> &lt; T<sub>E</sub></td>
+            <td>De activiteit moet versneld worden. Meer mensen en middelen inzetten.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div><!-- /card -->
+
+    <!-- ── CARD: KRITIEKE PAD ─────────────────────────────── -->
+    <div class="card">
+      <div class="card-title">🔴 Kritieke pad</div>
+      <p style="font-size:.9rem; margin-bottom:.25rem;">
+        Het <strong>kritieke pad</strong> is het langste pad van het begin- naar het eindknooppunt.
+        Elke vertraging op dit pad heeft rechtstreeks invloed op de totale projectduur.
+      </p>
+      <div class="slack-formula" style="font-size:.95rem; margin-bottom:1rem;">
+        Speling op het kritieke pad = T<span style="font-size:.7em; vertical-align:sub;">L</span> − T<span style="font-size:.7em; vertical-align:sub;">E</span> = 0
+      </div>
+      <ul class="crit-list">
+        <li>Alle knooppunten op het kritieke pad hebben een <strong>speling van 0</strong>, dus de deadline en vroegste aankomst vallen samen.</li>
+        <li>Het kritieke pad wordt aangeduid met een <span style="color:var(--accent);font-weight:700;">rode pijl</span> in het netwerk.</li>
+        <li>Er kunnen meerdere kritieke paden bestaan als twee paden dezelfde maximale duurtijd hebben.</li>
+        <li>De totale projectduur is gelijk aan het vroegst mogelijke tijdstip van het laatste knooppunt.</li>
+      </ul>
+    </div><!-- /card -->
+
+  </section><!-- /theorie -->
+
+  <!-- ────────────────────────────────────────────────────── -->
+  <!--  SECTIE 2 — DEMO                                       -->
+  <!-- ────────────────────────────────────────────────────── -->
+  <section id="demo" style="margin-top:3rem;">
+
+    <div class="section-header">
+      <div class="section-badge">Sectie 2</div>
+      <h1>Demo</h1>
+      <p>Stap voor stap door een PERT-netwerk: T<sub>E</sub> (links→rechts) en T<sub>L</sub> (rechts→links).</p>
+    </div>
+
+    <div class="definitie" style="margin-bottom:1.25rem;">
+      <div class="def-label">Netwerk — Lancering van een mobiele app</div>
+      <p>Een softwarebedrijf wil een app lanceren. Er zijn twee parallelle ontwikkeltrajecten (iOS en Android),
+         een relatielijn en een gezamenlijke release. Doorloop het netwerk stap voor stap.</p>
+    </div>
+
+    <!-- Relatielijn detail -->
+    <div class="card">
+      <div class="card-title">🔗 De relatielijn (0-lijn) in detail</div>
+      <p style="color:var(--muted); font-size:.9rem; margin-bottom:1.1rem;">
+        In dit netwerk loopt er een relatielijn van knooppunt II naar knooppunt III.
+        Hieronder zie je precies wat dat betekent en hoe je ermee rekent.
+      </p>
+
+      <!-- Vergelijkingstabel -->
+      <table class="slack-table" style="margin-bottom:1.25rem;">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Symbool</th>
+            <th>Tijd</th>
+            <th>Mankracht / middelen</th>
+            <th>Gebruik</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Activiteit</strong></td>
+            <td>Volle pijl</td>
+            <td>Ja (duurtijd &gt; 0)</td>
+            <td>Ja</td>
+            <td>Een echte taak (bv. iOS bouwen)</td>
+          </tr>
+          <tr style="background:#fffbeb;">
+            <td><strong>Schijnactiviteit</strong></td>
+            <td>Stippelpijl</td>
+            <td>Ja (wachttijd)</td>
+            <td>Nee</td>
+            <td>Technische wachttijd (bv. beton uitharden)</td>
+          </tr>
+          <tr style="background:#eef5fb;">
+            <td><strong>Relatielijn</strong></td>
+            <td>Stippelpijl met <strong>0</strong></td>
+            <td><strong>Nee</strong> (duurtijd = 0)</td>
+            <td>Nee</td>
+            <td>Noodzakelijk logisch verband zonder tijdskost</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Hoe rekenen -->
+      <div class="pass-grid">
+        <div class="pass-card forward">
+          <div class="pass-title">➡ Voorwaartse gang via relatielijn</div>
+          <p class="pass-desc">
+            De relatielijn <strong>II → III</strong> heeft duurtijd 0.
+            Dat betekent dat knooppunt III ook bereikt kan worden via II:
+          </p>
+          <div class="pass-rule">
+            T<sub>E</sub>(III) via II = T<sub>E</sub>(II) + <strong>0</strong> = 4 + 0 = 4
+          </div>
+          <div class="pass-rule">
+            T<sub>E</sub>(III) via I (Act 2) = T<sub>E</sub>(I) + 8 = 0 + 8 = <strong>8</strong>
+          </div>
+          <div class="pass-rule">
+            📌 Neem de <strong>grootste</strong>: T<sub>E</sub>(III) = <strong>8</strong>
+          </div>
+        </div>
+        <div class="pass-card backward">
+          <div class="pass-title">⬅ Achterwaartse gang via relatielijn</div>
+          <p class="pass-desc">
+            In de achterwaartse gang gaat de relatielijn <em>omgekeerd</em>
+            (III → II). We trekken de duurtijd 0 af:
+          </p>
+          <div class="pass-rule">
+            T<sub>L</sub>(II) = T<sub>L</sub>(III) − <strong>0</strong> = 8 − 0 = <strong>8</strong>
+          </div>
+          <div class="pass-rule" style="margin-top:.5rem;">
+            Speling knooppunt II = T<sub>L</sub> − T<sub>E</sub> = 8 − 4 = <strong>4</strong>
+            → positieve speling, <em>niet kritiek</em>.
+          </div>
+          <div class="pass-rule" style="margin-top:.5rem; background:#fee2e2;">
+            ⚠️ De relatielijn zelf is <strong>niet kritiek</strong> omdat knooppunt II
+            speling heeft. Ze propageert wel de T<sub>L</sub>-waarde.
+          </div>
+        </div>
+      </div>
+    </div><!-- /card relatielijn -->
+
+    <div class="demo-card">
+
+      <!-- Header -->
+      <div class="demo-header">
+        <div>
+          <div class="demo-step-counter" id="demo-step-counter">Stap 0 van 9</div>
+          <div class="demo-card-title" id="demo-title">Leeg netwerk</div>
+        </div>
+        <span class="demo-phase-badge phase-start" id="demo-phase-badge">Start</span>
+      </div>
+
+      <!-- SVG Network -->
+      <div class="demo-network-wrap">
+        <svg viewBox="0 0 560 320" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <!-- Arrowhead markers -->
+            <marker id="m-def"   markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#888"/></marker>
+            <marker id="m-act"   markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#457b9d"/></marker>
+            <marker id="m-crit"  markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#e63946"/></marker>
+            <marker id="m-relay" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#bbb"/></marker>
+            <marker id="m-r-act" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#457b9d"/></marker>
+            <!-- Shared clip paths for demo nodes (local coords, center at 0,0 r=36) -->
+            <clipPath id="dcl-l" ><rect x="-36" y="-36" width="36" height="72"/></clipPath>
+            <clipPath id="dcl-tr"><rect x="0"   y="-36" width="36" height="36"/></clipPath>
+            <clipPath id="dcl-br"><rect x="0"   y="0"   width="36" height="36"/></clipPath>
+          </defs>
+
+          <!-- ── ARROWS (behind nodes) ───────────────────────────── -->
+
+          <!-- I → II  Act 1: iOS 4w -->
+          <g id="d-arr-I-II">
+            <line id="d-line-I-II" x1="122" y1="140" x2="236" y2="86"
+                  stroke="#888" stroke-width="1.8" marker-end="url(#m-def)"/>
+            <text id="d-lbl-I-II" x="172" y="97" text-anchor="middle"
+                  font-family="Segoe UI,sans-serif" font-size="11" fill="#999">Act 1: iOS — 4w</text>
+          </g>
+
+          <!-- I → III  Act 2: Android 8w -->
+          <g id="d-arr-I-III">
+            <line id="d-line-I-III" x1="122" y1="170" x2="236" y2="224"
+                  stroke="#888" stroke-width="1.8" marker-end="url(#m-def)"/>
+            <text id="d-lbl-I-III" x="163" y="220" text-anchor="middle"
+                  font-family="Segoe UI,sans-serif" font-size="11" fill="#999">Act 2: Android — 8w</text>
+          </g>
+
+          <!-- II → III  Relatielijn 0 -->
+          <g id="d-arr-II-III">
+            <line id="d-line-II-III" x1="270" y1="106" x2="270" y2="204"
+                  stroke="#bbb" stroke-width="1.6" stroke-dasharray="6,4"
+                  marker-end="url(#m-relay)"/>
+            <text id="d-lbl-II-III" x="284" y="160" text-anchor="start"
+                  font-family="Georgia,serif" font-size="15" font-weight="700" fill="#bbb">0</text>
+          </g>
+
+          <!-- III → IV  Act 3: Release 2w -->
+          <g id="d-arr-III-IV">
+            <line id="d-line-III-IV" x1="303" y1="225" x2="425" y2="170"
+                  stroke="#888" stroke-width="1.8" marker-end="url(#m-def)"/>
+            <text id="d-lbl-III-IV" x="375" y="214" text-anchor="middle"
+                  font-family="Segoe UI,sans-serif" font-size="11" fill="#999">Act 3: Release — 2w</text>
+          </g>
+
+          <!-- ── NODES ──────────────────────────────────────────── -->
+
+          <!-- Node I  (90, 155) -->
+          <g transform="translate(90,155)">
+            <circle r="36" fill="#eef0f2" clip-path="url(#dcl-l)"/>
+            <circle r="36" fill="#e8f5e9" clip-path="url(#dcl-tr)"/>
+            <circle r="36" fill="#e3f0fb" clip-path="url(#dcl-br)"/>
+            <circle r="36" fill="none" stroke="#333" stroke-width="2.5" id="d-bdr-I"/>
+            <line x1="0" y1="-36" x2="0"  y2="36"  stroke="#555" stroke-width="1.6"/>
+            <line x1="0" y1="0"   x2="36" y2="0"   stroke="#555" stroke-width="1.6"/>
+            <text x="-14" y="5" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="15" font-weight="700" fill="#333">I</text>
+            <text id="d-te-I" x="18" y="-11" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#ccc">—</text>
+            <text id="d-tl-I" x="18" y="16"  text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#ccc">—</text>
+          </g>
+
+          <!-- Node II  (270, 70) -->
+          <g transform="translate(270,70)">
+            <circle r="36" fill="#eef0f2" clip-path="url(#dcl-l)"/>
+            <circle r="36" fill="#e8f5e9" clip-path="url(#dcl-tr)"/>
+            <circle r="36" fill="#e3f0fb" clip-path="url(#dcl-br)"/>
+            <circle r="36" fill="none" stroke="#333" stroke-width="2.5" id="d-bdr-II"/>
+            <line x1="0" y1="-36" x2="0"  y2="36"  stroke="#555" stroke-width="1.6"/>
+            <line x1="0" y1="0"   x2="36" y2="0"   stroke="#555" stroke-width="1.6"/>
+            <text x="-13" y="5" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="13" font-weight="700" fill="#333">II</text>
+            <text id="d-te-II" x="18" y="-11" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#ccc">—</text>
+            <text id="d-tl-II" x="18" y="16"  text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#ccc">—</text>
+          </g>
+
+          <!-- Node III  (270, 240) -->
+          <g transform="translate(270,240)">
+            <circle r="36" fill="#eef0f2" clip-path="url(#dcl-l)"/>
+            <circle r="36" fill="#e8f5e9" clip-path="url(#dcl-tr)"/>
+            <circle r="36" fill="#e3f0fb" clip-path="url(#dcl-br)"/>
+            <circle r="36" fill="none" stroke="#333" stroke-width="2.5" id="d-bdr-III"/>
+            <line x1="0" y1="-36" x2="0"  y2="36"  stroke="#555" stroke-width="1.6"/>
+            <line x1="0" y1="0"   x2="36" y2="0"   stroke="#555" stroke-width="1.6"/>
+            <text x="-13" y="5" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#333">III</text>
+            <text id="d-te-III" x="18" y="-11" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#ccc">—</text>
+            <text id="d-tl-III" x="18" y="16"  text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#ccc">—</text>
+          </g>
+
+          <!-- Node IV  (460, 155) -->
+          <g transform="translate(460,155)">
+            <circle r="36" fill="#eef0f2" clip-path="url(#dcl-l)"/>
+            <circle r="36" fill="#e8f5e9" clip-path="url(#dcl-tr)"/>
+            <circle r="36" fill="#e3f0fb" clip-path="url(#dcl-br)"/>
+            <circle r="36" fill="none" stroke="#333" stroke-width="2.5" id="d-bdr-IV"/>
+            <line x1="0" y1="-36" x2="0"  y2="36"  stroke="#555" stroke-width="1.6"/>
+            <line x1="0" y1="0"   x2="36" y2="0"   stroke="#555" stroke-width="1.6"/>
+            <text x="-13" y="5" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="13" font-weight="700" fill="#333">IV</text>
+            <text id="d-te-IV" x="18" y="-11" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#ccc">—</text>
+            <text id="d-tl-IV" x="18" y="16"  text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#ccc">—</text>
+          </g>
+
+          <!-- Slack labels (result step only) -->
+          <g id="d-slack" opacity="0" style="transition:opacity .3s;">
+            <rect x="55"  y="198" width="72" height="18" rx="9" fill="#16a34a"/>
+            <text x="91"  y="211" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10" font-weight="700" fill="#fff">speling = 0</text>
+            <rect x="310" y="55"  width="72" height="18" rx="9" fill="#2563eb"/>
+            <text x="346" y="68"  text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10" font-weight="700" fill="#fff">speling = 4</text>
+            <rect x="230" y="283" width="72" height="18" rx="9" fill="#16a34a"/>
+            <text x="266" y="296" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10" font-weight="700" fill="#fff">speling = 0</text>
+            <rect x="420" y="198" width="72" height="18" rx="9" fill="#16a34a"/>
+            <text x="456" y="211" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10" font-weight="700" fill="#fff">speling = 0</text>
+          </g>
+
+        </svg>
+      </div><!-- /demo-network-wrap -->
+
+      <!-- Explanation -->
+      <div class="demo-explanation" id="demo-explanation">
+        Dit netwerk heeft <strong>4 knooppunten</strong> (I–IV) en <strong>3 activiteiten</strong> + 1 relatielijn.
+        Klik op <strong>Volgende →</strong> om te starten.
+      </div>
+
+      <!-- Navigation -->
+      <div class="demo-nav">
+        <button class="demo-btn demo-btn-prev" id="demo-prev" disabled>← Vorige</button>
+        <div class="demo-dots" id="demo-dots"></div>
+        <button class="demo-btn demo-btn-next" id="demo-next">Volgende →</button>
+      </div>
+      <div class="demo-footer">
+        <button class="demo-btn-reset" id="demo-reset">↺ Opnieuw beginnen</button>
+      </div>
+
+    </div><!-- /demo-card -->
+
+    <!-- ── DEMO 2: RELATIELIJN (0-LIJN) ────────────────────── -->
+    <div class="definitie" style="margin-top:2rem; margin-bottom:1.25rem;">
+      <div class="def-label">Demo 2 — Waarom heb je een relatielijn (0-lijn) nodig?</div>
+      <p>Studenten vragen zich vaak af: <em>wanneer</em> gebruik je een relatielijn? Dit voorbeeld toont stap voor stap
+         waarom een 0-lijn soms <strong>onmisbaar</strong> is om afhankelijkheden correct voor te stellen.</p>
+    </div>
+
+    <!-- Probleemschets -->
+    <div class="card">
+      <div class="card-title">🏗 Voorbeeld — Renovatie van een klaslokaal</div>
+      <p style="color:var(--muted); font-size:.9rem; margin-bottom:1rem;">
+        Een school renoveert een klaslokaal. Er zijn vier activiteiten:
+      </p>
+      <table class="slack-table" style="margin-bottom:1.25rem;">
+        <thead>
+          <tr><th>Activiteit</th><th>Beschrijving</th><th>Duurtijd</th><th>Hangt af van</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Act 1</strong></td><td>Elektriciteit vernieuwen</td><td>4 weken</td><td>—</td></tr>
+          <tr><td><strong>Act 2</strong></td><td>Muren schilderen</td><td>3 weken</td><td>—</td></tr>
+          <tr><td><strong>Act 3</strong></td><td>Verlichting ophangen</td><td>2 weken</td><td>Act 1</td></tr>
+          <tr style="background:#eef5fb;">
+            <td><strong>Act 4</strong></td><td>Meubels plaatsen</td><td>1 week</td>
+            <td><strong>Act 1 én Act 2</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="pass-grid" style="margin-bottom:1.25rem;">
+        <div class="pass-card forward" style="background:#fff8f0; border-color:#fed7aa;">
+          <div class="pass-title" style="color:#9a3412;">⚠ Het probleem</div>
+          <p class="pass-desc">
+            Act 4 hangt af van <strong>zowel</strong> Act 1 als Act 2. Maar Act 3 hangt <strong>enkel</strong> af van Act 1.
+          </p>
+          <div class="pass-rule" style="background:#fef3c7;">
+            Als je Act 1 en Act 2 naar <em>hetzelfde</em> knooppunt laat lopen, dan zou Act 3 óók afhangen van Act 2 — en dat klopt niet!
+          </div>
+        </div>
+        <div class="pass-card backward" style="background:#f0fdf4; border-color:#bbf7d0;">
+          <div class="pass-title" style="color:#166534;">✅ De oplossing</div>
+          <p class="pass-desc">
+            Gebruik een <strong>relatielijn (0-lijn)</strong> van knooppunt II naar III.
+          </p>
+          <div class="pass-rule" style="background:#dcfce7;">
+            De 0-lijn legt vast dat Act 4 pas kan starten als Act 1 klaar is, <strong>zonder</strong> dat Act 3 ook van Act 2 afhangt.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-card">
+
+      <!-- Header -->
+      <div class="demo-header">
+        <div>
+          <div class="demo-step-counter" id="demo2-step-counter">Stap 0 van 9</div>
+          <div class="demo-card-title" id="demo2-title">Netwerk met relatielijn</div>
+        </div>
+        <span class="demo-phase-badge phase-start" id="demo2-phase-badge">Start</span>
+      </div>
+
+      <!-- SVG Network -->
+      <div class="demo-network-wrap">
+        <svg id="demo2-svg" viewBox="0 0 560 340" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="d2-m-def"   markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#888"/></marker>
+            <marker id="d2-m-act"   markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#457b9d"/></marker>
+            <marker id="d2-m-crit"  markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#e63946"/></marker>
+            <marker id="d2-m-relay" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#bbb"/></marker>
+            <marker id="d2-m-r-act" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#457b9d"/></marker>
+            <clipPath id="d2cl-l" ><rect x="-36" y="-36" width="36" height="72"/></clipPath>
+            <clipPath id="d2cl-tr"><rect x="0"   y="-36" width="36" height="36"/></clipPath>
+            <clipPath id="d2cl-br"><rect x="0"   y="0"   width="36" height="36"/></clipPath>
+          </defs>
+
+          <!-- ── ARROWS ─────────────────────────────────────────── -->
+
+          <!-- I → II  Act 1: Elektriciteit 4w -->
+          <g id="d2-arr-I-II">
+            <line id="d2-line-I-II" x1="122" y1="140" x2="236" y2="86"
+                  stroke="#888" stroke-width="1.8" marker-end="url(#d2-m-def)"/>
+            <text id="d2-lbl-I-II" x="160" y="97" text-anchor="middle"
+                  font-family="Segoe UI,sans-serif" font-size="11" fill="#999">Act 1: Elektriciteit — 4w</text>
+          </g>
+
+          <!-- I → III  Act 2: Schilderen 3w -->
+          <g id="d2-arr-I-III">
+            <line id="d2-line-I-III" x1="122" y1="175" x2="236" y2="234"
+                  stroke="#888" stroke-width="1.8" marker-end="url(#d2-m-def)"/>
+            <text id="d2-lbl-I-III" x="155" y="230" text-anchor="middle"
+                  font-family="Segoe UI,sans-serif" font-size="11" fill="#999">Act 2: Schilderen — 3w</text>
+          </g>
+
+          <!-- II → III  Relatielijn 0 -->
+          <g id="d2-arr-II-III">
+            <line id="d2-line-II-III" x1="270" y1="106" x2="270" y2="204"
+                  stroke="#bbb" stroke-width="1.6" stroke-dasharray="6,4"
+                  marker-end="url(#d2-m-relay)"/>
+            <text id="d2-lbl-II-III" x="284" y="160" text-anchor="start"
+                  font-family="Georgia,serif" font-size="15" font-weight="700" fill="#bbb">0</text>
+          </g>
+
+          <!-- II → IV  Act 3: Verlichting 2w -->
+          <g id="d2-arr-II-IV">
+            <line id="d2-line-II-IV" x1="303" y1="62" x2="425" y2="132"
+                  stroke="#888" stroke-width="1.8" marker-end="url(#d2-m-def)"/>
+            <text id="d2-lbl-II-IV" x="380" y="78" text-anchor="middle"
+                  font-family="Segoe UI,sans-serif" font-size="11" fill="#999">Act 3: Verlichting — 2w</text>
+          </g>
+
+          <!-- III → IV  Act 4: Meubels 1w -->
+          <g id="d2-arr-III-IV">
+            <line id="d2-line-III-IV" x1="303" y1="232" x2="425" y2="175"
+                  stroke="#888" stroke-width="1.8" marker-end="url(#d2-m-def)"/>
+            <text id="d2-lbl-III-IV" x="380" y="224" text-anchor="middle"
+                  font-family="Segoe UI,sans-serif" font-size="11" fill="#999">Act 4: Meubels — 1w</text>
+          </g>
+
+          <!-- ── NODES ────────────────────────────────────────────── -->
+
+          <!-- Node I  (90, 155) -->
+          <g transform="translate(90,155)">
+            <circle r="36" fill="#eef0f2" clip-path="url(#d2cl-l)"/>
+            <circle r="36" fill="#e8f5e9" clip-path="url(#d2cl-tr)"/>
+            <circle r="36" fill="#e3f0fb" clip-path="url(#d2cl-br)"/>
+            <circle r="36" fill="none" stroke="#333" stroke-width="2.5" id="d2-bdr-I"/>
+            <line x1="0" y1="-36" x2="0"  y2="36"  stroke="#555" stroke-width="1.6"/>
+            <line x1="0" y1="0"   x2="36" y2="0"   stroke="#555" stroke-width="1.6"/>
+            <text x="-14" y="5" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="15" font-weight="700" fill="#333">I</text>
+            <text id="d2-te-I" x="18" y="-11" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#ccc">—</text>
+            <text id="d2-tl-I" x="18" y="16"  text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#ccc">—</text>
+          </g>
+
+          <!-- Node II  (270, 70) -->
+          <g transform="translate(270,70)">
+            <circle r="36" fill="#eef0f2" clip-path="url(#d2cl-l)"/>
+            <circle r="36" fill="#e8f5e9" clip-path="url(#d2cl-tr)"/>
+            <circle r="36" fill="#e3f0fb" clip-path="url(#d2cl-br)"/>
+            <circle r="36" fill="none" stroke="#333" stroke-width="2.5" id="d2-bdr-II"/>
+            <line x1="0" y1="-36" x2="0"  y2="36"  stroke="#555" stroke-width="1.6"/>
+            <line x1="0" y1="0"   x2="36" y2="0"   stroke="#555" stroke-width="1.6"/>
+            <text x="-13" y="5" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="13" font-weight="700" fill="#333">II</text>
+            <text id="d2-te-II" x="18" y="-11" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#ccc">—</text>
+            <text id="d2-tl-II" x="18" y="16"  text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#ccc">—</text>
+          </g>
+
+          <!-- Node III  (270, 240) -->
+          <g transform="translate(270,240)">
+            <circle r="36" fill="#eef0f2" clip-path="url(#d2cl-l)"/>
+            <circle r="36" fill="#e8f5e9" clip-path="url(#d2cl-tr)"/>
+            <circle r="36" fill="#e3f0fb" clip-path="url(#d2cl-br)"/>
+            <circle r="36" fill="none" stroke="#333" stroke-width="2.5" id="d2-bdr-III"/>
+            <line x1="0" y1="-36" x2="0"  y2="36"  stroke="#555" stroke-width="1.6"/>
+            <line x1="0" y1="0"   x2="36" y2="0"   stroke="#555" stroke-width="1.6"/>
+            <text x="-13" y="5" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#333">III</text>
+            <text id="d2-te-III" x="18" y="-11" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#ccc">—</text>
+            <text id="d2-tl-III" x="18" y="16"  text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#ccc">—</text>
+          </g>
+
+          <!-- Node IV  (460, 155) -->
+          <g transform="translate(460,155)">
+            <circle r="36" fill="#eef0f2" clip-path="url(#d2cl-l)"/>
+            <circle r="36" fill="#e8f5e9" clip-path="url(#d2cl-tr)"/>
+            <circle r="36" fill="#e3f0fb" clip-path="url(#d2cl-br)"/>
+            <circle r="36" fill="none" stroke="#333" stroke-width="2.5" id="d2-bdr-IV"/>
+            <line x1="0" y1="-36" x2="0"  y2="36"  stroke="#555" stroke-width="1.6"/>
+            <line x1="0" y1="0"   x2="36" y2="0"   stroke="#555" stroke-width="1.6"/>
+            <text x="-13" y="5" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="13" font-weight="700" fill="#333">IV</text>
+            <text id="d2-te-IV" x="18" y="-11" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#ccc">—</text>
+            <text id="d2-tl-IV" x="18" y="16"  text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#ccc">—</text>
+          </g>
+
+          <!-- Slack labels (result step only) -->
+          <g id="d2-slack" opacity="0" style="transition:opacity .3s;">
+            <rect x="55"  y="198" width="72" height="18" rx="9" fill="#16a34a"/>
+            <text x="91"  y="211" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10" font-weight="700" fill="#fff">speling = 0</text>
+            <rect x="310" y="55"  width="72" height="18" rx="9" fill="#16a34a"/>
+            <text x="346" y="68"  text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10" font-weight="700" fill="#fff">speling = 0</text>
+            <rect x="230" y="283" width="72" height="18" rx="9" fill="#2563eb"/>
+            <text x="266" y="296" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10" font-weight="700" fill="#fff">speling = 1</text>
+            <rect x="420" y="198" width="72" height="18" rx="9" fill="#16a34a"/>
+            <text x="456" y="211" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10" font-weight="700" fill="#fff">speling = 0</text>
+          </g>
+
+        </svg>
+      </div><!-- /demo-network-wrap -->
+
+      <!-- Explanation -->
+      <div class="demo-explanation" id="demo2-explanation">
+        Dit netwerk heeft <strong>4 knooppunten</strong>, <strong>4 activiteiten</strong> en een <strong>relatielijn (0-lijn)</strong>.
+        De 0-lijn van II naar III zorgt ervoor dat Act 4 (meubels) pas kan starten als <em>zowel</em> het schilderen (Act 2) <em>als</em> de elektriciteit (Act 1) klaar zijn — terwijl Act 3 (verlichting) <em>enkel</em> afhangt van Act 1.
+        Klik op <strong>Volgende →</strong> om te starten.
+      </div>
+
+      <!-- Navigation -->
+      <div class="demo-nav">
+        <button class="demo-btn demo-btn-prev" id="demo2-prev" disabled>← Vorige</button>
+        <div class="demo-dots" id="demo2-dots"></div>
+        <button class="demo-btn demo-btn-next" id="demo2-next">Volgende →</button>
+      </div>
+      <div class="demo-footer">
+        <button class="demo-btn-reset" id="demo2-reset">↺ Opnieuw beginnen</button>
+      </div>
+
+    </div><!-- /demo-card demo2 -->
+
+  </section><!-- /demo -->
+
+  <!-- ────────────────────────────────────────────────────── -->
+  <!--  SECTIE 3 — OEFENING 1                                 -->
+  <!-- ────────────────────────────────────────────────────── -->
+  <section id="oefening1" style="margin-top:3rem;">
+
+    <div class="section-header">
+      <div class="section-badge">Oefening 1</div>
+      <h1>Vul het PERT-netwerk in</h1>
+      <p>Vul de T<sub>E</sub> en T<sub>L</sub> waarden in voor elk knooppunt en selecteer het kritieke pad.</p>
+    </div>
+
+    <div class="ex1-instructions">
+      <strong>Opdracht:</strong> Hieronder zie je een PERT-netwerk met 11 knooppunten en 14 activiteiten.
+      <strong>(1)</strong> Vul voor elk knooppunt de T<sub>E</sub> (vroegst mogelijke tijdstip) en T<sub>L</sub> (laatste toelaatbare tijdstip) in.
+      <strong>(2)</strong> Klik op de pijlen die op het <span style="color:var(--accent);font-weight:700;">kritieke pad</span> liggen.
+      <strong>(3)</strong> Klik op <em>Controleer</em> om je antwoorden te checken.
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔵 PERT-netwerk</div>
+
+      <div class="ex1-wrap" id="ex1-wrap">
+        <svg id="ex1-svg" viewBox="0 0 940 500" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="ex1-m-def" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#888"/></marker>
+            <marker id="ex1-m-sel" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#e63946"/></marker>
+            <!-- Clip paths for nodes (center 0,0, r=34) -->
+            <clipPath id="ex1-cl"><rect x="-34" y="-34" width="34" height="68"/></clipPath>
+            <clipPath id="ex1-ctr"><rect x="0" y="-34" width="34" height="34"/></clipPath>
+            <clipPath id="ex1-cbr"><rect x="0" y="0" width="34" height="34"/></clipPath>
+          </defs>
+
+          <!-- Edges will be drawn by JS -->
+          <g id="ex1-edges"></g>
+          <!-- Nodes will be drawn by JS -->
+          <g id="ex1-nodes"></g>
+        </svg>
+      </div>
+
+      <div class="ex1-controls">
+        <button class="ex1-check-btn" id="ex1-check">Controleer</button>
+        <button class="ex1-reset-btn" id="ex1-reset">Opnieuw beginnen</button>
+        <div class="ex1-feedback" id="ex1-feedback"></div>
+      </div>
+
+    </div><!-- /card -->
+  </section><!-- /oefening1 -->
+
+  <div id="oefening2" class="section-placeholder">
+    <div class="ph-emoji">✏️</div>
+    <h2>Oefening 2</h2>
+    <p>Wordt binnenkort uitgewerkt: netwerk met relatieliinen.</p>
+  </div>
+
+  <!-- ────────────────────────────────────────────────────── -->
+  <!--  SECTIE 5 — OEFENING 3                                 -->
+  <!-- ────────────────────────────────────────────────────── -->
+  <section id="oefening3" style="margin-top:3rem;">
+
+    <div class="section-header">
+      <div class="section-badge">Oefening 3</div>
+      <h1>De piramide van de farao</h1>
+      <p>Bereken de verwachte tijden, bouw het PERT-netwerk en bepaal het kritieke pad.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📜 Opdracht</div>
+      <p style="color:var(--muted); font-size:.9rem; line-height:1.7;">
+        Een farao wil een piramide laten bouwen. Het project bestaat uit 8 activiteiten.
+        <strong>(1)</strong> Bereken eerst de verwachte tijd t<sub>e</sub> voor elke activiteit.
+        <strong>(2)</strong> Bouw daarna het PERT-netwerk door knooppunten te plaatsen en verbindingen te tekenen.
+        <strong>(3)</strong> Vul de T<sub>E</sub> en T<sub>L</sub> waarden in en identificeer het kritieke pad.
+      </p>
+    </div>
+
+    <!-- STAP 1: te berekening -->
+    <div class="card">
+      <div class="card-title">📊 Stap 1 — Bereken t<sub>e</sub></div>
+      <p style="color:var(--muted); font-size:.88rem; margin-bottom:1rem;">
+        Gebruik de formule t<sub>e</sub> = (t<sub>o</sub> + 4 &middot; t<sub>l</sub> + t<sub>p</sub>) / 6 en rond af naar het dichtstbijzijnde geheel getal.
+      </p>
+      <div style="overflow-x:auto;">
+        <table class="ex3-te-table" id="ex3-te-table">
+          <thead>
+            <tr>
+              <th>Act</th><th>Beschrijving</th><th>Voorganger</th>
+              <th>t<sub>o</sub></th><th>t<sub>l</sub></th><th>t<sub>p</sub></th><th>t<sub>e</sub></th>
+            </tr>
+          </thead>
+          <tbody id="ex3-te-tbody"></tbody>
+        </table>
+      </div>
+      <div class="ex1-controls" style="margin-top:.75rem;">
+        <button class="ex1-check-btn" id="ex3-te-check">Controleer</button>
+        <button class="ex1-reset-btn" id="ex3-te-reset">Opnieuw</button>
+        <div class="ex1-feedback" id="ex3-te-feedback"></div>
+      </div>
+    </div>
+
+    <!-- STAP 2: Netwerk bouwen -->
+    <div class="card ex3-locked" id="ex3-builder-card">
+      <div class="ex3-lock-overlay" id="ex3-lock-overlay">
+        <div class="ex3-lock-msg">
+          <strong>🔒 Stap 2 is vergrendeld</strong>
+          <p>Voltooi eerst Stap 1 (alle t<sub>e</sub> waarden correct).</p>
+        </div>
+      </div>
+      <div class="card-title">🔨 Stap 2 — Bouw het PERT-netwerk</div>
+      <div class="ex1-instructions" style="margin-bottom:1rem;">
+        <strong>Instructies:</strong>
+        Gebruik de werkbalk om knooppunten te plaatsen en verbindingen te tekenen.
+        <strong>(1)</strong> Klik <em>Knooppunt</em> en klik op het canvas om een knooppunt toe te voegen.
+        <strong>(2)</strong> Klik <em>Activiteit</em> of <em>0-lijn</em>, klik op een bronknooppunt en dan op een doelknooppunt.
+        <strong>(3)</strong> Vul T<sub>E</sub> en T<sub>L</sub> in bij elk knooppunt.
+        <strong>(4)</strong> Klik op <em>Controleer</em> om je netwerk te controleren.
+      </div>
+
+      <div class="ex3-toolbar" id="ex3-toolbar">
+        <button class="ex3-tool active" data-tool="select">&#8598; Selecteer</button>
+        <button class="ex3-tool" data-tool="node">&#8853; Knooppunt</button>
+        <button class="ex3-tool" data-tool="edge">&#8594; Activiteit</button>
+        <button class="ex3-tool" data-tool="relay">&#8674; 0-lijn</button>
+        <button class="ex3-tool" data-tool="delete">&#10005; Verwijder</button>
+      </div>
+
+      <div class="ex3-canvas-wrap" id="ex3-canvas-wrap">
+        <svg id="ex3-svg" viewBox="0 0 960 500" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="ex3-m-def" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#888"/></marker>
+            <marker id="ex3-m-dash" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#bbb"/></marker>
+            <marker id="ex3-m-ghost" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#457b9d" opacity=".5"/></marker>
+            <clipPath id="ex3-cl"><rect x="-30" y="-30" width="30" height="60"/></clipPath>
+            <clipPath id="ex3-ctr"><rect x="0" y="-30" width="30" height="30"/></clipPath>
+            <clipPath id="ex3-cbr"><rect x="0" y="0" width="30" height="30"/></clipPath>
+          </defs>
+          <!-- Dot grid -->
+          <g id="ex3-grid" opacity=".15"></g>
+          <!-- Ghost line for edge drawing -->
+          <line id="ex3-ghost" x1="0" y1="0" x2="0" y2="0" stroke="#457b9d" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#ex3-m-ghost)" opacity="0" pointer-events="none"/>
+          <!-- Edges layer -->
+          <g id="ex3-edges"></g>
+          <!-- Nodes layer -->
+          <g id="ex3-nodes"></g>
+        </svg>
+        <!-- Edge label popup -->
+        <div class="ex3-edge-popup" id="ex3-edge-popup" style="display:none;">
+          <label for="ex3-popup-act">Activiteit</label>
+          <select id="ex3-popup-act"></select>
+          <label for="ex3-popup-dur">Duurtijd (t<sub>e</sub>)</label>
+          <input type="number" id="ex3-popup-dur" min="0" placeholder="—" readonly style="background:var(--bg);color:var(--muted);cursor:default;">
+          <div class="ex3-edge-popup-btns">
+            <button class="ex3-popup-ok" id="ex3-popup-ok">OK</button>
+            <button class="ex3-popup-cancel" id="ex3-popup-cancel">Annuleer</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex1-controls" style="margin-top:1rem;">
+        <button class="ex1-check-btn" id="ex3-net-check">Controleer</button>
+        <button class="ex1-reset-btn" id="ex3-net-reset">Opnieuw beginnen</button>
+        <div class="ex1-feedback" id="ex3-net-feedback"></div>
+      </div>
+    </div>
+
+  </section><!-- /oefening3 -->
+
+  <div id="oefening4" class="section-placeholder">
+    <div class="ph-emoji">✏️</div>
+    <h2>Oefening 4 — H. Oessers digitalisering</h2>
+    <p>Wordt binnenkort uitgewerkt: groot netwerk met 14 activiteiten.</p>
+  </div>
+
+</main>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!--  JAVASCRIPT                                               -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<script>
+  /* ── NODE ANATOMY INTERACTION ──────────────────────────── */
+  (function () {
+    const clicks   = document.querySelectorAll('.node-click');
+    const sections = document.querySelectorAll('.node-section');
+    const nipItems = document.querySelectorAll('.nip-item');
+    let active = null;
+
+    function showSection(name) {
+      // Highlight selected bg section, dim others
+      sections.forEach(s => {
+        if (s.dataset.section === name) {
+          s.style.opacity = '1';
+          s.style.filter  = 'brightness(.82)';
+        } else {
+          s.style.opacity = '.45';
+          s.style.filter  = 'brightness(1)';
+        }
+      });
+      // Show correct info panel
+      nipItems.forEach(el => el.classList.remove('active'));
+      const target = document.getElementById('nip-' + name);
+      if (target) target.classList.add('active');
+    }
+
+    function resetSections() {
+      sections.forEach(s => {
+        s.style.opacity = '1';
+        s.style.filter  = 'brightness(1)';
+      });
+      nipItems.forEach(el => el.classList.remove('active'));
+      document.getElementById('nip-default').classList.add('active');
+    }
+
+    clicks.forEach(el => {
+      el.addEventListener('click', () => {
+        const name = el.dataset.section;
+        if (active === name) {
+          // toggle off
+          active = null;
+          resetSections();
+        } else {
+          active = name;
+          showSection(name);
+        }
+      });
+
+      el.addEventListener('mouseenter', () => {
+        if (!active) {
+          sections.forEach(s => {
+            s.style.filter = s.dataset.section === el.dataset.section
+              ? 'brightness(.88)' : 'brightness(1)';
+          });
+        }
+      });
+
+      el.addEventListener('mouseleave', () => {
+        if (!active) {
+          sections.forEach(s => { s.style.filter = 'brightness(1)'; });
+        }
+      });
+    });
+  })();
+
+  /* ── te CALCULATOR ─────────────────────────────────────── */
+  (function () {
+    const inputs     = ['calc-to', 'calc-tl', 'calc-tp'].map(id => document.getElementById(id));
+    const resultEl   = document.getElementById('calc-result');
+    const formulaEl  = document.getElementById('calc-formula');
+    const boxEl      = document.getElementById('calc-result-box');
+
+    function round2(n) { return Math.round(n * 100) / 100; }
+
+    function update() {
+      const [to, tl, tp] = inputs.map(i => parseFloat(i.value));
+      if ([to, tl, tp].some(isNaN)) {
+        resultEl.textContent  = '—';
+        formulaEl.textContent = '';
+        boxEl.classList.remove('has-value');
+        return;
+      }
+      const te = (to + 4 * tl + tp) / 6;
+      resultEl.textContent  = round2(te);
+      formulaEl.textContent = `(${to} + 4×${tl} + ${tp}) / 6`;
+      boxEl.classList.add('has-value');
+    }
+
+    inputs.forEach(i => i.addEventListener('input', update));
+  })();
+
+  /* ── DEMO SECTION ──────────────────────────────────────── */
+  (function () {
+    const NODES  = ['I','II','III','IV'];
+    const ARROWS = ['I-II','I-III','II-III','III-IV'];
+    const DASHED = new Set(['II-III']);
+
+    const STEPS = [
+      { phase:'start',    lbl:'Start',
+        title:'Leeg netwerk',
+        expl:'Dit netwerk heeft 4 knooppunten (I–IV) en 3 activiteiten + 1 relatielijn (stippellijn).' +
+             ' Klik op <strong>Volgende →</strong> om te starten met de voorwaartse gang (T<sub>E</sub>, links→rechts).',
+        te:{}, tl:{}, hi:[], ha:[], crit:[] },
+
+      { phase:'forward',  lbl:'➡ Voorwaartse gang',
+        title:'Stap 1 — Knooppunt I',
+        expl:'Het <strong>startpunt</strong> heeft altijd <strong>T<sub>E</sub>(I) = 0</strong>.' +
+             ' Er zijn geen inkomende activiteiten.',
+        te:{I:0}, tl:{}, hi:['I'], ha:[], crit:[] },
+
+      { phase:'forward',  lbl:'➡ Voorwaartse gang',
+        title:'Stap 2 — Knooppunt II',
+        expl:'Één inkomend pad via Act 1 (iOS, 4w):<br>' +
+             '<strong>T<sub>E</sub>(II) = T<sub>E</sub>(I) + 4 = 0 + 4 = 4</strong>',
+        te:{I:0,II:4}, tl:{}, hi:['II'], ha:['I-II'], crit:[] },
+
+      { phase:'forward',  lbl:'➡ Voorwaartse gang',
+        title:'Stap 3 — Knooppunt III',
+        expl:'Twee inkomende paden:<br>' +
+             '&bull; Via Act 2 (Android, 8w): T<sub>E</sub>(I) + 8 = <strong>8</strong><br>' +
+             '&bull; Via relatielijn van II (0w): T<sub>E</sub>(II) + 0 = 4<br>' +
+             '📌 Neem de <strong>grootste</strong>: <strong>T<sub>E</sub>(III) = 8</strong>',
+        te:{I:0,II:4,III:8}, tl:{}, hi:['III'], ha:['I-III','II-III'], crit:[] },
+
+      { phase:'forward',  lbl:'➡ Voorwaartse gang',
+        title:'Stap 4 — Knooppunt IV (voorwaartse gang klaar)',
+        expl:'Één inkomend pad via Act 3 (Release, 2w):<br>' +
+             '<strong>T<sub>E</sub>(IV) = T<sub>E</sub>(III) + 2 = 8 + 2 = 10</strong><br>' +
+             '✅ De totale verwachte projectduur is <strong>10 weken</strong>.',
+        te:{I:0,II:4,III:8,IV:10}, tl:{}, hi:['IV'], ha:['III-IV'], crit:[] },
+
+      { phase:'backward', lbl:'⬅ Achterwaartse gang',
+        title:'Stap 5 — Knooppunt IV',
+        expl:'We starten de achterwaartse gang bij het eindpunt.<br>' +
+             'T<sub>L</sub> van het laatste knooppunt = T<sub>E</sub>:<br>' +
+             '<strong>T<sub>L</sub>(IV) = T<sub>E</sub>(IV) = 10</strong>',
+        te:{I:0,II:4,III:8,IV:10}, tl:{IV:10}, hi:['IV'], ha:[], crit:[] },
+
+      { phase:'backward', lbl:'⬅ Achterwaartse gang',
+        title:'Stap 6 — Knooppunt III',
+        expl:'Één uitgaande activiteit (Act 3, 2w):<br>' +
+             '<strong>T<sub>L</sub>(III) = T<sub>L</sub>(IV) − 2 = 10 − 2 = 8</strong>',
+        te:{I:0,II:4,III:8,IV:10}, tl:{IV:10,III:8}, hi:['III'], ha:['III-IV'], crit:[] },
+
+      { phase:'backward', lbl:'⬅ Achterwaartse gang',
+        title:'Stap 7 — Knooppunt II',
+        expl:'Één uitgaande verbinding (relatielijn naar III, 0w):<br>' +
+             '<strong>T<sub>L</sub>(II) = T<sub>L</sub>(III) − 0 = 8 − 0 = 8</strong>',
+        te:{I:0,II:4,III:8,IV:10}, tl:{IV:10,III:8,II:8}, hi:['II'], ha:['II-III'], crit:[] },
+
+      { phase:'backward', lbl:'⬅ Achterwaartse gang',
+        title:'Stap 8 — Knooppunt I (achterwaartse gang klaar)',
+        expl:'Twee uitgaande activiteiten:<br>' +
+             '&bull; Via Act 1 naar II: T<sub>L</sub>(II) − 4 = 8 − 4 = 4<br>' +
+             '&bull; Via Act 2 naar III: T<sub>L</sub>(III) − 8 = 8 − 8 = <strong>0</strong><br>' +
+             '📌 Neem de <strong>kleinste</strong>: <strong>T<sub>L</sub>(I) = 0</strong>',
+        te:{I:0,II:4,III:8,IV:10}, tl:{IV:10,III:8,II:8,I:0}, hi:['I'], ha:['I-II','I-III'], crit:[] },
+
+      { phase:'result',   lbl:'🔴 Resultaat',
+        title:'Stap 9 — Speling &amp; kritiek pad',
+        expl:'Speling = T<sub>L</sub> − T<sub>E</sub>:<br>' +
+             '&bull; I:  0 − 0 = <strong>0</strong> ✅ kritiek<br>' +
+             '&bull; II: 8 − 4 = <strong>4</strong> (positieve speling, niet kritiek)<br>' +
+             '&bull; III: 8 − 8 = <strong>0</strong> ✅ kritiek<br>' +
+             '&bull; IV: 10 − 10 = <strong>0</strong> ✅ kritiek<br>' +
+             '🔴 <strong>Kritiek pad: I → III → IV</strong>',
+        te:{I:0,II:4,III:8,IV:10}, tl:{IV:10,III:8,II:8,I:0},
+        hi:[], ha:[], crit:['I','III','IV','I-III','III-IV'] }
+    ];
+
+    const PHASE_CLS = { start:'phase-start', forward:'phase-forward', backward:'phase-backward', result:'phase-result' };
+    let cur = 0;
+
+    /* Build progress dots */
+    const dotsEl = document.getElementById('demo-dots');
+    STEPS.forEach((_, i) => {
+      const d = document.createElement('div');
+      d.className = 'demo-dot';
+      dotsEl.appendChild(d);
+    });
+
+    function render(idx) {
+      const s = STEPS[idx];
+
+      /* Header */
+      document.getElementById('demo-step-counter').textContent = `Stap ${idx} van ${STEPS.length - 1}`;
+      document.getElementById('demo-title').innerHTML = s.title;
+      document.getElementById('demo-explanation').innerHTML = s.expl;
+      const badge = document.getElementById('demo-phase-badge');
+      badge.textContent = s.lbl;
+      badge.className   = 'demo-phase-badge ' + (PHASE_CLS[s.phase] || 'phase-start');
+
+      /* TE / TL values */
+      NODES.forEach(n => {
+        const te = document.getElementById('d-te-' + n);
+        const tl = document.getElementById('d-tl-' + n);
+        if (te) { const v = s.te[n]; te.textContent = v !== undefined ? v : '—'; te.setAttribute('fill', v !== undefined ? '#155724' : '#ccc'); }
+        if (tl) { const v = s.tl[n]; tl.textContent = v !== undefined ? v : '—'; tl.setAttribute('fill', v !== undefined ? '#004085' : '#ccc'); }
+      });
+
+      /* Node borders */
+      NODES.forEach(n => {
+        const bdr = document.getElementById('d-bdr-' + n);
+        if (!bdr) return;
+        const isCrit = s.crit.includes(n);
+        const isHi   = s.hi.includes(n);
+        bdr.setAttribute('stroke',       isCrit ? '#e63946' : isHi ? '#457b9d' : '#555');
+        bdr.setAttribute('stroke-width', isCrit ? '4'       : isHi ? '3.5'    : '2');
+      });
+
+      /* Arrows */
+      ARROWS.forEach(a => {
+        const line = document.getElementById('d-line-' + a);
+        const lbl  = document.getElementById('d-lbl-' + a);
+        if (!line) return;
+        const isDash = DASHED.has(a);
+        const isCrit = s.crit.includes(a);
+        const isHi   = s.ha.includes(a);
+        let col, w, mk;
+        if (isCrit)      { col = '#e63946'; w = '3';   mk = 'url(#m-crit)'; }
+        else if (isHi)   { col = '#457b9d'; w = '2.5'; mk = isDash ? 'url(#m-r-act)' : 'url(#m-act)'; }
+        else             { col = isDash ? '#ccc' : '#aaa'; w = isDash ? '1.4' : '1.8'; mk = isDash ? 'url(#m-relay)' : 'url(#m-def)'; }
+        line.setAttribute('stroke',       col);
+        line.setAttribute('stroke-width', w);
+        line.setAttribute('marker-end',   mk);
+        if (lbl) lbl.setAttribute('fill', isCrit ? '#e63946' : isHi ? '#457b9d' : '#ccc');
+      });
+
+      /* Slack labels */
+      const slk = document.getElementById('d-slack');
+      if (slk) slk.setAttribute('opacity', s.phase === 'result' ? '1' : '0');
+
+      /* Buttons & dots */
+      document.getElementById('demo-prev').disabled = idx === 0;
+      document.getElementById('demo-next').disabled = idx === STEPS.length - 1;
+      document.querySelectorAll('.demo-dot').forEach((d, i) => {
+        d.classList.toggle('active', i === idx);
+        d.classList.toggle('done',   i < idx);
+      });
+    }
+
+    document.getElementById('demo-next').addEventListener('click',  () => { if (cur < STEPS.length - 1) render(++cur); });
+    document.getElementById('demo-prev').addEventListener('click',  () => { if (cur > 0)                render(--cur); });
+    document.getElementById('demo-reset').addEventListener('click', () => { cur = 0; render(0); });
+
+    render(0);
+  })();
+
+  /* ── DEMO 2: RELATIELIJN ──────────────────────────────── */
+  (function () {
+    const NODES  = ['I','II','III','IV'];
+    const ARROWS = ['I-II','I-III','II-III','II-IV','III-IV'];
+    const DASHED = new Set(['II-III']);
+
+    const STEPS = [
+      { phase:'start', lbl:'Start',
+        title:'Netwerk met relatielijn',
+        expl:'Dit netwerk heeft <strong>4 knooppunten</strong>, <strong>4 activiteiten</strong> en een <strong>relatielijn (0-lijn)</strong> van II naar III.' +
+             '<br><br>De 0-lijn zorgt ervoor dat Act 4 (meubels plaatsen) pas kan starten als <em>zowel</em> de elektriciteit (Act 1) <em>als</em> het schilderen (Act 2) klaar is — terwijl Act 3 (verlichting) <em>enkel</em> afhangt van Act 1.' +
+             '<br><br>Klik op <strong>Volgende →</strong> om te starten.',
+        te:{}, tl:{}, hi:[], ha:[], crit:[] },
+
+      { phase:'start', lbl:'⚠ Probleem',
+        title:'Waarom is de 0-lijn nodig?',
+        expl:'<strong>Zonder de 0-lijn:</strong><br>' +
+             'Als Act 1 en Act 2 naar <em>hetzelfde</em> knooppunt zouden lopen, dan zou Act 3 (verlichting) ook afhangen van Act 2 (schilderen). Maar dat klopt niet — de verlichting hangt <em>enkel</em> af van de elektriciteit!<br><br>' +
+             '<strong>Met de 0-lijn:</strong><br>' +
+             'Act 1 komt aan in knooppunt II. Van daaruit vertrekt Act 3 (enkel afhankelijk van Act 1). De 0-lijn stuurt het signaal "<em>Act 1 is klaar</em>" door naar knooppunt III, waar Act 4 ook wacht op Act 2.',
+        te:{}, tl:{}, hi:[], ha:['II-III'], crit:[] },
+
+      { phase:'forward', lbl:'➡ Voorwaartse gang',
+        title:'Stap 1 — Knooppunt I',
+        expl:'Het <strong>startpunt</strong> heeft altijd <strong>T<sub>E</sub>(I) = 0</strong>.',
+        te:{I:0}, tl:{}, hi:['I'], ha:[], crit:[] },
+
+      { phase:'forward', lbl:'➡ Voorwaartse gang',
+        title:'Stap 2 — Knooppunt II',
+        expl:'Één inkomend pad via Act 1 (Elektriciteit, 4w):<br>' +
+             '<strong>T<sub>E</sub>(II) = T<sub>E</sub>(I) + 4 = 0 + 4 = 4</strong>',
+        te:{I:0,II:4}, tl:{}, hi:['II'], ha:['I-II'], crit:[] },
+
+      { phase:'forward', lbl:'➡ Voorwaartse gang',
+        title:'Stap 3 — Knooppunt III ⭐',
+        expl:'Twee inkomende paden:<br>' +
+             '&bull; Via Act 2 (Schilderen, 3w): T<sub>E</sub>(I) + 3 = <strong>3</strong><br>' +
+             '&bull; Via <strong>relatielijn</strong> van II (0w): T<sub>E</sub>(II) + 0 = <strong>4</strong><br><br>' +
+             '📌 Neem de <strong>grootste</strong>: <strong>T<sub>E</sub>(III) = 4</strong><br><br>' +
+             '💡 <em>Zonder de 0-lijn zou T<sub>E</sub>(III) = 3 zijn. Dan zou Act 4 op week 3 starten, terwijl de elektriciteit pas op week 4 klaar is!</em>',
+        te:{I:0,II:4,III:4}, tl:{}, hi:['III'], ha:['I-III','II-III'], crit:[] },
+
+      { phase:'forward', lbl:'➡ Voorwaartse gang',
+        title:'Stap 4 — Knooppunt IV',
+        expl:'Twee inkomende paden:<br>' +
+             '&bull; Via Act 3 (Verlichting, 2w): T<sub>E</sub>(II) + 2 = 4 + 2 = <strong>6</strong><br>' +
+             '&bull; Via Act 4 (Meubels, 1w): T<sub>E</sub>(III) + 1 = 4 + 1 = 5<br><br>' +
+             '📌 Neem de <strong>grootste</strong>: <strong>T<sub>E</sub>(IV) = 6</strong><br>' +
+             '✅ Totale projectduur: <strong>6 weken</strong>.',
+        te:{I:0,II:4,III:4,IV:6}, tl:{}, hi:['IV'], ha:['II-IV','III-IV'], crit:[] },
+
+      { phase:'backward', lbl:'⬅ Achterwaartse gang',
+        title:'Stap 5 — Knooppunt IV',
+        expl:'T<sub>L</sub> van het laatste knooppunt = T<sub>E</sub>:<br>' +
+             '<strong>T<sub>L</sub>(IV) = T<sub>E</sub>(IV) = 6</strong>',
+        te:{I:0,II:4,III:4,IV:6}, tl:{IV:6}, hi:['IV'], ha:[], crit:[] },
+
+      { phase:'backward', lbl:'⬅ Achterwaartse gang',
+        title:'Stap 6 — Knooppunt III',
+        expl:'Één uitgaande activiteit (Act 4, 1w):<br>' +
+             '<strong>T<sub>L</sub>(III) = T<sub>L</sub>(IV) − 1 = 6 − 1 = 5</strong>',
+        te:{I:0,II:4,III:4,IV:6}, tl:{IV:6,III:5}, hi:['III'], ha:['III-IV'], crit:[] },
+
+      { phase:'backward', lbl:'⬅ Achterwaartse gang',
+        title:'Stap 7 — Knooppunt II ⭐',
+        expl:'Twee uitgaande verbindingen:<br>' +
+             '&bull; Via Act 3 naar IV: T<sub>L</sub>(IV) − 2 = 6 − 2 = <strong>4</strong><br>' +
+             '&bull; Via <strong>relatielijn</strong> naar III: T<sub>L</sub>(III) − 0 = 5 − 0 = 5<br><br>' +
+             '📌 Neem de <strong>kleinste</strong>: <strong>T<sub>L</sub>(II) = 4</strong><br><br>' +
+             '💡 <em>De 0-lijn propageert ook in de achterwaartse richting! Ze geeft de T<sub>L</sub>-waarde van III door naar II.</em>',
+        te:{I:0,II:4,III:4,IV:6}, tl:{IV:6,III:5,II:4}, hi:['II'], ha:['II-IV','II-III'], crit:[] },
+
+      { phase:'backward', lbl:'⬅ Achterwaartse gang',
+        title:'Stap 8 — Knooppunt I',
+        expl:'Twee uitgaande activiteiten:<br>' +
+             '&bull; Via Act 1 naar II: T<sub>L</sub>(II) − 4 = 4 − 4 = <strong>0</strong><br>' +
+             '&bull; Via Act 2 naar III: T<sub>L</sub>(III) − 3 = 5 − 3 = 2<br><br>' +
+             '📌 Neem de <strong>kleinste</strong>: <strong>T<sub>L</sub>(I) = 0</strong>',
+        te:{I:0,II:4,III:4,IV:6}, tl:{IV:6,III:5,II:4,I:0}, hi:['I'], ha:['I-II','I-III'], crit:[] },
+
+      { phase:'result', lbl:'🔴 Resultaat',
+        title:'Stap 9 — Speling &amp; kritiek pad',
+        expl:'Speling = T<sub>L</sub> − T<sub>E</sub>:<br>' +
+             '&bull; I:   0 − 0 = <strong>0</strong> ✅ kritiek<br>' +
+             '&bull; II:  4 − 4 = <strong>0</strong> ✅ kritiek<br>' +
+             '&bull; III: 5 − 4 = <strong>1</strong> (positieve speling)<br>' +
+             '&bull; IV:  6 − 6 = <strong>0</strong> ✅ kritiek<br><br>' +
+             '🔴 <strong>Kritiek pad: I → II → IV</strong> (Act 1 → Act 3, totaal 6 weken)<br><br>' +
+             '💡 De 0-lijn zelf ligt <em>niet</em> op het kritieke pad — knooppunt III heeft speling 1. Maar zonder de 0-lijn zou de berekening fout zijn!',
+        te:{I:0,II:4,III:4,IV:6}, tl:{IV:6,III:5,II:4,I:0},
+        hi:[], ha:[], crit:['I','II','IV','I-II','II-IV'] }
+    ];
+
+    const PHASE_CLS = { start:'phase-start', forward:'phase-forward', backward:'phase-backward', result:'phase-result' };
+    let cur = 0;
+
+    const dotsEl = document.getElementById('demo2-dots');
+    STEPS.forEach(() => {
+      const d = document.createElement('div');
+      d.className = 'demo-dot';
+      dotsEl.appendChild(d);
+    });
+
+    function render(idx) {
+      const s = STEPS[idx];
+      document.getElementById('demo2-step-counter').textContent = `Stap ${idx} van ${STEPS.length - 1}`;
+      document.getElementById('demo2-title').innerHTML = s.title;
+      document.getElementById('demo2-explanation').innerHTML = s.expl;
+      const badge = document.getElementById('demo2-phase-badge');
+      badge.textContent = s.lbl;
+      badge.className = 'demo-phase-badge ' + (PHASE_CLS[s.phase] || 'phase-start');
+
+      NODES.forEach(n => {
+        const te = document.getElementById('d2-te-' + n);
+        const tl = document.getElementById('d2-tl-' + n);
+        if (te) { const v = s.te[n]; te.textContent = v !== undefined ? v : '—'; te.setAttribute('fill', v !== undefined ? '#155724' : '#ccc'); }
+        if (tl) { const v = s.tl[n]; tl.textContent = v !== undefined ? v : '—'; tl.setAttribute('fill', v !== undefined ? '#004085' : '#ccc'); }
+      });
+
+      NODES.forEach(n => {
+        const bdr = document.getElementById('d2-bdr-' + n);
+        if (!bdr) return;
+        const isCrit = s.crit.includes(n);
+        const isHi   = s.hi.includes(n);
+        bdr.setAttribute('stroke',       isCrit ? '#e63946' : isHi ? '#457b9d' : '#555');
+        bdr.setAttribute('stroke-width', isCrit ? '4'       : isHi ? '3.5'    : '2');
+      });
+
+      ARROWS.forEach(a => {
+        const line = document.getElementById('d2-line-' + a);
+        const lbl  = document.getElementById('d2-lbl-' + a);
+        if (!line) return;
+        const isDash = DASHED.has(a);
+        const isCrit = s.crit.includes(a);
+        const isHi   = s.ha.includes(a);
+        let col, w, mk;
+        if (isCrit)      { col = '#e63946'; w = '3';   mk = 'url(#d2-m-crit)'; }
+        else if (isHi)   { col = '#457b9d'; w = '2.5'; mk = isDash ? 'url(#d2-m-r-act)' : 'url(#d2-m-act)'; }
+        else             { col = isDash ? '#ccc' : '#aaa'; w = isDash ? '1.4' : '1.8'; mk = isDash ? 'url(#d2-m-relay)' : 'url(#d2-m-def)'; }
+        line.setAttribute('stroke',       col);
+        line.setAttribute('stroke-width', w);
+        line.setAttribute('marker-end',   mk);
+        if (lbl) lbl.setAttribute('fill', isCrit ? '#e63946' : isHi ? '#457b9d' : '#ccc');
+      });
+
+      const slk = document.getElementById('d2-slack');
+      if (slk) slk.setAttribute('opacity', s.phase === 'result' ? '1' : '0');
+
+      document.getElementById('demo2-prev').disabled = idx === 0;
+      document.getElementById('demo2-next').disabled = idx === STEPS.length - 1;
+      document.querySelectorAll('#demo2-dots .demo-dot').forEach((d, i) => {
+        d.classList.toggle('active', i === idx);
+        d.classList.toggle('done',   i < idx);
+      });
+    }
+
+    document.getElementById('demo2-next').addEventListener('click',  () => { if (cur < STEPS.length - 1) render(++cur); });
+    document.getElementById('demo2-prev').addEventListener('click',  () => { if (cur > 0)                render(--cur); });
+    document.getElementById('demo2-reset').addEventListener('click', () => { cur = 0; render(0); });
+
+    render(0);
+  })();
+
+  /* ── EXERCISE 1 ───────────────────────────────────────── */
+  (function () {
+    const NODES = [
+      { id:1,  label:'BE',  x:70,  y:120, te:0,  tl:0,  crit:true,  readonly_te:true },
+      { id:2,  label:'NL',  x:70,  y:380, te:0,  tl:4,  crit:false, readonly_te:true },
+      { id:3,  label:'3',   x:250, y:180, te:10, tl:10, crit:true },
+      { id:4,  label:'4',   x:250, y:380, te:5,  tl:21, crit:false },
+      { id:5,  label:'5',   x:430, y:100, te:16, tl:16, crit:true },
+      { id:6,  label:'6',   x:380, y:290, te:15, tl:18, crit:false },
+      { id:7,  label:'7',   x:380, y:420, te:7,  tl:23, crit:false },
+      { id:8,  label:'8',   x:570, y:240, te:21, tl:21, crit:true },
+      { id:9,  label:'9',   x:610, y:90,  te:23, tl:28, crit:false },
+      { id:10, label:'10',  x:730, y:340, te:29, tl:29, crit:true },
+      { id:11, label:'END', x:860, y:190, te:33, tl:33, crit:true }
+    ];
+
+    const EDGES = [
+      { from:1,  to:3,  dur:10 },
+      { from:2,  to:3,  dur:6  },
+      { from:2,  to:4,  dur:5  },
+      { from:3,  to:5,  dur:6  },
+      { from:3,  to:6,  dur:5  },
+      { from:4,  to:7,  dur:2  },
+      { from:6,  to:10, dur:1  },
+      { from:5,  to:8,  dur:5  },
+      { from:5,  to:9,  dur:7  },
+      { from:6,  to:8,  dur:3  },
+      { from:7,  to:10, dur:6  },
+      { from:8,  to:10, dur:8  },
+      { from:9,  to:11, dur:5  },
+      { from:10, to:11, dur:4  }
+    ];
+
+    const CRITICAL_EDGES = new Set(['1-3','3-5','5-8','8-10','10-11']);
+    const R = 34;
+    const svg = document.getElementById('ex1-svg');
+    const edgesG = document.getElementById('ex1-edges');
+    const nodesG = document.getElementById('ex1-nodes');
+    const nodeMap = {};
+    NODES.forEach(n => nodeMap[n.id] = n);
+
+    const inputEls = {};   // { '3-te': inputEl, '3-tl': inputEl, ... }
+    const edgeEls = {};    // { '1-3': { hit, line, lbl, selected } }
+
+    // ── Draw edges ──
+    EDGES.forEach(e => {
+      const fn = nodeMap[e.from], tn = nodeMap[e.to];
+      const dx = tn.x - fn.x, dy = tn.y - fn.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      const ux = dx/dist, uy = dy/dist;
+      const x1 = fn.x + ux * R, y1 = fn.y + uy * R;
+      const x2 = tn.x - ux * (R + 10), y2 = tn.y - uy * (R + 10);
+      const mx = (x1+x2)/2, my = (y1+y2)/2;
+      const key = e.from + '-' + e.to;
+
+      // Visible line
+      const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+      line.setAttribute('x1',x1); line.setAttribute('y1',y1);
+      line.setAttribute('x2',x2); line.setAttribute('y2',y2);
+      line.setAttribute('stroke','#888'); line.setAttribute('stroke-width','1.8');
+      line.setAttribute('marker-end','url(#ex1-m-def)');
+      line.classList.add('ex1-edge-line');
+      edgesG.appendChild(line);
+
+      // Duration label - offset perpendicular to avoid overlap
+      const perpX = -uy * 14, perpY = ux * 14;
+      const lbl = document.createElementNS('http://www.w3.org/2000/svg','text');
+      lbl.setAttribute('x', mx + perpX); lbl.setAttribute('y', my + perpY);
+      lbl.setAttribute('text-anchor','middle');
+      lbl.setAttribute('font-family','Segoe UI,sans-serif');
+      lbl.setAttribute('font-size','11'); lbl.setAttribute('font-weight','600');
+      lbl.setAttribute('fill','#666');
+      lbl.classList.add('ex1-edge-lbl');
+      lbl.textContent = e.dur + 'd';
+      edgesG.appendChild(lbl);
+
+      // Invisible hit area
+      const hit = document.createElementNS('http://www.w3.org/2000/svg','line');
+      hit.setAttribute('x1',x1); hit.setAttribute('y1',y1);
+      hit.setAttribute('x2',x2); hit.setAttribute('y2',y2);
+      hit.classList.add('ex1-edge-hit');
+      edgesG.appendChild(hit);
+
+      edgeEls[key] = { hit, line, lbl, selected: false };
+
+      hit.addEventListener('click', () => {
+        const ed = edgeEls[key];
+        ed.selected = !ed.selected;
+        ed.line.classList.toggle('selected', ed.selected);
+        ed.lbl.classList.toggle('selected', ed.selected);
+        ed.line.setAttribute('marker-end', ed.selected ? 'url(#ex1-m-sel)' : 'url(#ex1-m-def)');
+      });
+    });
+
+    // ── Draw nodes ──
+    NODES.forEach(n => {
+      const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+      g.setAttribute('transform', `translate(${n.x},${n.y})`);
+
+      // Background sections
+      const bgL = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      bgL.setAttribute('r',R); bgL.setAttribute('fill','#eef0f2');
+      bgL.setAttribute('clip-path','url(#ex1-cl)');
+      g.appendChild(bgL);
+
+      const bgTR = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      bgTR.setAttribute('r',R); bgTR.setAttribute('fill','#e8f5e9');
+      bgTR.setAttribute('clip-path','url(#ex1-ctr)');
+      g.appendChild(bgTR);
+
+      const bgBR = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      bgBR.setAttribute('r',R); bgBR.setAttribute('fill','#e3f0fb');
+      bgBR.setAttribute('clip-path','url(#ex1-cbr)');
+      g.appendChild(bgBR);
+
+      // Border
+      const border = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      border.setAttribute('r',R); border.setAttribute('fill','none');
+      border.setAttribute('stroke','#333'); border.setAttribute('stroke-width','2.5');
+      g.appendChild(border);
+
+      // Dividers
+      const lineV = document.createElementNS('http://www.w3.org/2000/svg','line');
+      lineV.setAttribute('x1',0); lineV.setAttribute('y1',-R);
+      lineV.setAttribute('x2',0); lineV.setAttribute('y2',R);
+      lineV.setAttribute('stroke','#555'); lineV.setAttribute('stroke-width','1.6');
+      g.appendChild(lineV);
+
+      const lineH = document.createElementNS('http://www.w3.org/2000/svg','line');
+      lineH.setAttribute('x1',0); lineH.setAttribute('y1',0);
+      lineH.setAttribute('x2',R); lineH.setAttribute('y2',0);
+      lineH.setAttribute('stroke','#555'); lineH.setAttribute('stroke-width','1.6');
+      g.appendChild(lineH);
+
+      // Label text
+      const txt = document.createElementNS('http://www.w3.org/2000/svg','text');
+      txt.setAttribute('x',-R/2); txt.setAttribute('y',5);
+      txt.setAttribute('text-anchor','middle');
+      txt.setAttribute('font-family','Segoe UI,sans-serif');
+      txt.setAttribute('font-size', n.label.length > 2 ? '11' : '14');
+      txt.setAttribute('font-weight','700'); txt.setAttribute('fill','#333');
+      txt.textContent = n.label;
+      g.appendChild(txt);
+
+      // TE/TL input fields via foreignObject
+      // TE input (top-right quadrant)
+      const foTE = document.createElementNS('http://www.w3.org/2000/svg','foreignObject');
+      foTE.setAttribute('x', 2); foTE.setAttribute('y', -R + 4);
+      foTE.setAttribute('width', R - 4); foTE.setAttribute('height', R - 4);
+      const teInput = document.createElement('input');
+      teInput.type = 'number'; teInput.className = 'ex1-input';
+      teInput.placeholder = '?'; teInput.setAttribute('aria-label', `TE knooppunt ${n.label}`);
+      if (n.readonly_te) {
+        teInput.value = n.te;
+        teInput.readOnly = true;
+        teInput.classList.add('readonly');
+      }
+      foTE.appendChild(teInput);
+      g.appendChild(foTE);
+      inputEls[n.id + '-te'] = teInput;
+
+      // TL input (bottom-right quadrant)
+      const foTL = document.createElementNS('http://www.w3.org/2000/svg','foreignObject');
+      foTL.setAttribute('x', 2); foTL.setAttribute('y', 2);
+      foTL.setAttribute('width', R - 4); foTL.setAttribute('height', R - 4);
+      const tlInput = document.createElement('input');
+      tlInput.type = 'number'; tlInput.className = 'ex1-input';
+      tlInput.placeholder = '?'; tlInput.setAttribute('aria-label', `TL knooppunt ${n.label}`);
+      foTL.appendChild(tlInput);
+      g.appendChild(foTL);
+      inputEls[n.id + '-tl'] = tlInput;
+
+      nodesG.appendChild(g);
+
+      // Store border ref for validation highlighting
+      n._border = border;
+    });
+
+    // ── Validation ──
+    function validate() {
+      let correct = 0, total = 0;
+      const feedback = document.getElementById('ex1-feedback');
+
+      // Check TE/TL values
+      NODES.forEach(n => {
+        // TE
+        const teEl = inputEls[n.id + '-te'];
+        const teVal = teEl.value.trim() === '' ? NaN : parseInt(teEl.value, 10);
+        total++;
+        if (teVal === n.te) {
+          teEl.classList.remove('wrong');
+          teEl.classList.add('correct');
+          correct++;
+        } else {
+          teEl.classList.remove('correct');
+          teEl.classList.add('wrong');
+          teEl.value = teEl.value.trim() === '' ? '' : teEl.value;
+          teEl.title = 'Fout';
+        }
+
+        // TL
+        const tlEl = inputEls[n.id + '-tl'];
+        const tlVal = tlEl.value.trim() === '' ? NaN : parseInt(tlEl.value, 10);
+        total++;
+        if (tlVal === n.tl) {
+          tlEl.classList.remove('wrong');
+          tlEl.classList.add('correct');
+          correct++;
+        } else {
+          tlEl.classList.remove('correct');
+          tlEl.classList.add('wrong');
+          tlEl.title = 'Fout';
+        }
+      });
+
+      // Check critical path edges
+      let edgesCorrect = 0, edgesTotal = CRITICAL_EDGES.size;
+      let wrongSelections = 0;
+
+      Object.keys(edgeEls).forEach(key => {
+        const ed = edgeEls[key];
+        const shouldBeCrit = CRITICAL_EDGES.has(key);
+        if (shouldBeCrit && ed.selected) edgesCorrect++;
+        if (!shouldBeCrit && ed.selected) wrongSelections++;
+      });
+
+      const pathPerfect = edgesCorrect === edgesTotal && wrongSelections === 0;
+      total += edgesTotal;
+      correct += edgesCorrect;
+      // Penalize wrong selections
+      if (wrongSelections > 0) {
+        // Don't subtract from correct, just note it
+      }
+
+
+      // Feedback message
+      const pct = Math.round(correct / total * 100);
+      let msg = `Score: ${correct}/${total} (${pct}%)`;
+      if (pathPerfect) msg += ' — Kritiek pad correct!';
+      else if (wrongSelections > 0) msg += ` — Kritiek pad: ${wrongSelections} fout geselecteerd.`;
+      else msg += ` — Kritiek pad: ${edgesTotal - edgesCorrect} ontbrekend.`;
+
+      feedback.textContent = msg;
+      if (correct === total && pathPerfect) {
+        feedback.className = 'ex1-feedback success';
+      } else if (pct >= 60) {
+        feedback.className = 'ex1-feedback partial';
+      } else {
+        feedback.className = 'ex1-feedback fail';
+      }
+    }
+
+    function reset() {
+      NODES.forEach(n => {
+        const teEl = inputEls[n.id + '-te'];
+        const tlEl = inputEls[n.id + '-tl'];
+        if (!n.readonly_te) { teEl.value = ''; }
+        tlEl.value = '';
+        teEl.classList.remove('correct','wrong');
+        tlEl.classList.remove('correct','wrong');
+        teEl.title = '';
+        tlEl.title = '';
+        n._border.setAttribute('stroke','#333');
+        n._border.setAttribute('stroke-width','2.5');
+      });
+
+      Object.keys(edgeEls).forEach(key => {
+        const ed = edgeEls[key];
+        ed.selected = false;
+        ed.line.classList.remove('selected');
+        ed.lbl.classList.remove('selected');
+        ed.line.setAttribute('stroke','#888');
+        ed.line.setAttribute('stroke-width','1.8');
+        ed.line.setAttribute('marker-end','url(#ex1-m-def)');
+        ed.line.removeAttribute('stroke-dasharray');
+      });
+
+      document.getElementById('ex1-feedback').textContent = '';
+      document.getElementById('ex1-feedback').className = 'ex1-feedback';
+    }
+
+    document.getElementById('ex1-check').addEventListener('click', validate);
+    document.getElementById('ex1-reset').addEventListener('click', reset);
+  })();
+
+  /* ── EXERCISE 3: DE PIRAMIDE VAN DE FARAO ──────────────── */
+  (function () {
+    const ACTIVITIES = [
+      { id:'A', desc:'Maak de plannen',               pred:[],        to:1, tl:2, tp:3,  te:2 },
+      { id:'B', desc:'Zoek voldoende dienaren',       pred:[],        to:3, tl:3, tp:3,  te:3 },
+      { id:'C', desc:'Hak en transporteer rotsen',    pred:['A','B'], to:8, tl:8, tp:14, te:9 },
+      { id:'D', desc:'Leid dienaren op als beeldhouwers', pred:['B'], to:2, tl:3, tp:4,  te:3 },
+      { id:'E', desc:'Beeldhouw figuren',             pred:['C','D'], to:8, tl:10,tp:12, te:10 },
+      { id:'F', desc:'Leg de fundamenten',            pred:['C'],     to:5, tl:10,tp:15, te:10 },
+      { id:'G', desc:'Verplaats beeld naar piramide', pred:['E','F'], to:3, tl:5, tp:7,  te:5 },
+      { id:'H', desc:'Vorm piramide met rotsblokken', pred:['G'],     to:27,tl:32,tp:43, te:33 },
+    ];
+
+    const ROMAN = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
+    const R = 30;
+
+    // ── STATE ──
+    var nodes = [];
+    var edges = [];
+    var tool = 'select';
+    var edgeSource = null;
+    var dragNode = null;
+    var dragOffset = { x:0, y:0 };
+    var nextId = 1;
+    var nextEdgeId = 1;
+
+    // ── DOM REFS ──
+    var svg = document.getElementById('ex3-svg');
+    if (!svg) return;
+    var edgesG = document.getElementById('ex3-edges');
+    var nodesG = document.getElementById('ex3-nodes');
+    var ghost = document.getElementById('ex3-ghost');
+    var canvasWrap = document.getElementById('ex3-canvas-wrap');
+    var popup = document.getElementById('ex3-edge-popup');
+    var popupAct = document.getElementById('ex3-popup-act');
+    var popupDur = document.getElementById('ex3-popup-dur');
+    var toolbar = document.getElementById('ex3-toolbar');
+
+    // ── DOT GRID ──
+    var gridG = document.getElementById('ex3-grid');
+    for (var gx = 20; gx < 960; gx += 40) {
+      for (var gy = 20; gy < 500; gy += 40) {
+        var dot = document.createElementNS('http://www.w3.org/2000/svg','circle');
+        dot.setAttribute('cx', gx); dot.setAttribute('cy', gy);
+        dot.setAttribute('r', '1.5'); dot.setAttribute('fill', '#999');
+        gridG.appendChild(dot);
+      }
+    }
+
+    // ── COORDINATE HELPERS ──
+    function svgPoint(evt) {
+      var pt = svg.createSVGPoint();
+      pt.x = evt.clientX; pt.y = evt.clientY;
+      return pt.matrixTransform(svg.getScreenCTM().inverse());
+    }
+
+    function edgeEndpoints(fn, tn) {
+      var dx = tn.x - fn.x, dy = tn.y - fn.y;
+      var dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist === 0) return { x1:fn.x, y1:fn.y, x2:tn.x, y2:tn.y };
+      var ux = dx/dist, uy = dy/dist;
+      return { x1: fn.x + ux*R, y1: fn.y + uy*R, x2: tn.x - ux*(R+10), y2: tn.y - uy*(R+10) };
+    }
+
+    // ── TOOLBAR ──
+    function setTool(t) {
+      tool = t;
+      edgeSource = null;
+      ghost.setAttribute('opacity', '0');
+      canvasWrap.classList.remove('tool-node','tool-edge','tool-delete');
+      if (t === 'node') canvasWrap.classList.add('tool-node');
+      else if (t === 'edge' || t === 'relay') canvasWrap.classList.add('tool-edge');
+      else if (t === 'delete') canvasWrap.classList.add('tool-delete');
+      nodes.forEach(function(n) { n.gEl.classList.remove('source-highlight'); });
+      toolbar.querySelectorAll('.ex3-tool').forEach(function(btn) {
+        btn.classList.toggle('active', btn.dataset.tool === t);
+      });
+    }
+
+    toolbar.addEventListener('click', function(e) {
+      var btn = e.target.closest('.ex3-tool');
+      if (btn) setTool(btn.dataset.tool);
+    });
+
+    // ── NODE OPERATIONS ──
+    function findNode(id) { return nodes.find(function(n) { return n.id === id; }); }
+
+    function addNode(x, y) {
+      var id = nextId++;
+      var label = ROMAN[id - 1] || String(id);
+      var node = { id:id, label:label, x:x, y:y, gEl:null, _teInput:null, _tlInput:null };
+
+      var g = document.createElementNS('http://www.w3.org/2000/svg','g');
+      g.setAttribute('transform', 'translate(' + x + ',' + y + ')');
+      g.classList.add('ex3-node-group');
+      g.dataset.nodeId = id;
+
+      // Background sections
+      var bgL = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      bgL.setAttribute('r',R); bgL.setAttribute('fill','#eef0f2'); bgL.setAttribute('clip-path','url(#ex3-cl)');
+      g.appendChild(bgL);
+      var bgTR = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      bgTR.setAttribute('r',R); bgTR.setAttribute('fill','#e8f5e9'); bgTR.setAttribute('clip-path','url(#ex3-ctr)');
+      g.appendChild(bgTR);
+      var bgBR = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      bgBR.setAttribute('r',R); bgBR.setAttribute('fill','#e3f0fb'); bgBR.setAttribute('clip-path','url(#ex3-cbr)');
+      g.appendChild(bgBR);
+
+      // Border
+      var border = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      border.setAttribute('r',R); border.setAttribute('fill','none');
+      border.setAttribute('stroke','#333'); border.setAttribute('stroke-width','2.5');
+      g.appendChild(border);
+
+      // Dividers
+      var lineV = document.createElementNS('http://www.w3.org/2000/svg','line');
+      lineV.setAttribute('x1',0); lineV.setAttribute('y1',-R); lineV.setAttribute('x2',0); lineV.setAttribute('y2',R);
+      lineV.setAttribute('stroke','#555'); lineV.setAttribute('stroke-width','1.6');
+      g.appendChild(lineV);
+      var lineH = document.createElementNS('http://www.w3.org/2000/svg','line');
+      lineH.setAttribute('x1',0); lineH.setAttribute('y1',0); lineH.setAttribute('x2',R); lineH.setAttribute('y2',0);
+      lineH.setAttribute('stroke','#555'); lineH.setAttribute('stroke-width','1.6');
+      g.appendChild(lineH);
+
+      // Label
+      var txt = document.createElementNS('http://www.w3.org/2000/svg','text');
+      txt.setAttribute('x', -R/2); txt.setAttribute('y', 5);
+      txt.setAttribute('text-anchor','middle');
+      txt.setAttribute('font-family','Segoe UI,sans-serif');
+      txt.setAttribute('font-size', label.length > 3 ? '9' : label.length > 2 ? '10' : '13');
+      txt.setAttribute('font-weight','700'); txt.setAttribute('fill','#333');
+      txt.setAttribute('pointer-events','none');
+      txt.textContent = label;
+      g.appendChild(txt);
+
+      // TE input (top-right quadrant)
+      var foTE = document.createElementNS('http://www.w3.org/2000/svg','foreignObject');
+      foTE.setAttribute('x', 2); foTE.setAttribute('y', -R + 3);
+      foTE.setAttribute('width', R - 4); foTE.setAttribute('height', R - 3);
+      var teInput = document.createElement('input');
+      teInput.type = 'number'; teInput.className = 'ex1-input';
+      teInput.style.width = '26px'; teInput.style.height = '18px'; teInput.style.fontSize = '10px';
+      teInput.placeholder = '?';
+      foTE.appendChild(teInput);
+      g.appendChild(foTE);
+      node._teInput = teInput;
+
+      // TL input (bottom-right quadrant)
+      var foTL = document.createElementNS('http://www.w3.org/2000/svg','foreignObject');
+      foTL.setAttribute('x', 2); foTL.setAttribute('y', 2);
+      foTL.setAttribute('width', R - 4); foTL.setAttribute('height', R - 3);
+      var tlInput = document.createElement('input');
+      tlInput.type = 'number'; tlInput.className = 'ex1-input';
+      tlInput.style.width = '26px'; tlInput.style.height = '18px'; tlInput.style.fontSize = '10px';
+      tlInput.placeholder = '?';
+      foTL.appendChild(tlInput);
+      g.appendChild(foTL);
+      node._tlInput = tlInput;
+
+      nodesG.appendChild(g);
+      node.gEl = g;
+      nodes.push(node);
+      return node;
+    }
+
+    function removeNode(nodeId) {
+      var idx = nodes.findIndex(function(n) { return n.id === nodeId; });
+      if (idx === -1) return;
+      nodes[idx].gEl.remove();
+      nodes.splice(idx, 1);
+      var connected = edges.filter(function(e) { return e.fromId === nodeId || e.toId === nodeId; });
+      connected.forEach(function(e) { removeEdge(e.id); });
+    }
+
+    // ── EDGE OPERATIONS ──
+    function addEdge(fromId, toId, dashed, act, dur) {
+      var id = nextEdgeId++;
+      var fn = findNode(fromId), tn = findNode(toId);
+      if (!fn || !tn) return null;
+      var edge = { id:id, fromId:fromId, toId:toId, dashed:!!dashed, act:act||'', dur:dur||0 };
+
+      var g = document.createElementNS('http://www.w3.org/2000/svg','g');
+      g.dataset.edgeId = id;
+      var ep = edgeEndpoints(fn, tn);
+
+      var line = document.createElementNS('http://www.w3.org/2000/svg','line');
+      line.setAttribute('x1',ep.x1); line.setAttribute('y1',ep.y1);
+      line.setAttribute('x2',ep.x2); line.setAttribute('y2',ep.y2);
+      line.setAttribute('stroke', dashed ? '#bbb' : '#888');
+      line.setAttribute('stroke-width', dashed ? '1.6' : '2');
+      if (dashed) line.setAttribute('stroke-dasharray','6 4');
+      line.setAttribute('marker-end', dashed ? 'url(#ex3-m-dash)' : 'url(#ex3-m-def)');
+      g.appendChild(line);
+      edge._line = line;
+
+      // Label
+      var mx = (ep.x1+ep.x2)/2, my = (ep.y1+ep.y2)/2;
+      var dx = ep.x2-ep.x1, dy = ep.y2-ep.y1;
+      var dist = Math.sqrt(dx*dx+dy*dy) || 1;
+      var perpX = -(dy/dist)*14, perpY = (dx/dist)*14;
+      var lbl = document.createElementNS('http://www.w3.org/2000/svg','text');
+      lbl.setAttribute('x', mx+perpX); lbl.setAttribute('y', my+perpY);
+      lbl.setAttribute('text-anchor','middle');
+      lbl.setAttribute('font-family','Segoe UI,sans-serif');
+      lbl.setAttribute('font-size','10'); lbl.setAttribute('font-weight','600');
+      lbl.setAttribute('fill', dashed ? '#bbb' : '#666');
+      lbl.setAttribute('pointer-events','none');
+      lbl.textContent = dashed ? '0' : (act ? act + '(' + dur + ')' : '');
+      g.appendChild(lbl);
+      edge._lbl = lbl;
+
+      // Hit area
+      var hit = document.createElementNS('http://www.w3.org/2000/svg','line');
+      hit.setAttribute('x1',ep.x1); hit.setAttribute('y1',ep.y1);
+      hit.setAttribute('x2',ep.x2); hit.setAttribute('y2',ep.y2);
+      hit.setAttribute('stroke','transparent'); hit.setAttribute('stroke-width','18');
+      hit.setAttribute('fill','none'); hit.style.cursor = 'pointer';
+      g.appendChild(hit);
+      edge._hit = hit;
+
+      edgesG.appendChild(g);
+      edge.gEl = g;
+      edges.push(edge);
+      return edge;
+    }
+
+    function removeEdge(edgeId) {
+      var idx = edges.findIndex(function(e) { return e.id === edgeId; });
+      if (idx === -1) return;
+      edges[idx].gEl.remove();
+      edges.splice(idx, 1);
+    }
+
+    function updateEdgePositions() {
+      edges.forEach(function(e) {
+        var fn = findNode(e.fromId), tn = findNode(e.toId);
+        if (!fn || !tn) return;
+        var ep = edgeEndpoints(fn, tn);
+        e._line.setAttribute('x1',ep.x1); e._line.setAttribute('y1',ep.y1);
+        e._line.setAttribute('x2',ep.x2); e._line.setAttribute('y2',ep.y2);
+        e._hit.setAttribute('x1',ep.x1); e._hit.setAttribute('y1',ep.y1);
+        e._hit.setAttribute('x2',ep.x2); e._hit.setAttribute('y2',ep.y2);
+        var mx = (ep.x1+ep.x2)/2, my = (ep.y1+ep.y2)/2;
+        var dx = ep.x2-ep.x1, dy = ep.y2-ep.y1;
+        var dist = Math.sqrt(dx*dx+dy*dy) || 1;
+        var perpX = -(dy/dist)*14, perpY = (dx/dist)*14;
+        e._lbl.setAttribute('x', mx+perpX);
+        e._lbl.setAttribute('y', my+perpY);
+      });
+    }
+
+    // ── EDGE POPUP ──
+    var pendingEdge = null;
+
+    function showEdgePopup(edge, svgX, svgY) {
+      pendingEdge = edge;
+      var svgRect = svg.getBoundingClientRect();
+      var vb = svg.viewBox.baseVal;
+      var scaleX = svgRect.width / vb.width;
+      var scaleY = svgRect.height / vb.height;
+      var left = svgX * scaleX;
+      var top = svgY * scaleY;
+      popup.style.left = Math.min(left, svgRect.width - 210) + 'px';
+      popup.style.top = Math.max(0, top - 30) + 'px';
+      popup.style.display = 'block';
+
+      // Populate activity dropdown with unused activities
+      var usedActs = {};
+      edges.forEach(function(e) { if (e.act && e.id !== edge.id) usedActs[e.act] = true; });
+      popupAct.innerHTML = '<option value="">— Kies —</option>';
+      ACTIVITIES.forEach(function(a) {
+        if (!usedActs[a.id]) {
+          var opt = document.createElement('option');
+          opt.value = a.id;
+          opt.textContent = a.id + ' — ' + a.desc;
+          popupAct.appendChild(opt);
+        }
+      });
+      if (edge.act) popupAct.value = edge.act;
+      // Auto-fill duration from the te value of the selected activity
+      var _selAct = ACTIVITIES.find(function(a) { return a.id === popupAct.value; });
+      popupDur.value = _selAct ? _selAct.te : '';
+      popupAct.focus();
+
+      popupAct.onchange = function() {
+        var a = ACTIVITIES.find(function(a) { return a.id === popupAct.value; });
+        popupDur.value = a ? a.te : '';
+      };
+    }
+
+    function hideEdgePopup() {
+      popup.style.display = 'none';
+      pendingEdge = null;
+    }
+
+    document.getElementById('ex3-popup-ok').addEventListener('click', function() {
+      if (!pendingEdge) return;
+      pendingEdge.act = popupAct.value;
+      pendingEdge.dur = parseInt(popupDur.value, 10) || 0;
+      pendingEdge._lbl.textContent = pendingEdge.act ? pendingEdge.act + '(' + pendingEdge.dur + ')' : String(pendingEdge.dur);
+      hideEdgePopup();
+    });
+
+    document.getElementById('ex3-popup-cancel').addEventListener('click', function() {
+      if (pendingEdge && !pendingEdge.act && !pendingEdge.dashed) {
+        removeEdge(pendingEdge.id);
+      }
+      hideEdgePopup();
+    });
+
+    // ── SVG EVENTS ──
+    svg.addEventListener('pointerdown', function(evt) {
+      if (popup.style.display !== 'none') return;
+      var pt = svgPoint(evt);
+      var target = evt.target;
+      var nodeG = target.closest('.ex3-node-group');
+      var edgeG = target.closest('[data-edge-id]');
+
+      if (tool === 'select') {
+        if (nodeG && !target.closest('foreignObject')) {
+          var nid = parseInt(nodeG.dataset.nodeId);
+          var node = findNode(nid);
+          if (node) {
+            dragNode = node;
+            dragOffset.x = pt.x - node.x;
+            dragOffset.y = pt.y - node.y;
+            nodeG.classList.add('dragging');
+            svg.setPointerCapture(evt.pointerId);
+            evt.preventDefault();
+          }
+        }
+      }
+
+      else if (tool === 'node') {
+        if (!nodeG) {
+          addNode(pt.x, pt.y);
+          setTool('select');
+        }
+      }
+
+      else if (tool === 'edge' || tool === 'relay') {
+        if (nodeG) {
+          var nid2 = parseInt(nodeG.dataset.nodeId);
+          if (edgeSource === null) {
+            edgeSource = nid2;
+            nodeG.classList.add('source-highlight');
+            var srcNode = findNode(nid2);
+            ghost.setAttribute('x1', srcNode.x);
+            ghost.setAttribute('y1', srcNode.y);
+            ghost.setAttribute('x2', srcNode.x);
+            ghost.setAttribute('y2', srcNode.y);
+            ghost.setAttribute('opacity', '1');
+          } else if (nid2 !== edgeSource) {
+            ghost.setAttribute('opacity', '0');
+            nodes.forEach(function(n) { n.gEl.classList.remove('source-highlight'); });
+            var isDashed = (tool === 'relay');
+            var newEdge = addEdge(edgeSource, nid2, isDashed);
+            edgeSource = null;
+            if (newEdge && !isDashed) {
+              var fromN = findNode(newEdge.fromId), toN = findNode(newEdge.toId);
+              var emx = (fromN.x + toN.x) / 2, emy = (fromN.y + toN.y) / 2;
+              showEdgePopup(newEdge, emx, emy);
+            }
+          }
+        }
+      }
+
+      else if (tool === 'delete') {
+        if (nodeG) {
+          removeNode(parseInt(nodeG.dataset.nodeId));
+        } else if (edgeG) {
+          removeEdge(parseInt(edgeG.dataset.edgeId));
+        }
+      }
+    });
+
+    svg.addEventListener('pointermove', function(evt) {
+      if (dragNode) {
+        var pt = svgPoint(evt);
+        dragNode.x = Math.max(R, Math.min(960 - R, pt.x - dragOffset.x));
+        dragNode.y = Math.max(R, Math.min(500 - R, pt.y - dragOffset.y));
+        dragNode.gEl.setAttribute('transform', 'translate(' + dragNode.x + ',' + dragNode.y + ')');
+        updateEdgePositions();
+        evt.preventDefault();
+      }
+      if (edgeSource !== null) {
+        var pt2 = svgPoint(evt);
+        ghost.setAttribute('x2', pt2.x);
+        ghost.setAttribute('y2', pt2.y);
+      }
+    });
+
+    svg.addEventListener('pointerup', function(evt) {
+      if (dragNode) {
+        dragNode.gEl.classList.remove('dragging');
+        dragNode = null;
+        svg.releasePointerCapture(evt.pointerId);
+      }
+    });
+
+    // Double-click edge to edit label
+    svg.addEventListener('dblclick', function(evt) {
+      var edgeG = evt.target.closest('[data-edge-id]');
+      if (edgeG && tool === 'select') {
+        var eid = parseInt(edgeG.dataset.edgeId);
+        var edge = edges.find(function(e) { return e.id === eid; });
+        if (edge && !edge.dashed) {
+          var fn = findNode(edge.fromId), tn = findNode(edge.toId);
+          showEdgePopup(edge, (fn.x+tn.x)/2, (fn.y+tn.y)/2);
+        }
+      }
+    });
+
+    // Escape cancels edge drawing or popup
+    document.addEventListener('keydown', function(evt) {
+      if (evt.key === 'Escape') {
+        if (edgeSource !== null) {
+          edgeSource = null;
+          ghost.setAttribute('opacity', '0');
+          nodes.forEach(function(n) { n.gEl.classList.remove('source-highlight'); });
+        }
+        if (popup.style.display !== 'none') {
+          if (pendingEdge && !pendingEdge.act && !pendingEdge.dashed) removeEdge(pendingEdge.id);
+          hideEdgePopup();
+        }
+      }
+    });
+
+    // ── TE TABLE ──
+    var teInputs = {};
+    var tbody = document.getElementById('ex3-te-tbody');
+    ACTIVITIES.forEach(function(a) {
+      var tr = document.createElement('tr');
+      tr.innerHTML = '<td><strong>' + a.id + '</strong></td>' +
+        '<td style="text-align:left;font-size:.82rem;">' + a.desc + '</td>' +
+        '<td>' + (a.pred.length ? a.pred.join(', ') : '—') + '</td>' +
+        '<td>' + a.to + '</td><td>' + a.tl + '</td><td>' + a.tp + '</td>' +
+        '<td><input type="number" class="ex3-te-input" data-act="' + a.id + '" placeholder="?"></td>';
+      tbody.appendChild(tr);
+      teInputs[a.id] = tr.querySelector('.ex3-te-input');
+    });
+
+    document.getElementById('ex3-te-check').addEventListener('click', function() {
+      var correct = 0;
+      ACTIVITIES.forEach(function(a) {
+        var inp = teInputs[a.id];
+        var val = inp.value.trim() === '' ? NaN : Math.round(parseFloat(inp.value));
+        if (val === a.te) {
+          inp.classList.remove('wrong'); inp.classList.add('correct'); correct++;
+        } else {
+          inp.classList.remove('correct'); inp.classList.add('wrong');
+        }
+      });
+      var fb = document.getElementById('ex3-te-feedback');
+      fb.textContent = 'Score: ' + correct + '/' + ACTIVITIES.length;
+      if (correct === ACTIVITIES.length) {
+        fb.className = 'ex1-feedback success';
+        fb.textContent += ' — Alle t\u2091 waarden correct! Stap 2 is nu ontgrendeld.';
+        // Unlock Stap 2
+        var builderCard = document.getElementById('ex3-builder-card');
+        builderCard.classList.remove('ex3-locked');
+        var lockOverlay = document.getElementById('ex3-lock-overlay');
+        if (lockOverlay) lockOverlay.remove();
+      } else {
+        fb.className = correct >= 5 ? 'ex1-feedback partial' : 'ex1-feedback fail';
+      }
+    });
+
+    document.getElementById('ex3-te-reset').addEventListener('click', function() {
+      ACTIVITIES.forEach(function(a) {
+        teInputs[a.id].value = '';
+        teInputs[a.id].classList.remove('correct','wrong');
+      });
+      var fb = document.getElementById('ex3-te-feedback');
+      fb.textContent = ''; fb.className = 'ex1-feedback';
+    });
+
+    // ── NETWORK VALIDATION ──
+    function computeTE(nodeId, visited) {
+      if (!visited) visited = {};
+      if (visited[nodeId]) return 0;
+      visited[nodeId] = true;
+      var incoming = edges.filter(function(e) { return e.toId === nodeId; });
+      if (incoming.length === 0) return 0;
+      var maxTE = 0;
+      incoming.forEach(function(e) {
+        var v = computeTE(e.fromId, Object.assign({}, visited)) + e.dur;
+        if (v > maxTE) maxTE = v;
+      });
+      return maxTE;
+    }
+
+    function computeTL(nodeId, projectEnd, visited) {
+      if (!visited) visited = {};
+      if (visited[nodeId]) return Infinity;
+      visited[nodeId] = true;
+      var outgoing = edges.filter(function(e) { return e.fromId === nodeId; });
+      if (outgoing.length === 0) return projectEnd;
+      var minTL = Infinity;
+      outgoing.forEach(function(e) {
+        var v = computeTL(e.toId, projectEnd, Object.assign({}, visited)) - e.dur;
+        if (v < minTL) minTL = v;
+      });
+      return minTL;
+    }
+
+    function canReach(fromId, toId, visited) {
+      if (fromId === toId) return true;
+      if (visited[fromId]) return false;
+      visited[fromId] = true;
+      return edges.filter(function(e) { return e.fromId === fromId; })
+        .some(function(e) { return canReach(e.toId, toId, Object.assign({}, visited)); });
+    }
+
+    document.getElementById('ex3-net-check').addEventListener('click', function() {
+      var fb = document.getElementById('ex3-net-feedback');
+      var score = 0, total = 0, messages = [];
+
+      // Count checks
+      var actEdges = edges.filter(function(e) { return !e.dashed; });
+      var relayEdges = edges.filter(function(e) { return e.dashed; });
+
+      total += 3;
+      if (nodes.length === 10) score++; else messages.push('Knooppunten: ' + nodes.length + '/10');
+      if (actEdges.length === 8) score++; else messages.push('Activiteiten: ' + actEdges.length + '/8');
+      if (relayEdges.length === 3) score++; else messages.push('0-lijnen: ' + relayEdges.length + '/3');
+
+      // Check each activity has correct duration
+      var actMap = {};
+      actEdges.forEach(function(e) { if (e.act) actMap[e.act] = e; });
+
+      ACTIVITIES.forEach(function(a) {
+        total++;
+        var edge = actMap[a.id];
+        if (edge && edge.dur === a.te) { score++; }
+        else if (!edge) { messages.push('Activiteit ' + a.id + ' ontbreekt'); }
+        else { messages.push('Act ' + a.id + ': duur ' + edge.dur + ' (verwacht ' + a.te + ')'); }
+      });
+
+      // Check predecessor relationships
+      ACTIVITIES.forEach(function(a) {
+        total++;
+        var edge = actMap[a.id];
+        if (!edge) return;
+        var srcId = edge.fromId;
+
+        if (a.pred.length === 0) {
+          var incoming = edges.filter(function(e) { return e.toId === srcId; });
+          if (incoming.length === 0) score++;
+          else messages.push(a.id + ': bronknooppunt heeft onverwachte inkomende verbindingen');
+        } else {
+          var allOk = true;
+          a.pred.forEach(function(predId) {
+            var predEdge = actMap[predId];
+            if (!predEdge) { allOk = false; return; }
+            if (!canReach(predEdge.toId, srcId, {})) allOk = false;
+          });
+          if (allOk) score++;
+          else messages.push(a.id + ': voorgangers bereiken bronknooppunt niet');
+        }
+      });
+
+      // Compute project end (TE of end nodes)
+      var projectEnd = 0;
+      nodes.forEach(function(n) {
+        var te = computeTE(n.id);
+        if (te > projectEnd) projectEnd = te;
+      });
+
+      // Check TE/TL values
+      nodes.forEach(function(n) {
+        var teVal = n._teInput.value.trim() === '' ? NaN : parseInt(n._teInput.value, 10);
+        var tlVal = n._tlInput.value.trim() === '' ? NaN : parseInt(n._tlInput.value, 10);
+        var expectedTE = computeTE(n.id);
+        var expectedTL = computeTL(n.id, projectEnd);
+
+        total++;
+        if (!isNaN(teVal) && teVal === expectedTE) {
+          n._teInput.classList.remove('wrong'); n._teInput.classList.add('correct'); score++;
+        } else {
+          n._teInput.classList.remove('correct');
+          if (!isNaN(teVal)) n._teInput.classList.add('wrong');
+        }
+
+        total++;
+        if (!isNaN(tlVal) && !isNaN(expectedTL) && isFinite(expectedTL) && tlVal === expectedTL) {
+          n._tlInput.classList.remove('wrong'); n._tlInput.classList.add('correct'); score++;
+        } else {
+          n._tlInput.classList.remove('correct');
+          if (!isNaN(tlVal)) n._tlInput.classList.add('wrong');
+        }
+      });
+
+      var pct = total > 0 ? Math.round(score / total * 100) : 0;
+      var msg = 'Score: ' + score + '/' + total + ' (' + pct + '%)';
+      if (messages.length > 0) msg += ' — ' + messages.slice(0, 3).join('; ');
+      if (score === total) msg = 'Uitstekend! ' + score + '/' + total + ' — Het netwerk is perfect!';
+      fb.textContent = msg;
+      fb.className = score === total ? 'ex1-feedback success' : pct >= 60 ? 'ex1-feedback partial' : 'ex1-feedback fail';
+    });
+
+    // ── RESET ──
+    document.getElementById('ex3-net-reset').addEventListener('click', function() {
+      while (edges.length) { edges[0].gEl.remove(); edges.splice(0, 1); }
+      while (nodes.length) { nodes[0].gEl.remove(); nodes.splice(0, 1); }
+      nextId = 1; nextEdgeId = 1;
+      edgeSource = null;
+      ghost.setAttribute('opacity', '0');
+      hideEdgePopup();
+      setTool('select');
+      var fb = document.getElementById('ex3-net-feedback');
+      fb.textContent = ''; fb.className = 'ex1-feedback';
+    });
+  })();
+
+  /* ── NAV: highlight active link on scroll ──────────────── */
+  (function () {
+    const links    = document.querySelectorAll('.nav-link:not(.disabled)');
+    const sections = ['theorie','demo','oefening1','oefening2','oefening3','oefening4']
+                      .map(id => document.getElementById(id))
+                      .filter(Boolean);
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          links.forEach(l => l.classList.remove('active'));
+          const match = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
+          if (match) match.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-30% 0px -60% 0px' });
+
+    sections.forEach(s => observer.observe(s));
+  })();
+</script>
+
+</body>
+</html>
