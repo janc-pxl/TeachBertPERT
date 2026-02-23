@@ -2217,20 +2217,20 @@
     ];
 
     const EDGES = [
-      { from:1,  to:3,  dur:10 },
-      { from:2,  to:3,  dur:6  },
-      { from:2,  to:4,  dur:5  },
-      { from:3,  to:5,  dur:6  },
-      { from:3,  to:6,  dur:5  },
-      { from:4,  to:7,  dur:2  },
-      { from:6,  to:10, dur:1  },
-      { from:5,  to:8,  dur:5  },
-      { from:5,  to:9,  dur:7  },
-      { from:6,  to:8,  dur:3  },
-      { from:7,  to:10, dur:6  },
-      { from:8,  to:10, dur:8  },
-      { from:9,  to:11, dur:5  },
-      { from:10, to:11, dur:4  }
+      { from:1,  to:3,  dur:10, act:'A', desc:'Voorbereiden analyse' },
+      { from:2,  to:3,  dur:6,  act:'B', desc:'Gegevensverzameling' },
+      { from:2,  to:4,  dur:5,  act:'C', desc:'Ontwerpen opzetten' },
+      { from:3,  to:5,  dur:6,  act:'D', desc:'Prototype ontwikkelen' },
+      { from:3,  to:6,  dur:5,  act:'E', desc:'Test uitvoeren' },
+      { from:4,  to:7,  dur:2,  act:'F', desc:'Feedback verwerken' },
+      { from:6,  to:10, dur:1,  act:'J', desc:'Functionaliteit implementeren' },
+      { from:5,  to:8,  dur:5,  act:'H', desc:'Interface ontwerpen' },
+      { from:5,  to:9,  dur:7,  act:'G', desc:'Systeemintegratie' },
+      { from:6,  to:8,  dur:3,  act:'I', desc:'Gebruikerservaring optimaliseren' },
+      { from:7,  to:10, dur:6,  act:'K', desc:'Finale configuratie' },
+      { from:8,  to:10, dur:8,  act:'L', desc:'Interface testen' },
+      { from:9,  to:11, dur:5,  act:'M', desc:'Integratietest' },
+      { from:10, to:11, dur:4,  act:'N', desc:'Volledige implementatie' }
     ];
 
     const CRITICAL_EDGES = new Set(['1-3','3-5','5-8','8-10','10-11']);
@@ -2264,16 +2264,23 @@
       line.classList.add('ex1-edge-line');
       edgesG.appendChild(line);
 
-      // Duration label - offset perpendicular to avoid overlap
-      const perpX = -uy * 14, perpY = ux * 14;
+      // Activity label (two lines) - offset perpendicular to avoid overlap
+      const perpX = -uy * 18, perpY = ux * 18;
       const lbl = document.createElementNS('http://www.w3.org/2000/svg','text');
-      lbl.setAttribute('x', mx + perpX); lbl.setAttribute('y', my + perpY);
+      lbl.setAttribute('x', mx + perpX); lbl.setAttribute('y', my + perpY - 6);
       lbl.setAttribute('text-anchor','middle');
       lbl.setAttribute('font-family','Segoe UI,sans-serif');
-      lbl.setAttribute('font-size','11'); lbl.setAttribute('font-weight','600');
+      lbl.setAttribute('font-size','10'); lbl.setAttribute('font-weight','600');
       lbl.setAttribute('fill','#666');
       lbl.classList.add('ex1-edge-lbl');
-      lbl.textContent = e.dur + 'd';
+      const ts1 = document.createElementNS('http://www.w3.org/2000/svg','tspan');
+      ts1.setAttribute('x', mx + perpX); ts1.setAttribute('dy','0');
+      ts1.textContent = e.act + ': ' + e.desc;
+      const ts2 = document.createElementNS('http://www.w3.org/2000/svg','tspan');
+      ts2.setAttribute('x', mx + perpX); ts2.setAttribute('dy','13');
+      ts2.textContent = e.dur + (e.dur === 1 ? ' dag' : ' dagen');
+      lbl.appendChild(ts1);
+      lbl.appendChild(ts2);
       edgesG.appendChild(lbl);
 
       // Invisible hit area
