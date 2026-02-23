@@ -1767,7 +1767,8 @@
         <strong>(1)</strong> Klik <em>Knooppunt</em> en klik op het canvas om een knooppunt toe te voegen.
         <strong>(2)</strong> Klik <em>Activiteit</em> of <em>0-lijn</em>, klik op een bronknooppunt en dan op een doelknooppunt.
         <strong>(3)</strong> Vul T<sub>E</sub> en T<sub>L</sub> in bij elk knooppunt.
-        <strong>(4)</strong> Klik op <em>Controleer</em> om je netwerk te controleren.
+        <strong>(4)</strong> Duid het kritieke pad aan: klik in <em>Selecteer</em>-modus op de verbindingen (inclusief 0-lijnen) die op het kritieke pad liggen (ze kleuren rood).
+        <strong>(5)</strong> Klik op <em>Controleer</em> om je netwerk te controleren.
       </div>
 
       <div class="ex3-toolbar" id="ex3-toolbar">
@@ -1783,6 +1784,7 @@
           <defs>
             <marker id="ex3-m-def" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#888"/></marker>
             <marker id="ex3-m-dash" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#bbb"/></marker>
+            <marker id="ex3-m-sel" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="var(--accent)"/></marker>
             <marker id="ex3-m-ghost" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#457b9d" opacity=".5"/></marker>
             <clipPath id="ex3-cl"><rect x="-30" y="-30" width="30" height="60"/></clipPath>
             <clipPath id="ex3-ctr"><rect x="0" y="-30" width="30" height="30"/></clipPath>
@@ -1868,7 +1870,8 @@
         <strong>(1)</strong> Klik <em>Knooppunt</em> en klik op het canvas om een knooppunt toe te voegen.
         <strong>(2)</strong> Klik <em>Activiteit</em> of <em>0-lijn</em>, klik op een bronknooppunt en dan op een doelknooppunt.
         <strong>(3)</strong> Vul T<sub>E</sub> en T<sub>L</sub> in bij elk knooppunt.
-        <strong>(4)</strong> Klik op <em>Controleer</em> om je netwerk te controleren.
+        <strong>(4)</strong> Duid het kritieke pad aan: klik in <em>Selecteer</em>-modus op de verbindingen (inclusief 0-lijnen) die op het kritieke pad liggen (ze kleuren rood).
+        <strong>(5)</strong> Klik op <em>Controleer</em> om je netwerk te controleren.
       </div>
 
       <div class="ex3-toolbar" id="ex4-toolbar">
@@ -1884,6 +1887,7 @@
           <defs>
             <marker id="ex4-m-def" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#888"/></marker>
             <marker id="ex4-m-dash" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#bbb"/></marker>
+            <marker id="ex4-m-sel" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="var(--accent)"/></marker>
             <marker id="ex4-m-ghost" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#457b9d" opacity=".5"/></marker>
             <clipPath id="ex4-cl"><rect x="-30" y="-30" width="30" height="60"/></clipPath>
             <clipPath id="ex4-ctr"><rect x="0" y="-30" width="30" height="30"/></clipPath>
@@ -3086,7 +3090,7 @@
       var id = nextEdgeId++;
       var fn = findNode(fromId), tn = findNode(toId);
       if (!fn || !tn) return null;
-      var edge = { id:id, fromId:fromId, toId:toId, dashed:!!dashed, act:act||'', dur:dur||0 };
+      var edge = { id:id, fromId:fromId, toId:toId, dashed:!!dashed, act:act||'', dur:dur||0, selected:false };
 
       var g = document.createElementNS('http://www.w3.org/2000/svg','g');
       g.dataset.edgeId = id;
@@ -3236,6 +3240,16 @@
             nodeG.classList.add('dragging');
             svg.setPointerCapture(evt.pointerId);
             evt.preventDefault();
+          }
+        } else if (edgeG && !nodeG) {
+          var eid = parseInt(edgeG.dataset.edgeId);
+          var edge = edges.find(function(e) { return e.id === eid; });
+          if (edge) {
+            edge.selected = !edge.selected;
+            edge._line.classList.toggle('selected', edge.selected);
+            edge._lbl.classList.toggle('selected', edge.selected);
+            var marker = edge.selected ? 'url(#ex3-m-sel)' : (edge.dashed ? 'url(#ex3-m-dash)' : 'url(#ex3-m-def)');
+            edge._line.setAttribute('marker-end', marker);
           }
         }
       }
@@ -3498,9 +3512,37 @@
         }
       });
 
+      // Critical path validation
+      var criticalEdges = [];
+      edges.forEach(function(e) {
+        var fromTE = computeTE(e.fromId);
+        var toTE = computeTE(e.toId);
+        var fromTL = computeTL(e.fromId, projectEnd);
+        var toTL = computeTL(e.toId, projectEnd);
+        if (fromTE === fromTL && toTE === toTL && fromTE + e.dur === toTE) {
+          criticalEdges.push(e);
+        }
+      });
+      var cpCorrect = 0, cpWrong = 0;
+      edges.forEach(function(e) {
+        var isCrit = criticalEdges.indexOf(e) >= 0;
+        if (isCrit && e.selected) cpCorrect++;
+        if (!isCrit && e.selected) cpWrong++;
+      });
+      var cpTotal = criticalEdges.length;
+      total += cpTotal;
+      score += cpCorrect;
+      var cpPerfect = cpCorrect === cpTotal && cpWrong === 0;
+
       var pct = total > 0 ? Math.round(score / total * 100) : 0;
       var msg = 'Score: ' + score + '/' + total + ' (' + pct + '%)';
       if (messages.length > 0) msg += ' — ' + messages.slice(0, 3).join('; ');
+      if (cpTotal > 0) {
+        if (cpPerfect) msg += ' — Kritiek pad correct!';
+        else if (cpWrong > 0) msg += ' — Kritiek pad: niet correct.';
+        else if (cpCorrect === 0) msg += ' — Kritiek pad: niet aangeduid.';
+        else msg += ' — Kritiek pad: niet volledig.';
+      }
       if (score === total) msg = 'Uitstekend! ' + score + '/' + total + ' — Het netwerk is perfect!';
       fb.textContent = msg;
       fb.className = score === total ? 'ex1-feedback success' : pct >= 60 ? 'ex1-feedback partial' : 'ex1-feedback fail';
@@ -3702,7 +3744,7 @@
       var id = nextEdgeId++;
       var fn = findNode(fromId), tn = findNode(toId);
       if (!fn || !tn) return null;
-      var edge = { id:id, fromId:fromId, toId:toId, dashed:!!dashed, act:act||'', dur:dur||0 };
+      var edge = { id:id, fromId:fromId, toId:toId, dashed:!!dashed, act:act||'', dur:dur||0, selected:false };
 
       var g = document.createElementNS('http://www.w3.org/2000/svg','g');
       g.dataset.edgeId = id;
@@ -3846,6 +3888,16 @@
             nodeG.classList.add('dragging');
             svg.setPointerCapture(evt.pointerId);
             evt.preventDefault();
+          }
+        } else if (edgeG && !nodeG) {
+          var eid = parseInt(edgeG.dataset.edgeId);
+          var edge = edges.find(function(e) { return e.id === eid; });
+          if (edge) {
+            edge.selected = !edge.selected;
+            edge._line.classList.toggle('selected', edge.selected);
+            edge._lbl.classList.toggle('selected', edge.selected);
+            var marker = edge.selected ? 'url(#ex4-m-sel)' : (edge.dashed ? 'url(#ex4-m-dash)' : 'url(#ex4-m-def)');
+            edge._line.setAttribute('marker-end', marker);
           }
         }
       }
@@ -4052,9 +4104,37 @@
         }
       });
 
+      // Critical path validation
+      var criticalEdges = [];
+      edges.forEach(function(e) {
+        var fromTE = computeTE(e.fromId);
+        var toTE = computeTE(e.toId);
+        var fromTL = computeTL(e.fromId, projectEnd);
+        var toTL = computeTL(e.toId, projectEnd);
+        if (fromTE === fromTL && toTE === toTL && fromTE + e.dur === toTE) {
+          criticalEdges.push(e);
+        }
+      });
+      var cpCorrect = 0, cpWrong = 0;
+      edges.forEach(function(e) {
+        var isCrit = criticalEdges.indexOf(e) >= 0;
+        if (isCrit && e.selected) cpCorrect++;
+        if (!isCrit && e.selected) cpWrong++;
+      });
+      var cpTotal = criticalEdges.length;
+      total += cpTotal;
+      score += cpCorrect;
+      var cpPerfect = cpCorrect === cpTotal && cpWrong === 0;
+
       var pct = total > 0 ? Math.round(score / total * 100) : 0;
       var msg = 'Score: ' + score + '/' + total + ' (' + pct + '%)';
       if (messages.length > 0) msg += ' — ' + messages.slice(0, 3).join('; ');
+      if (cpTotal > 0) {
+        if (cpPerfect) msg += ' — Kritiek pad correct!';
+        else if (cpWrong > 0) msg += ' — Kritiek pad: niet correct.';
+        else if (cpCorrect === 0) msg += ' — Kritiek pad: niet aangeduid.';
+        else msg += ' — Kritiek pad: niet volledig.';
+      }
       if (score === total) msg = 'Uitstekend! ' + score + '/' + total + ' — Het netwerk is perfect!';
       fb.textContent = msg;
       fb.className = score === total ? 'ex1-feedback success' : pct >= 60 ? 'ex1-feedback partial' : 'ex1-feedback fail';
