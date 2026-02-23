@@ -8,6 +8,7 @@ Build an interactive webpage that teaches students PERT.
 - `501362.pdf` — additional reference material
 - `001 - Algemene uitleg PERT.jpg`, `002 - Oefening 1.jpg`, `003 - Oefening 2.jpg`, `004 - Oefening 3.jpg`, `005 - Oefening 4.jpg` - solutions to exercises from the lesson content
 - `002 - Oefening 1 - with labels.png` the solution to exercise 1, with labels for activities added.
+- `003 - Oefening 2 - with labels.png` exercise 2, with labels for activities added.
 
 ## Requirements
 - Single-page HTML/CSS/JS app (or React if needed)
