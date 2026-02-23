@@ -732,9 +732,9 @@
   <a href="#theorie"   class="nav-link active">Theorie</a>
   <a href="#demo"      class="nav-link">Demo</a>
   <a href="#oefening1" class="nav-link">Oefening 1</a>
-  <a href="#oefening2" class="nav-link disabled">Oefening 2</a>
+  <a href="#oefening2" class="nav-link">Oefening 2</a>
   <a href="#oefening3" class="nav-link">Oefening 3</a>
-  <a href="#oefening4" class="nav-link disabled">Oefening 4</a>
+  <a href="#oefening4" class="nav-link">Oefening 4</a>
 </nav>
 
 <!-- ══════════════════════════════════════════════════════════ -->
@@ -1661,11 +1661,51 @@
     </div><!-- /card -->
   </section><!-- /oefening1 -->
 
-  <div id="oefening2" class="section-placeholder">
-    <div class="ph-emoji">✏️</div>
-    <h2>Oefening 2</h2>
-    <p>Wordt binnenkort uitgewerkt: netwerk met relatieliinen.</p>
-  </div>
+  <!-- ────────────────────────────────────────────────────── -->
+  <!--  SECTIE 4 — OEFENING 2                                 -->
+  <!-- ────────────────────────────────────────────────────── -->
+  <section id="oefening2" style="margin-top:3rem;">
+
+    <div class="section-header">
+      <div class="section-badge">Oefening 2</div>
+      <h1>Digitale transformatie</h1>
+      <p>Vul de T<sub>E</sub> en T<sub>L</sub> waarden in voor elk knooppunt en selecteer het kritieke pad.</p>
+    </div>
+
+    <div class="ex1-instructions">
+      <strong>Opdracht:</strong> Hieronder zie je een PERT-netwerk met 10 knooppunten, 13 activiteiten en 2 relatielijnen (stippellijnen met duur 0).
+      <strong>(1)</strong> Vul voor elk knooppunt de T<sub>E</sub> (vroegst mogelijke tijdstip) en T<sub>L</sub> (laatste toelaatbare tijdstip) in.
+      <strong>(2)</strong> Klik op de pijlen die op het <span style="color:var(--accent);font-weight:700;">kritieke pad</span> liggen (ook relatielijnen kunnen op het kritieke pad liggen!).
+      <strong>(3)</strong> Klik op <em>Controleer</em> om je antwoorden te checken.
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔵 PERT-netwerk</div>
+
+      <div class="ex1-wrap" id="ex2-wrap">
+        <svg id="ex2-svg" viewBox="0 0 940 500" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="ex2-m-def" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#888"/></marker>
+            <marker id="ex2-m-sel" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#e63946"/></marker>
+            <marker id="ex2-m-dash" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#bbb"/></marker>
+            <clipPath id="ex2-cl"><rect x="-34" y="-34" width="34" height="68"/></clipPath>
+            <clipPath id="ex2-ctr"><rect x="0" y="-34" width="34" height="34"/></clipPath>
+            <clipPath id="ex2-cbr"><rect x="0" y="0" width="34" height="34"/></clipPath>
+          </defs>
+
+          <g id="ex2-edges"></g>
+          <g id="ex2-nodes"></g>
+        </svg>
+      </div>
+
+      <div class="ex1-controls">
+        <button class="ex1-check-btn" id="ex2-check">Controleer</button>
+        <button class="ex1-reset-btn" id="ex2-reset">Opnieuw beginnen</button>
+        <div class="ex1-feedback" id="ex2-feedback"></div>
+      </div>
+
+    </div><!-- /card -->
+  </section><!-- /oefening2 -->
 
   <!-- ────────────────────────────────────────────────────── -->
   <!--  SECTIE 5 — OEFENING 3                                 -->
@@ -1779,11 +1819,101 @@
 
   </section><!-- /oefening3 -->
 
-  <div id="oefening4" class="section-placeholder">
-    <div class="ph-emoji">✏️</div>
-    <h2>Oefening 4 — H. Oessers digitalisering</h2>
-    <p>Wordt binnenkort uitgewerkt: groot netwerk met 14 activiteiten.</p>
-  </div>
+  <!-- ────────────────────────────────────────────────────── -->
+  <!--  SECTIE 6 — OEFENING 4                                 -->
+  <!-- ────────────────────────────────────────────────────── -->
+  <section id="oefening4" style="margin-top:3rem;">
+
+    <div class="section-header">
+      <div class="section-badge">Oefening 4</div>
+      <h1>H. Oessers digitalisering</h1>
+      <p>Bouw het PERT-netwerk voor dit groot digitaliseringsproject en bepaal het kritieke pad.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📋 Activiteitenoverzicht</div>
+      <p style="color:var(--muted); font-size:.88rem; margin-bottom:.75rem;">
+        Het transportbedrijf <em>"H. Oessers"</em> voert een groot digitaliseringsproject uit met 14 activiteiten.
+      </p>
+      <div style="overflow-x:auto;">
+        <table class="ex3-te-table">
+          <thead>
+            <tr><th>Act</th><th>Beschrijving</th><th>Voorganger(s)</th><th>Duur (w)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>Projectanalyse</td><td>—</td><td>10</td></tr>
+            <tr><td>2</td><td>Probleemanalyse CRM</td><td>1</td><td>10</td></tr>
+            <tr><td>3</td><td>Probleemanalyse ERP</td><td>1</td><td>5</td></tr>
+            <tr><td>4</td><td>Offertes computerinstallatie</td><td>1</td><td>5</td></tr>
+            <tr><td>5</td><td>Werving en selectie personeel</td><td>1</td><td>10</td></tr>
+            <tr><td>6</td><td>Bouw CRM-systeem</td><td>2</td><td>30</td></tr>
+            <tr><td>7</td><td>Invoeringsvoorbereiding CRM</td><td>2</td><td>20</td></tr>
+            <tr><td>8</td><td>Bouw ERP-systeem</td><td>3</td><td>30</td></tr>
+            <tr><td>9</td><td>Invoeringsvoorbereiding ERP</td><td>3</td><td>20</td></tr>
+            <tr><td>10</td><td>Laptopkeuze en levering</td><td>4</td><td>45</td></tr>
+            <tr><td>11</td><td>Software-installatie</td><td>5, 10</td><td>5</td></tr>
+            <tr><td>12</td><td>Invoering CRM</td><td>6, 7, 11</td><td>10</td></tr>
+            <tr><td>13</td><td>Invoering ERP</td><td>8, 9, 11</td><td>10</td></tr>
+            <tr><td>14</td><td>Integratie ERP-CRM</td><td>12, 13</td><td>10</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔨 Bouw het PERT-netwerk</div>
+      <div class="ex1-instructions" style="margin-bottom:1rem;">
+        <strong>Instructies:</strong>
+        Gebruik de werkbalk om knooppunten te plaatsen en verbindingen te tekenen.
+        <strong>(1)</strong> Klik <em>Knooppunt</em> en klik op het canvas om een knooppunt toe te voegen.
+        <strong>(2)</strong> Klik <em>Activiteit</em> of <em>0-lijn</em>, klik op een bronknooppunt en dan op een doelknooppunt.
+        <strong>(3)</strong> Vul T<sub>E</sub> en T<sub>L</sub> in bij elk knooppunt.
+        <strong>(4)</strong> Klik op <em>Controleer</em> om je netwerk te controleren.
+      </div>
+
+      <div class="ex3-toolbar" id="ex4-toolbar">
+        <button class="ex3-tool active" data-tool="select">&#8598; Selecteer</button>
+        <button class="ex3-tool" data-tool="node">&#8853; Knooppunt</button>
+        <button class="ex3-tool" data-tool="edge">&#8594; Activiteit</button>
+        <button class="ex3-tool" data-tool="relay">&#8674; 0-lijn</button>
+        <button class="ex3-tool" data-tool="delete">&#10005; Verwijder</button>
+      </div>
+
+      <div class="ex3-canvas-wrap" id="ex4-canvas-wrap">
+        <svg id="ex4-svg" viewBox="0 0 960 600" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="ex4-m-def" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#888"/></marker>
+            <marker id="ex4-m-dash" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#bbb"/></marker>
+            <marker id="ex4-m-ghost" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#457b9d" opacity=".5"/></marker>
+            <clipPath id="ex4-cl"><rect x="-30" y="-30" width="30" height="60"/></clipPath>
+            <clipPath id="ex4-ctr"><rect x="0" y="-30" width="30" height="30"/></clipPath>
+            <clipPath id="ex4-cbr"><rect x="0" y="0" width="30" height="30"/></clipPath>
+          </defs>
+          <g id="ex4-grid" opacity=".15"></g>
+          <line id="ex4-ghost" x1="0" y1="0" x2="0" y2="0" stroke="#457b9d" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#ex4-m-ghost)" opacity="0" pointer-events="none"/>
+          <g id="ex4-edges"></g>
+          <g id="ex4-nodes"></g>
+        </svg>
+        <div class="ex3-edge-popup" id="ex4-edge-popup" style="display:none;">
+          <label for="ex4-popup-act">Activiteit</label>
+          <select id="ex4-popup-act"></select>
+          <label for="ex4-popup-dur">Duurtijd (weken)</label>
+          <input type="number" id="ex4-popup-dur" min="0" placeholder="—" readonly style="background:var(--bg);color:var(--muted);cursor:default;">
+          <div class="ex3-edge-popup-btns">
+            <button class="ex3-popup-ok" id="ex4-popup-ok">OK</button>
+            <button class="ex3-popup-cancel" id="ex4-popup-cancel">Annuleer</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex1-controls" style="margin-top:1rem;">
+        <button class="ex1-check-btn" id="ex4-net-check">Controleer</button>
+        <button class="ex1-reset-btn" id="ex4-net-reset">Opnieuw beginnen</button>
+        <div class="ex1-feedback" id="ex4-net-feedback"></div>
+      </div>
+    </div>
+
+  </section><!-- /oefening4 -->
 
 </main>
 
@@ -2446,8 +2576,9 @@
       const pct = Math.round(correct / total * 100);
       let msg = `Score: ${correct}/${total} (${pct}%)`;
       if (pathPerfect) msg += ' — Kritiek pad correct!';
-      else if (wrongSelections > 0) msg += ` — Kritiek pad: ${wrongSelections} fout geselecteerd.`;
-      else msg += ` — Kritiek pad: ${edgesTotal - edgesCorrect} ontbrekend.`;
+      else if (wrongSelections > 0) msg += ' — Kritiek pad: niet correct.';
+      else if (edgesCorrect === 0) msg += ' — Kritiek pad: niet aangeduid.';
+      else msg += ' — Kritiek pad: niet volledig.';
 
       feedback.textContent = msg;
       if (correct === total && pathPerfect) {
@@ -2490,6 +2621,280 @@
 
     document.getElementById('ex1-check').addEventListener('click', validate);
     document.getElementById('ex1-reset').addEventListener('click', reset);
+  })();
+
+  /* ── EXERCISE 2: DIGITALE TRANSFORMATIE ─────────────────── */
+  (function () {
+    const NODES = [
+      { id:1,  label:'I',    x:70,  y:70,  te:0,  tl:0,  crit:true,  readonly_te:true },
+      { id:2,  label:'II',   x:350, y:110, te:14, tl:14, crit:true },
+      { id:3,  label:'III',  x:130, y:220, te:5,  tl:5,  crit:true },
+      { id:4,  label:'IV',   x:130, y:430, te:14, tl:34, crit:false },
+      { id:5,  label:'V',    x:580, y:160, te:32, tl:32, crit:true },
+      { id:6,  label:'VI',   x:370, y:460, te:40, tl:45, crit:false },
+      { id:7,  label:'VII',  x:770, y:80,  te:40, tl:40, crit:true },
+      { id:8,  label:'VIII', x:310, y:290, te:14, tl:14, crit:true },
+      { id:9,  label:'IX',   x:510, y:380, te:40, tl:45, crit:false },
+      { id:10, label:'X',    x:840, y:350, te:47, tl:47, crit:true }
+    ];
+
+    const EDGES = [
+      { from:1,  to:2,  dur:4,  act:'A', desc:'Bedrijfsprocessen identificeren' },
+      { from:1,  to:3,  dur:5,  act:'B', desc:'Documentatie digitaliseren' },
+      { from:3,  to:8,  dur:9,  act:'C', desc:'Workflow optimaliseren' },
+      { from:2,  to:5,  dur:18, act:'D', desc:'Data-analyse uitvoeren' },
+      { from:8,  to:5,  dur:6,  act:'E', desc:'Cloudoplossingen implementeren' },
+      { from:3,  to:4,  dur:9,  act:'F', desc:'Digitale archivering opzetten' },
+      { from:4,  to:9,  dur:11, act:'G', desc:'Automatisering implementeren' },
+      { from:4,  to:6,  dur:3,  act:'H', desc:'Software integreren' },
+      { from:5,  to:7,  dur:8,  act:'I', desc:'Trainingsprogramma ontwikkelen' },
+      { from:5,  to:10, dur:13, act:'J', desc:'Gebruikersbegeleiding verzorgen' },
+      { from:5,  to:9,  dur:8,  act:'K', desc:'Feedback verzamelen en verwerken' },
+      { from:6,  to:10, dur:2,  act:'L', desc:'Trainingsprogramma ontwikkelen' },
+      { from:7,  to:10, dur:7,  act:'M', desc:'Prestatieanalyse uitvoeren' },
+      { from:8,  to:2,  dur:0,  dashed:true },
+      { from:9,  to:6,  dur:0,  dashed:true }
+    ];
+
+    const CRITICAL_EDGES = new Set(['1-3','3-8','8-2','2-5','5-7','7-10']);
+    const R = 34;
+    const svg = document.getElementById('ex2-svg');
+    if (!svg) return;
+    const edgesG = document.getElementById('ex2-edges');
+    const nodesG = document.getElementById('ex2-nodes');
+    const nodeMap = {};
+    NODES.forEach(n => nodeMap[n.id] = n);
+
+    const inputEls = {};
+    const edgeEls = {};
+
+    EDGES.forEach(e => {
+      const fn = nodeMap[e.from], tn = nodeMap[e.to];
+      const dx = tn.x - fn.x, dy = tn.y - fn.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      const ux = dx/dist, uy = dy/dist;
+      const x1 = fn.x + ux * R, y1 = fn.y + uy * R;
+      const x2 = tn.x - ux * (R + 10), y2 = tn.y - uy * (R + 10);
+      const mx = (x1+x2)/2, my = (y1+y2)/2;
+      const key = e.from + '-' + e.to;
+
+      const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+      line.setAttribute('x1',x1); line.setAttribute('y1',y1);
+      line.setAttribute('x2',x2); line.setAttribute('y2',y2);
+      line.setAttribute('stroke', e.dashed ? '#bbb' : '#888');
+      line.setAttribute('stroke-width','1.8');
+      line.setAttribute('marker-end', e.dashed ? 'url(#ex2-m-dash)' : 'url(#ex2-m-def)');
+      line.classList.add('ex1-edge-line');
+      if (e.dashed) line.setAttribute('stroke-dasharray','8 4');
+      edgesG.appendChild(line);
+
+      const perpX = -uy * 18, perpY = ux * 18;
+      const lbl = document.createElementNS('http://www.w3.org/2000/svg','text');
+      lbl.setAttribute('text-anchor','middle');
+      lbl.setAttribute('font-family','Segoe UI,sans-serif');
+      lbl.setAttribute('font-weight','600');
+      lbl.setAttribute('fill', e.dashed ? '#bbb' : '#666');
+      lbl.classList.add('ex1-edge-lbl');
+
+      if (e.dashed) {
+        lbl.setAttribute('x', mx + perpX); lbl.setAttribute('y', my + perpY);
+        lbl.setAttribute('font-size','11');
+        lbl.textContent = '0';
+      } else {
+        lbl.setAttribute('x', mx + perpX); lbl.setAttribute('y', my + perpY - 6);
+        lbl.setAttribute('font-size','10');
+        const ts1 = document.createElementNS('http://www.w3.org/2000/svg','tspan');
+        ts1.setAttribute('x', mx + perpX); ts1.setAttribute('dy','0');
+        ts1.textContent = e.act + ': ' + e.desc;
+        const ts2 = document.createElementNS('http://www.w3.org/2000/svg','tspan');
+        ts2.setAttribute('x', mx + perpX); ts2.setAttribute('dy','13');
+        ts2.textContent = e.dur + (e.dur === 1 ? ' dag' : ' dagen');
+        lbl.appendChild(ts1);
+        lbl.appendChild(ts2);
+      }
+      edgesG.appendChild(lbl);
+
+      const hit = document.createElementNS('http://www.w3.org/2000/svg','line');
+      hit.setAttribute('x1',x1); hit.setAttribute('y1',y1);
+      hit.setAttribute('x2',x2); hit.setAttribute('y2',y2);
+      hit.classList.add('ex1-edge-hit');
+      edgesG.appendChild(hit);
+
+      const defaultMarker = e.dashed ? 'url(#ex2-m-dash)' : 'url(#ex2-m-def)';
+      const defaultStroke = e.dashed ? '#bbb' : '#888';
+      edgeEls[key] = { hit, line, lbl, selected: false, dashed: !!e.dashed, defaultMarker, defaultStroke };
+
+      hit.addEventListener('click', () => {
+        const ed = edgeEls[key];
+        ed.selected = !ed.selected;
+        ed.line.classList.toggle('selected', ed.selected);
+        ed.lbl.classList.toggle('selected', ed.selected);
+        ed.line.setAttribute('marker-end', ed.selected ? 'url(#ex2-m-sel)' : ed.defaultMarker);
+      });
+    });
+
+    NODES.forEach(n => {
+      const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+      g.setAttribute('transform', `translate(${n.x},${n.y})`);
+
+      const bgL = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      bgL.setAttribute('r',R); bgL.setAttribute('fill','#eef0f2');
+      bgL.setAttribute('clip-path','url(#ex2-cl)');
+      g.appendChild(bgL);
+
+      const bgTR = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      bgTR.setAttribute('r',R); bgTR.setAttribute('fill','#e8f5e9');
+      bgTR.setAttribute('clip-path','url(#ex2-ctr)');
+      g.appendChild(bgTR);
+
+      const bgBR = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      bgBR.setAttribute('r',R); bgBR.setAttribute('fill','#e3f0fb');
+      bgBR.setAttribute('clip-path','url(#ex2-cbr)');
+      g.appendChild(bgBR);
+
+      const border = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      border.setAttribute('r',R); border.setAttribute('fill','none');
+      border.setAttribute('stroke','#333'); border.setAttribute('stroke-width','2.5');
+      g.appendChild(border);
+
+      const lineV = document.createElementNS('http://www.w3.org/2000/svg','line');
+      lineV.setAttribute('x1',0); lineV.setAttribute('y1',-R);
+      lineV.setAttribute('x2',0); lineV.setAttribute('y2',R);
+      lineV.setAttribute('stroke','#555'); lineV.setAttribute('stroke-width','1.6');
+      g.appendChild(lineV);
+
+      const lineH = document.createElementNS('http://www.w3.org/2000/svg','line');
+      lineH.setAttribute('x1',0); lineH.setAttribute('y1',0);
+      lineH.setAttribute('x2',R); lineH.setAttribute('y2',0);
+      lineH.setAttribute('stroke','#555'); lineH.setAttribute('stroke-width','1.6');
+      g.appendChild(lineH);
+
+      const txt = document.createElementNS('http://www.w3.org/2000/svg','text');
+      txt.setAttribute('x',-R/2); txt.setAttribute('y',5);
+      txt.setAttribute('text-anchor','middle');
+      txt.setAttribute('font-family','Segoe UI,sans-serif');
+      txt.setAttribute('font-size', n.label.length > 3 ? '10' : n.label.length > 2 ? '11' : '14');
+      txt.setAttribute('font-weight','700'); txt.setAttribute('fill','#333');
+      txt.textContent = n.label;
+      g.appendChild(txt);
+
+      const foTE = document.createElementNS('http://www.w3.org/2000/svg','foreignObject');
+      foTE.setAttribute('x', 2); foTE.setAttribute('y', -R + 4);
+      foTE.setAttribute('width', R - 4); foTE.setAttribute('height', R - 4);
+      const teInput = document.createElement('input');
+      teInput.type = 'number'; teInput.className = 'ex1-input';
+      teInput.placeholder = '?'; teInput.setAttribute('aria-label', `TE knooppunt ${n.label}`);
+      if (n.readonly_te) {
+        teInput.value = n.te;
+        teInput.readOnly = true;
+        teInput.classList.add('readonly');
+      }
+      foTE.appendChild(teInput);
+      g.appendChild(foTE);
+      inputEls[n.id + '-te'] = teInput;
+
+      const foTL = document.createElementNS('http://www.w3.org/2000/svg','foreignObject');
+      foTL.setAttribute('x', 2); foTL.setAttribute('y', 2);
+      foTL.setAttribute('width', R - 4); foTL.setAttribute('height', R - 4);
+      const tlInput = document.createElement('input');
+      tlInput.type = 'number'; tlInput.className = 'ex1-input';
+      tlInput.placeholder = '?'; tlInput.setAttribute('aria-label', `TL knooppunt ${n.label}`);
+      foTL.appendChild(tlInput);
+      g.appendChild(foTL);
+      inputEls[n.id + '-tl'] = tlInput;
+
+      nodesG.appendChild(g);
+      n._border = border;
+    });
+
+    function validate() {
+      let correct = 0, total = 0;
+      const feedback = document.getElementById('ex2-feedback');
+
+      NODES.forEach(n => {
+        const teEl = inputEls[n.id + '-te'];
+        const teVal = teEl.value.trim() === '' ? NaN : parseInt(teEl.value, 10);
+        total++;
+        if (teVal === n.te) {
+          teEl.classList.remove('wrong'); teEl.classList.add('correct'); correct++;
+        } else {
+          teEl.classList.remove('correct'); teEl.classList.add('wrong'); teEl.title = 'Fout';
+        }
+
+        const tlEl = inputEls[n.id + '-tl'];
+        const tlVal = tlEl.value.trim() === '' ? NaN : parseInt(tlEl.value, 10);
+        total++;
+        if (tlVal === n.tl) {
+          tlEl.classList.remove('wrong'); tlEl.classList.add('correct'); correct++;
+        } else {
+          tlEl.classList.remove('correct'); tlEl.classList.add('wrong'); tlEl.title = 'Fout';
+        }
+      });
+
+      let edgesCorrect = 0, edgesTotal = CRITICAL_EDGES.size;
+      let wrongSelections = 0;
+      Object.keys(edgeEls).forEach(key => {
+        const ed = edgeEls[key];
+        const shouldBeCrit = CRITICAL_EDGES.has(key);
+        if (shouldBeCrit && ed.selected) edgesCorrect++;
+        if (!shouldBeCrit && ed.selected) wrongSelections++;
+      });
+
+      const pathPerfect = edgesCorrect === edgesTotal && wrongSelections === 0;
+      total += edgesTotal;
+      correct += edgesCorrect;
+
+      const pct = Math.round(correct / total * 100);
+      let msg = `Score: ${correct}/${total} (${pct}%)`;
+      if (pathPerfect) msg += ' \u2014 Kritiek pad correct!';
+      else if (wrongSelections > 0) msg += ' \u2014 Kritiek pad: niet correct.';
+      else if (edgesCorrect === 0) msg += ' \u2014 Kritiek pad: niet aangeduid.';
+      else msg += ' \u2014 Kritiek pad: niet volledig.';
+
+      feedback.textContent = msg;
+      if (correct === total && pathPerfect) {
+        feedback.className = 'ex1-feedback success';
+      } else if (pct >= 60) {
+        feedback.className = 'ex1-feedback partial';
+      } else {
+        feedback.className = 'ex1-feedback fail';
+      }
+    }
+
+    function reset() {
+      NODES.forEach(n => {
+        const teEl = inputEls[n.id + '-te'];
+        const tlEl = inputEls[n.id + '-tl'];
+        if (!n.readonly_te) { teEl.value = ''; }
+        tlEl.value = '';
+        teEl.classList.remove('correct','wrong');
+        tlEl.classList.remove('correct','wrong');
+        teEl.title = ''; tlEl.title = '';
+        n._border.setAttribute('stroke','#333');
+        n._border.setAttribute('stroke-width','2.5');
+      });
+
+      Object.keys(edgeEls).forEach(key => {
+        const ed = edgeEls[key];
+        ed.selected = false;
+        ed.line.classList.remove('selected');
+        ed.lbl.classList.remove('selected');
+        ed.line.setAttribute('stroke', ed.defaultStroke);
+        ed.line.setAttribute('stroke-width','1.8');
+        ed.line.setAttribute('marker-end', ed.defaultMarker);
+        if (ed.dashed) {
+          ed.line.setAttribute('stroke-dasharray','8 4');
+        } else {
+          ed.line.removeAttribute('stroke-dasharray');
+        }
+      });
+
+      document.getElementById('ex2-feedback').textContent = '';
+      document.getElementById('ex2-feedback').className = 'ex1-feedback';
+    }
+
+    document.getElementById('ex2-check').addEventListener('click', validate);
+    document.getElementById('ex2-reset').addEventListener('click', reset);
   })();
 
   /* ── EXERCISE 3: DE PIRAMIDE VAN DE FARAO ──────────────── */
@@ -3103,6 +3508,548 @@
       hideEdgePopup();
       setTool('select');
       var fb = document.getElementById('ex3-net-feedback');
+      fb.textContent = ''; fb.className = 'ex1-feedback';
+    });
+  })();
+
+  /* ── EXERCISE 4: H. OESSERS DIGITALISERING ──────────────── */
+  (function () {
+    const ACTIVITIES = [
+      { id:'1',  desc:'Projectanalyse',                pred:[],          dur:10 },
+      { id:'2',  desc:'Probleemanalyse CRM',           pred:['1'],       dur:10 },
+      { id:'3',  desc:'Probleemanalyse ERP',            pred:['1'],       dur:5  },
+      { id:'4',  desc:'Offertes computerinstallatie',   pred:['1'],       dur:5  },
+      { id:'5',  desc:'Werving en selectie personeel',  pred:['1'],       dur:10 },
+      { id:'6',  desc:'Bouw CRM-systeem',               pred:['2'],       dur:30 },
+      { id:'7',  desc:'Invoeringsvoorbereiding CRM',    pred:['2'],       dur:20 },
+      { id:'8',  desc:'Bouw ERP-systeem',                pred:['3'],       dur:30 },
+      { id:'9',  desc:'Invoeringsvoorbereiding ERP',     pred:['3'],       dur:20 },
+      { id:'10', desc:'Laptopkeuze en levering',         pred:['4'],       dur:45 },
+      { id:'11', desc:'Software-installatie',            pred:['5','10'],  dur:5  },
+      { id:'12', desc:'Invoering CRM',                  pred:['6','7','11'], dur:10 },
+      { id:'13', desc:'Invoering ERP',                  pred:['8','9','11'], dur:10 },
+      { id:'14', desc:'Integratie ERP-CRM',             pred:['12','13'], dur:10 },
+    ];
+
+    const LABELS = ['I','II','III','IV','VI','VII','VIII','IX','X','XI','XII','XIII','XIV'];
+    const R = 30;
+
+    var nodes = [];
+    var edges = [];
+    var tool = 'select';
+    var edgeSource = null;
+    var dragNode = null;
+    var dragOffset = { x:0, y:0 };
+    var nextId = 1;
+    var nextEdgeId = 1;
+
+    var svg = document.getElementById('ex4-svg');
+    if (!svg) return;
+    var edgesG = document.getElementById('ex4-edges');
+    var nodesG = document.getElementById('ex4-nodes');
+    var ghost = document.getElementById('ex4-ghost');
+    var canvasWrap = document.getElementById('ex4-canvas-wrap');
+    var popup = document.getElementById('ex4-edge-popup');
+    var popupAct = document.getElementById('ex4-popup-act');
+    var popupDur = document.getElementById('ex4-popup-dur');
+    var toolbar = document.getElementById('ex4-toolbar');
+
+    var gridG = document.getElementById('ex4-grid');
+    for (var gx = 20; gx < 960; gx += 40) {
+      for (var gy = 20; gy < 600; gy += 40) {
+        var dot = document.createElementNS('http://www.w3.org/2000/svg','circle');
+        dot.setAttribute('cx', gx); dot.setAttribute('cy', gy);
+        dot.setAttribute('r', '1.5'); dot.setAttribute('fill', '#999');
+        gridG.appendChild(dot);
+      }
+    }
+
+    function svgPoint(evt) {
+      var pt = svg.createSVGPoint();
+      pt.x = evt.clientX; pt.y = evt.clientY;
+      return pt.matrixTransform(svg.getScreenCTM().inverse());
+    }
+
+    function edgeEndpoints(fn, tn) {
+      var dx = tn.x - fn.x, dy = tn.y - fn.y;
+      var dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist === 0) return { x1:fn.x, y1:fn.y, x2:tn.x, y2:tn.y };
+      var ux = dx/dist, uy = dy/dist;
+      return { x1: fn.x + ux*R, y1: fn.y + uy*R, x2: tn.x - ux*(R+10), y2: tn.y - uy*(R+10) };
+    }
+
+    function setTool(t) {
+      tool = t;
+      edgeSource = null;
+      ghost.setAttribute('opacity', '0');
+      canvasWrap.classList.remove('tool-node','tool-edge','tool-delete');
+      if (t === 'node') canvasWrap.classList.add('tool-node');
+      else if (t === 'edge' || t === 'relay') canvasWrap.classList.add('tool-edge');
+      else if (t === 'delete') canvasWrap.classList.add('tool-delete');
+      nodes.forEach(function(n) { n.gEl.classList.remove('source-highlight'); });
+      toolbar.querySelectorAll('.ex3-tool').forEach(function(btn) {
+        btn.classList.toggle('active', btn.dataset.tool === t);
+      });
+    }
+
+    toolbar.addEventListener('click', function(e) {
+      var btn = e.target.closest('.ex3-tool');
+      if (btn) setTool(btn.dataset.tool);
+    });
+
+    function findNode(id) { return nodes.find(function(n) { return n.id === id; }); }
+
+    function addNode(x, y) {
+      var id = nextId++;
+      var label = LABELS[id - 1] || String(id);
+      var node = { id:id, label:label, x:x, y:y, gEl:null, _teInput:null, _tlInput:null };
+
+      var g = document.createElementNS('http://www.w3.org/2000/svg','g');
+      g.setAttribute('transform', 'translate(' + x + ',' + y + ')');
+      g.classList.add('ex3-node-group');
+      g.dataset.nodeId = id;
+
+      var bgL = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      bgL.setAttribute('r',R); bgL.setAttribute('fill','#eef0f2'); bgL.setAttribute('clip-path','url(#ex4-cl)');
+      g.appendChild(bgL);
+      var bgTR = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      bgTR.setAttribute('r',R); bgTR.setAttribute('fill','#e8f5e9'); bgTR.setAttribute('clip-path','url(#ex4-ctr)');
+      g.appendChild(bgTR);
+      var bgBR = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      bgBR.setAttribute('r',R); bgBR.setAttribute('fill','#e3f0fb'); bgBR.setAttribute('clip-path','url(#ex4-cbr)');
+      g.appendChild(bgBR);
+
+      var border = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      border.setAttribute('r',R); border.setAttribute('fill','none');
+      border.setAttribute('stroke','#333'); border.setAttribute('stroke-width','2.5');
+      g.appendChild(border);
+
+      var lineV = document.createElementNS('http://www.w3.org/2000/svg','line');
+      lineV.setAttribute('x1',0); lineV.setAttribute('y1',-R); lineV.setAttribute('x2',0); lineV.setAttribute('y2',R);
+      lineV.setAttribute('stroke','#555'); lineV.setAttribute('stroke-width','1.6');
+      g.appendChild(lineV);
+      var lineH = document.createElementNS('http://www.w3.org/2000/svg','line');
+      lineH.setAttribute('x1',0); lineH.setAttribute('y1',0); lineH.setAttribute('x2',R); lineH.setAttribute('y2',0);
+      lineH.setAttribute('stroke','#555'); lineH.setAttribute('stroke-width','1.6');
+      g.appendChild(lineH);
+
+      var txt = document.createElementNS('http://www.w3.org/2000/svg','text');
+      txt.setAttribute('x', -R/2); txt.setAttribute('y', 5);
+      txt.setAttribute('text-anchor','middle');
+      txt.setAttribute('font-family','Segoe UI,sans-serif');
+      txt.setAttribute('font-size', label.length > 3 ? '9' : label.length > 2 ? '10' : '13');
+      txt.setAttribute('font-weight','700'); txt.setAttribute('fill','#333');
+      txt.setAttribute('pointer-events','none');
+      txt.textContent = label;
+      g.appendChild(txt);
+
+      var foTE = document.createElementNS('http://www.w3.org/2000/svg','foreignObject');
+      foTE.setAttribute('x', 2); foTE.setAttribute('y', -R + 3);
+      foTE.setAttribute('width', R - 4); foTE.setAttribute('height', R - 3);
+      var teInput = document.createElement('input');
+      teInput.type = 'number'; teInput.className = 'ex1-input';
+      teInput.style.width = '26px'; teInput.style.height = '18px'; teInput.style.fontSize = '10px';
+      teInput.placeholder = '?';
+      foTE.appendChild(teInput);
+      g.appendChild(foTE);
+      node._teInput = teInput;
+
+      var foTL = document.createElementNS('http://www.w3.org/2000/svg','foreignObject');
+      foTL.setAttribute('x', 2); foTL.setAttribute('y', 2);
+      foTL.setAttribute('width', R - 4); foTL.setAttribute('height', R - 3);
+      var tlInput = document.createElement('input');
+      tlInput.type = 'number'; tlInput.className = 'ex1-input';
+      tlInput.style.width = '26px'; tlInput.style.height = '18px'; tlInput.style.fontSize = '10px';
+      tlInput.placeholder = '?';
+      foTL.appendChild(tlInput);
+      g.appendChild(foTL);
+      node._tlInput = tlInput;
+
+      nodesG.appendChild(g);
+      node.gEl = g;
+      nodes.push(node);
+      return node;
+    }
+
+    function removeNode(nodeId) {
+      var idx = nodes.findIndex(function(n) { return n.id === nodeId; });
+      if (idx === -1) return;
+      nodes[idx].gEl.remove();
+      nodes.splice(idx, 1);
+      var connected = edges.filter(function(e) { return e.fromId === nodeId || e.toId === nodeId; });
+      connected.forEach(function(e) { removeEdge(e.id); });
+    }
+
+    function addEdge(fromId, toId, dashed, act, dur) {
+      var id = nextEdgeId++;
+      var fn = findNode(fromId), tn = findNode(toId);
+      if (!fn || !tn) return null;
+      var edge = { id:id, fromId:fromId, toId:toId, dashed:!!dashed, act:act||'', dur:dur||0 };
+
+      var g = document.createElementNS('http://www.w3.org/2000/svg','g');
+      g.dataset.edgeId = id;
+      var ep = edgeEndpoints(fn, tn);
+
+      var line = document.createElementNS('http://www.w3.org/2000/svg','line');
+      line.setAttribute('x1',ep.x1); line.setAttribute('y1',ep.y1);
+      line.setAttribute('x2',ep.x2); line.setAttribute('y2',ep.y2);
+      line.setAttribute('stroke', dashed ? '#bbb' : '#888');
+      line.setAttribute('stroke-width', dashed ? '1.6' : '2');
+      if (dashed) line.setAttribute('stroke-dasharray','6 4');
+      line.setAttribute('marker-end', dashed ? 'url(#ex4-m-dash)' : 'url(#ex4-m-def)');
+      g.appendChild(line);
+      edge._line = line;
+
+      var mx = (ep.x1+ep.x2)/2, my = (ep.y1+ep.y2)/2;
+      var dx = ep.x2-ep.x1, dy = ep.y2-ep.y1;
+      var dist = Math.sqrt(dx*dx+dy*dy) || 1;
+      var perpX = -(dy/dist)*14, perpY = (dx/dist)*14;
+      var lbl = document.createElementNS('http://www.w3.org/2000/svg','text');
+      lbl.setAttribute('x', mx+perpX); lbl.setAttribute('y', my+perpY);
+      lbl.setAttribute('text-anchor','middle');
+      lbl.setAttribute('font-family','Segoe UI,sans-serif');
+      lbl.setAttribute('font-size','10'); lbl.setAttribute('font-weight','600');
+      lbl.setAttribute('fill', dashed ? '#bbb' : '#666');
+      lbl.setAttribute('pointer-events','none');
+      lbl.textContent = dashed ? '0' : (act ? act + '(' + dur + ')' : '');
+      g.appendChild(lbl);
+      edge._lbl = lbl;
+
+      var hit = document.createElementNS('http://www.w3.org/2000/svg','line');
+      hit.setAttribute('x1',ep.x1); hit.setAttribute('y1',ep.y1);
+      hit.setAttribute('x2',ep.x2); hit.setAttribute('y2',ep.y2);
+      hit.setAttribute('stroke','transparent'); hit.setAttribute('stroke-width','18');
+      hit.setAttribute('fill','none'); hit.style.cursor = 'pointer';
+      g.appendChild(hit);
+      edge._hit = hit;
+
+      edgesG.appendChild(g);
+      edge.gEl = g;
+      edges.push(edge);
+      return edge;
+    }
+
+    function removeEdge(edgeId) {
+      var idx = edges.findIndex(function(e) { return e.id === edgeId; });
+      if (idx === -1) return;
+      edges[idx].gEl.remove();
+      edges.splice(idx, 1);
+    }
+
+    function updateEdgePositions() {
+      edges.forEach(function(e) {
+        var fn = findNode(e.fromId), tn = findNode(e.toId);
+        if (!fn || !tn) return;
+        var ep = edgeEndpoints(fn, tn);
+        e._line.setAttribute('x1',ep.x1); e._line.setAttribute('y1',ep.y1);
+        e._line.setAttribute('x2',ep.x2); e._line.setAttribute('y2',ep.y2);
+        e._hit.setAttribute('x1',ep.x1); e._hit.setAttribute('y1',ep.y1);
+        e._hit.setAttribute('x2',ep.x2); e._hit.setAttribute('y2',ep.y2);
+        var mx = (ep.x1+ep.x2)/2, my = (ep.y1+ep.y2)/2;
+        var dx = ep.x2-ep.x1, dy = ep.y2-ep.y1;
+        var dist = Math.sqrt(dx*dx+dy*dy) || 1;
+        var perpX = -(dy/dist)*14, perpY = (dx/dist)*14;
+        e._lbl.setAttribute('x', mx+perpX);
+        e._lbl.setAttribute('y', my+perpY);
+      });
+    }
+
+    var pendingEdge = null;
+
+    function showEdgePopup(edge, svgX, svgY) {
+      pendingEdge = edge;
+      var svgRect = svg.getBoundingClientRect();
+      var vb = svg.viewBox.baseVal;
+      var scaleX = svgRect.width / vb.width;
+      var scaleY = svgRect.height / vb.height;
+      var left = svgX * scaleX;
+      var top = svgY * scaleY;
+      popup.style.left = Math.min(left, svgRect.width - 210) + 'px';
+      popup.style.top = Math.max(0, top - 30) + 'px';
+      popup.style.display = 'block';
+
+      var usedActs = {};
+      edges.forEach(function(e) { if (e.act && e.id !== edge.id) usedActs[e.act] = true; });
+      popupAct.innerHTML = '<option value="">— Kies —</option>';
+      ACTIVITIES.forEach(function(a) {
+        if (!usedActs[a.id]) {
+          var opt = document.createElement('option');
+          opt.value = a.id;
+          opt.textContent = 'Act ' + a.id + ' — ' + a.desc;
+          popupAct.appendChild(opt);
+        }
+      });
+      if (edge.act) popupAct.value = edge.act;
+      var _selAct = ACTIVITIES.find(function(a) { return a.id === popupAct.value; });
+      popupDur.value = _selAct ? _selAct.dur : '';
+      popupAct.focus();
+
+      popupAct.onchange = function() {
+        var a = ACTIVITIES.find(function(a) { return a.id === popupAct.value; });
+        popupDur.value = a ? a.dur : '';
+      };
+    }
+
+    function hideEdgePopup() {
+      popup.style.display = 'none';
+      pendingEdge = null;
+    }
+
+    document.getElementById('ex4-popup-ok').addEventListener('click', function() {
+      if (!pendingEdge) return;
+      pendingEdge.act = popupAct.value;
+      pendingEdge.dur = parseInt(popupDur.value, 10) || 0;
+      pendingEdge._lbl.textContent = pendingEdge.act ? 'Act ' + pendingEdge.act + '(' + pendingEdge.dur + ')' : String(pendingEdge.dur);
+      hideEdgePopup();
+    });
+
+    document.getElementById('ex4-popup-cancel').addEventListener('click', function() {
+      if (pendingEdge && !pendingEdge.act && !pendingEdge.dashed) {
+        removeEdge(pendingEdge.id);
+      }
+      hideEdgePopup();
+    });
+
+    svg.addEventListener('pointerdown', function(evt) {
+      if (popup.style.display !== 'none') return;
+      var pt = svgPoint(evt);
+      var target = evt.target;
+      var nodeG = target.closest('.ex3-node-group');
+      var edgeG = target.closest('[data-edge-id]');
+
+      if (tool === 'select') {
+        if (nodeG && !target.closest('foreignObject')) {
+          var nid = parseInt(nodeG.dataset.nodeId);
+          var node = findNode(nid);
+          if (node) {
+            dragNode = node;
+            dragOffset.x = pt.x - node.x;
+            dragOffset.y = pt.y - node.y;
+            nodeG.classList.add('dragging');
+            svg.setPointerCapture(evt.pointerId);
+            evt.preventDefault();
+          }
+        }
+      }
+
+      else if (tool === 'node') {
+        if (!nodeG) {
+          addNode(pt.x, pt.y);
+          setTool('select');
+        }
+      }
+
+      else if (tool === 'edge' || tool === 'relay') {
+        if (nodeG) {
+          var nid2 = parseInt(nodeG.dataset.nodeId);
+          if (edgeSource === null) {
+            edgeSource = nid2;
+            nodeG.classList.add('source-highlight');
+            var srcNode = findNode(nid2);
+            ghost.setAttribute('x1', srcNode.x);
+            ghost.setAttribute('y1', srcNode.y);
+            ghost.setAttribute('x2', srcNode.x);
+            ghost.setAttribute('y2', srcNode.y);
+            ghost.setAttribute('opacity', '1');
+          } else if (nid2 !== edgeSource) {
+            ghost.setAttribute('opacity', '0');
+            nodes.forEach(function(n) { n.gEl.classList.remove('source-highlight'); });
+            var isDashed = (tool === 'relay');
+            var newEdge = addEdge(edgeSource, nid2, isDashed);
+            edgeSource = null;
+            if (newEdge && !isDashed) {
+              var fromN = findNode(newEdge.fromId), toN = findNode(newEdge.toId);
+              var emx = (fromN.x + toN.x) / 2, emy = (fromN.y + toN.y) / 2;
+              showEdgePopup(newEdge, emx, emy);
+            }
+          }
+        }
+      }
+
+      else if (tool === 'delete') {
+        if (nodeG) {
+          removeNode(parseInt(nodeG.dataset.nodeId));
+        } else if (edgeG) {
+          removeEdge(parseInt(edgeG.dataset.edgeId));
+        }
+      }
+    });
+
+    svg.addEventListener('pointermove', function(evt) {
+      if (dragNode) {
+        var pt = svgPoint(evt);
+        dragNode.x = Math.max(R, Math.min(960 - R, pt.x - dragOffset.x));
+        dragNode.y = Math.max(R, Math.min(600 - R, pt.y - dragOffset.y));
+        dragNode.gEl.setAttribute('transform', 'translate(' + dragNode.x + ',' + dragNode.y + ')');
+        updateEdgePositions();
+        evt.preventDefault();
+      }
+      if (edgeSource !== null) {
+        var pt2 = svgPoint(evt);
+        ghost.setAttribute('x2', pt2.x);
+        ghost.setAttribute('y2', pt2.y);
+      }
+    });
+
+    svg.addEventListener('pointerup', function(evt) {
+      if (dragNode) {
+        dragNode.gEl.classList.remove('dragging');
+        dragNode = null;
+        svg.releasePointerCapture(evt.pointerId);
+      }
+    });
+
+    svg.addEventListener('dblclick', function(evt) {
+      var edgeG = evt.target.closest('[data-edge-id]');
+      if (edgeG && tool === 'select') {
+        var eid = parseInt(edgeG.dataset.edgeId);
+        var edge = edges.find(function(e) { return e.id === eid; });
+        if (edge && !edge.dashed) {
+          var fn = findNode(edge.fromId), tn = findNode(edge.toId);
+          showEdgePopup(edge, (fn.x+tn.x)/2, (fn.y+tn.y)/2);
+        }
+      }
+    });
+
+    document.addEventListener('keydown', function(evt) {
+      if (evt.key === 'Escape') {
+        if (edgeSource !== null) {
+          edgeSource = null;
+          ghost.setAttribute('opacity', '0');
+          nodes.forEach(function(n) { n.gEl.classList.remove('source-highlight'); });
+        }
+        if (popup.style.display !== 'none') {
+          if (pendingEdge && !pendingEdge.act && !pendingEdge.dashed) removeEdge(pendingEdge.id);
+          hideEdgePopup();
+        }
+      }
+    });
+
+    // ── NETWORK VALIDATION ──
+    function computeTE(nodeId, visited) {
+      if (!visited) visited = {};
+      if (visited[nodeId]) return 0;
+      visited[nodeId] = true;
+      var incoming = edges.filter(function(e) { return e.toId === nodeId; });
+      if (incoming.length === 0) return 0;
+      var maxTE = 0;
+      incoming.forEach(function(e) {
+        var v = computeTE(e.fromId, Object.assign({}, visited)) + e.dur;
+        if (v > maxTE) maxTE = v;
+      });
+      return maxTE;
+    }
+
+    function computeTL(nodeId, projectEnd, visited) {
+      if (!visited) visited = {};
+      if (visited[nodeId]) return Infinity;
+      visited[nodeId] = true;
+      var outgoing = edges.filter(function(e) { return e.fromId === nodeId; });
+      if (outgoing.length === 0) return projectEnd;
+      var minTL = Infinity;
+      outgoing.forEach(function(e) {
+        var v = computeTL(e.toId, projectEnd, Object.assign({}, visited)) - e.dur;
+        if (v < minTL) minTL = v;
+      });
+      return minTL;
+    }
+
+    function canReach(fromId, toId, visited) {
+      if (fromId === toId) return true;
+      if (visited[fromId]) return false;
+      visited[fromId] = true;
+      return edges.filter(function(e) { return e.fromId === fromId; })
+        .some(function(e) { return canReach(e.toId, toId, Object.assign({}, visited)); });
+    }
+
+    document.getElementById('ex4-net-check').addEventListener('click', function() {
+      var fb = document.getElementById('ex4-net-feedback');
+      var score = 0, total = 0, messages = [];
+
+      var actEdges = edges.filter(function(e) { return !e.dashed; });
+      var relayEdges = edges.filter(function(e) { return e.dashed; });
+
+      total += 3;
+      if (nodes.length === 13) score++; else messages.push('Knooppunten: ' + nodes.length + '/13');
+      if (actEdges.length === 14) score++; else messages.push('Activiteiten: ' + actEdges.length + '/14');
+      if (relayEdges.length === 4) score++; else messages.push('0-lijnen: ' + relayEdges.length + '/4');
+
+      var actMap = {};
+      actEdges.forEach(function(e) { if (e.act) actMap[e.act] = e; });
+
+      ACTIVITIES.forEach(function(a) {
+        total++;
+        var edge = actMap[a.id];
+        if (edge && edge.dur === a.dur) { score++; }
+        else if (!edge) { messages.push('Activiteit ' + a.id + ' ontbreekt'); }
+        else { messages.push('Act ' + a.id + ': duur ' + edge.dur + ' (verwacht ' + a.dur + ')'); }
+      });
+
+      ACTIVITIES.forEach(function(a) {
+        total++;
+        var edge = actMap[a.id];
+        if (!edge) return;
+        var srcId = edge.fromId;
+
+        if (a.pred.length === 0) {
+          var incoming = edges.filter(function(e) { return e.toId === srcId; });
+          if (incoming.length === 0) score++;
+          else messages.push('Act ' + a.id + ': bronknooppunt heeft onverwachte inkomende verbindingen');
+        } else {
+          var allOk = true;
+          a.pred.forEach(function(predId) {
+            var predEdge = actMap[predId];
+            if (!predEdge) { allOk = false; return; }
+            if (!canReach(predEdge.toId, srcId, {})) allOk = false;
+          });
+          if (allOk) score++;
+          else messages.push('Act ' + a.id + ': voorgangers bereiken bronknooppunt niet');
+        }
+      });
+
+      var projectEnd = 0;
+      nodes.forEach(function(n) {
+        var te = computeTE(n.id);
+        if (te > projectEnd) projectEnd = te;
+      });
+
+      nodes.forEach(function(n) {
+        var teVal = n._teInput.value.trim() === '' ? NaN : parseInt(n._teInput.value, 10);
+        var tlVal = n._tlInput.value.trim() === '' ? NaN : parseInt(n._tlInput.value, 10);
+        var expectedTE = computeTE(n.id);
+        var expectedTL = computeTL(n.id, projectEnd);
+
+        total++;
+        if (!isNaN(teVal) && teVal === expectedTE) {
+          n._teInput.classList.remove('wrong'); n._teInput.classList.add('correct'); score++;
+        } else {
+          n._teInput.classList.remove('correct');
+          if (!isNaN(teVal)) n._teInput.classList.add('wrong');
+        }
+
+        total++;
+        if (!isNaN(tlVal) && !isNaN(expectedTL) && isFinite(expectedTL) && tlVal === expectedTL) {
+          n._tlInput.classList.remove('wrong'); n._tlInput.classList.add('correct'); score++;
+        } else {
+          n._tlInput.classList.remove('correct');
+          if (!isNaN(tlVal)) n._tlInput.classList.add('wrong');
+        }
+      });
+
+      var pct = total > 0 ? Math.round(score / total * 100) : 0;
+      var msg = 'Score: ' + score + '/' + total + ' (' + pct + '%)';
+      if (messages.length > 0) msg += ' — ' + messages.slice(0, 3).join('; ');
+      if (score === total) msg = 'Uitstekend! ' + score + '/' + total + ' — Het netwerk is perfect!';
+      fb.textContent = msg;
+      fb.className = score === total ? 'ex1-feedback success' : pct >= 60 ? 'ex1-feedback partial' : 'ex1-feedback fail';
+    });
+
+    document.getElementById('ex4-net-reset').addEventListener('click', function() {
+      while (edges.length) { edges[0].gEl.remove(); edges.splice(0, 1); }
+      while (nodes.length) { nodes[0].gEl.remove(); nodes.splice(0, 1); }
+      nextId = 1; nextEdgeId = 1;
+      setTool('select');
+      var fb = document.getElementById('ex4-net-feedback');
       fb.textContent = ''; fb.className = 'ex1-feedback';
     });
   })();
