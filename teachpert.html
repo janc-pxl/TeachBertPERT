@@ -2984,9 +2984,19 @@
     // ── NODE OPERATIONS ──
     function findNode(id) { return nodes.find(function(n) { return n.id === id; }); }
 
+    function toRoman(num) {
+      var vals = [1000,900,500,400,100,90,50,40,10,9,5,4,1];
+      var syms = ['M','CM','D','CD','C','XC','L','XL','X','IX','V','IV','I'];
+      var result = '';
+      for (var i = 0; i < vals.length; i++) {
+        while (num >= vals[i]) { result += syms[i]; num -= vals[i]; }
+      }
+      return result;
+    }
+
     function addNode(x, y) {
       var id = nextId++;
-      var label = ROMAN[id - 1] || String(id);
+      var label = ROMAN[id - 1] || toRoman(id);
       var node = { id:id, label:label, x:x, y:y, gEl:null, _teInput:null, _tlInput:null };
 
       var g = document.createElementNS('http://www.w3.org/2000/svg','g');
@@ -3419,10 +3429,8 @@
       var actEdges = edges.filter(function(e) { return !e.dashed; });
       var relayEdges = edges.filter(function(e) { return e.dashed; });
 
-      total += 3;
-      if (nodes.length === 10) score++; else messages.push('Knooppunten: ' + nodes.length + '/10');
+      total += 1;
       if (actEdges.length === 8) score++; else messages.push('Activiteiten: ' + actEdges.length + '/8');
-      if (relayEdges.length === 3) score++; else messages.push('0-lijnen: ' + relayEdges.length + '/3');
 
       // Check each activity has correct duration
       var actMap = {};
