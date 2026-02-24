@@ -3246,10 +3246,17 @@
           var edge = edges.find(function(e) { return e.id === eid; });
           if (edge) {
             edge.selected = !edge.selected;
-            edge._line.classList.toggle('selected', edge.selected);
-            edge._lbl.classList.toggle('selected', edge.selected);
-            var marker = edge.selected ? 'url(#ex3-m-sel)' : (edge.dashed ? 'url(#ex3-m-dash)' : 'url(#ex3-m-def)');
-            edge._line.setAttribute('marker-end', marker);
+            if (edge.selected) {
+              edge._line.setAttribute('stroke', 'var(--accent)');
+              edge._line.setAttribute('stroke-width', '3');
+              edge._line.setAttribute('marker-end', 'url(#ex3-m-sel)');
+              edge._lbl.setAttribute('fill', 'var(--accent)');
+            } else {
+              edge._line.setAttribute('stroke', edge.dashed ? '#bbb' : '#888');
+              edge._line.setAttribute('stroke-width', edge.dashed ? '1.6' : '2');
+              edge._line.setAttribute('marker-end', edge.dashed ? 'url(#ex3-m-dash)' : 'url(#ex3-m-def)');
+              edge._lbl.setAttribute('fill', edge.dashed ? '#bbb' : '#666');
+            }
           }
         }
       }
@@ -3894,10 +3901,17 @@
           var edge = edges.find(function(e) { return e.id === eid; });
           if (edge) {
             edge.selected = !edge.selected;
-            edge._line.classList.toggle('selected', edge.selected);
-            edge._lbl.classList.toggle('selected', edge.selected);
-            var marker = edge.selected ? 'url(#ex4-m-sel)' : (edge.dashed ? 'url(#ex4-m-dash)' : 'url(#ex4-m-def)');
-            edge._line.setAttribute('marker-end', marker);
+            if (edge.selected) {
+              edge._line.setAttribute('stroke', 'var(--accent)');
+              edge._line.setAttribute('stroke-width', '3');
+              edge._line.setAttribute('marker-end', 'url(#ex4-m-sel)');
+              edge._lbl.setAttribute('fill', 'var(--accent)');
+            } else {
+              edge._line.setAttribute('stroke', edge.dashed ? '#bbb' : '#888');
+              edge._line.setAttribute('stroke-width', edge.dashed ? '1.6' : '2');
+              edge._line.setAttribute('marker-end', edge.dashed ? 'url(#ex4-m-dash)' : 'url(#ex4-m-def)');
+              edge._lbl.setAttribute('fill', edge.dashed ? '#bbb' : '#666');
+            }
           }
         }
       }
