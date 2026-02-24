@@ -11,6 +11,7 @@ Build an interactive webpage that teaches students PERT (Program Evaluation and 
 - `003 - Oefening 2 - with labels.png` exercise 2, with labels for activities added.
 - `solution 3.png`, `solution 3 - alternative with dummy.png` — two valid solutions for exercise 3
 - `solution 4 - PERT.png`, `solution 4 - PERT Variant with dummy.png` — two valid solutions for exercise 4
+- `solution oefening 5.png` a solution for oefening 5
 - `2025_10_huisstijlhandboek.pdf` a document describing the look and feel of all our company websites
 - `1314_logo_pxl_bol_witrand.png` the PXL logo
 
