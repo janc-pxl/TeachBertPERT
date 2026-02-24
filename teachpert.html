@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PERT — Interactieve Leerwebpagina</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@600;700;800;900&display=swap" rel="stylesheet">
   <style>
     /* ─── SUB / SUP FIX ─────────────────────────────────────── */
     sub { vertical-align: sub;   font-size: .75em; }
@@ -11,15 +14,16 @@
 
     /* ─── DESIGN TOKENS ─────────────────────────────────────── */
     :root {
-      --primary:  #1e2a4a;
+      --primary:  #030203;
       --accent:   #e63946;
+      --gold:     #AE9A64;
       --green:    #2a9d8f;
-      --blue:     #457b9d;
+      --blue:     #030203;
       --orange:   #e76f51;
-      --bg:       #f0f2f5;
+      --bg:       #f5f5f3;
       --card:     #ffffff;
       --border:   #dde2ea;
-      --text:     #1a1a2e;
+      --text:     #030203;
       --muted:    #6b7280;
     }
 
@@ -27,10 +31,14 @@
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-family: Arial, 'Segoe UI', system-ui, -apple-system, sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.65;
+    }
+
+    h1, h2, h3 {
+      font-family: 'Raleway', Arial, sans-serif;
     }
 
     /* ─── NAVIGATION ────────────────────────────────────────── */
@@ -71,7 +79,7 @@
       flex-shrink: 0;
     }
     .nav-link:hover          { color: #fff; }
-    .nav-link.active         { color: #fff; border-bottom-color: var(--accent); }
+    .nav-link.active         { color: #fff; border-bottom-color: var(--gold); }
     .nav-link.disabled       { color: rgba(255,255,255,.3); cursor: default; pointer-events: none; }
 
     /* ─── LAYOUT ────────────────────────────────────────────── */
@@ -84,7 +92,7 @@
     /* ─── SECTION HEADER ────────────────────────────────────── */
     .section-badge {
       display: inline-block;
-      background: var(--accent);
+      background: var(--gold);
       color: #fff;
       font-size: 0.68rem;
       font-weight: 700;
@@ -128,8 +136,8 @@
 
     /* ─── DEFINITIE BLOCK ───────────────────────────────────── */
     .definitie {
-      background: #eef5fb;
-      border-left: 4px solid var(--blue);
+      background: #f8f6f1;
+      border-left: 4px solid var(--gold);
       border-radius: 0 10px 10px 0;
       padding: 1.1rem 1.4rem;
       margin-bottom: 1.25rem;
@@ -139,7 +147,7 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1.2px;
-      color: var(--blue);
+      color: var(--gold);
       margin-bottom: 0.35rem;
     }
     .definitie p { font-size: 0.95rem; }
@@ -148,7 +156,7 @@
     details { margin-top: 0.85rem; }
     summary {
       font-size: 0.87rem;
-      color: var(--blue);
+      color: var(--gold);
       cursor: pointer;
       font-weight: 600;
       list-style: none;
@@ -233,8 +241,8 @@
       transition: border-color .15s, box-shadow .15s;
     }
     .concept-card:hover {
-      border-color: var(--blue);
-      box-shadow: 0 3px 12px rgba(69,123,157,.12);
+      border-color: var(--gold);
+      box-shadow: 0 3px 12px rgba(174,154,100,.15);
     }
     .concept-card svg { display: block; margin: 0 auto .9rem; overflow: visible; }
     .concept-card h3  { font-size: .92rem; font-weight: 700; color: var(--primary); margin-bottom: .35rem; }
@@ -480,7 +488,7 @@
 
     .demo-explanation {
       background: var(--bg);
-      border-left: 3px solid var(--blue);
+      border-left: 3px solid var(--gold);
       border-radius: 0 8px 8px 0;
       padding: .9rem 1.1rem;
       font-size: .9rem;
@@ -525,7 +533,7 @@
     .demo-btn-prev { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
     .demo-btn-prev:not(:disabled):hover { background: #e2e5ea; }
     .demo-btn-next { background: var(--blue); color: #fff; }
-    .demo-btn-next:not(:disabled):hover { background: #2d6a8f; }
+    .demo-btn-next:not(:disabled):hover { background: #333; }
     .demo-btn-reset {
       background: none; border: none;
       font-size: .8rem; color: var(--muted);
@@ -602,7 +610,7 @@
       color: #fff;
       transition: background .15s;
     }
-    .ex1-check-btn:hover { background: #2d6a8f; }
+    .ex1-check-btn:hover { background: #333; }
     .ex1-reset-btn {
       background: none; border: none;
       font-size: .82rem; color: var(--muted);
@@ -632,7 +640,7 @@
 
     .ex1-instructions {
       background: var(--bg);
-      border-left: 3px solid var(--blue);
+      border-left: 3px solid var(--gold);
       border-radius: 0 8px 8px 0;
       padding: .8rem 1.1rem;
       font-size: .88rem;
@@ -673,7 +681,7 @@
       font-family: inherit; transition: all .15s; color: var(--text);
     }
     .ex3-tool:hover { border-color: var(--blue); color: var(--blue); }
-    .ex3-tool.active { border-color: var(--blue); background: #eef5fb; color: var(--blue); }
+    .ex3-tool.active { border-color: var(--primary); background: #f0f0ee; color: var(--primary); }
 
     .ex3-canvas-wrap {
       background: #f8f9fb; border: 1px solid var(--border); border-top: none;
@@ -706,7 +714,7 @@
       font-size: .82rem; font-weight: 600; cursor: pointer; font-family: inherit;
     }
     .ex3-popup-ok { background: var(--blue); color: #fff; }
-    .ex3-popup-ok:hover { background: #2d6a8f; }
+    .ex3-popup-ok:hover { background: #333; }
     .ex3-popup-cancel { background: var(--bg); color: var(--text); border: 1px solid var(--border) !important; }
 
     .ex3-locked { position: relative; pointer-events: none; opacity: .45; filter: grayscale(.4); }
@@ -728,7 +736,10 @@
 <!--  NAVIGATION                                               -->
 <!-- ══════════════════════════════════════════════════════════ -->
 <nav>
-  <div class="nav-logo">PERT</div>
+  <div class="nav-logo" style="display:flex;align-items:center;gap:.6rem;">
+    <img src="pxl-logo-64.png" alt="Hogeschool PXL" width="28" height="28" style="border-radius:50%;">
+    PERT
+  </div>
   <a href="#theorie"   class="nav-link active">Theorie</a>
   <a href="#demo"      class="nav-link">Demo</a>
   <a href="#oefening1" class="nav-link">Oefening 1</a>
@@ -1973,6 +1984,15 @@
   </section><!-- /oefening4 -->
 
 </main>
+
+<footer style="background:#030203;padding:1.5rem 1.5rem;">
+  <div style="max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap;">
+    <img src="pxl-logo-64.png" alt="Hogeschool PXL" width="36" height="36" style="border-radius:50%;">
+    <span style="font-family:'Raleway',Arial,sans-serif;font-size:.82rem;color:rgba(255,255,255,.6);">
+      Hogeschool PXL &bull; Elfde-Liniestraat 24 &bull; B-3500 HASSELT &bull; www.pxl.be
+    </span>
+  </div>
+</footer>
 
 <!-- ══════════════════════════════════════════════════════════ -->
 <!--  JAVASCRIPT                                               -->
