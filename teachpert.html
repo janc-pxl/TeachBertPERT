@@ -747,6 +747,7 @@
   <a href="#oefening3" class="nav-link">Oefening 3</a>
   <a href="#oefening4" class="nav-link">Oefening 4</a>
   <a href="#oefening5" class="nav-link">Oefening 5</a>
+  <a href="#playground" class="nav-link">Playground</a>
 </nav>
 
 <!-- ══════════════════════════════════════════════════════════ -->
@@ -2094,6 +2095,71 @@
 
   </section><!-- /oefening5 -->
 
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!--  PLAYGROUND                                                -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section id="playground" style="margin-top:3rem;">
+
+    <div class="section-header">
+      <div class="section-badge">Playground</div>
+      <h1>PERT Playground</h1>
+      <p>Teken vrij je eigen PERT-netwerk.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔨 Bouw een PERT-netwerk</div>
+      <div class="ex1-instructions" style="margin-bottom:1rem;">
+        <strong>Instructies:</strong>
+        Gebruik de werkbalk om knooppunten te plaatsen en verbindingen te tekenen.
+        <strong>(1)</strong> Klik <em>Knooppunt</em> en klik op het canvas om een knooppunt toe te voegen.
+        <strong>(2)</strong> Klik <em>Activiteit</em> of <em>0-lijn</em>, klik op een bronknooppunt en dan op een doelknooppunt.
+        <strong>(3)</strong> Vul T<sub>E</sub> en T<sub>L</sub> in bij elk knooppunt.
+        <strong>(4)</strong> Duid het kritieke pad aan: klik in <em>Selecteer</em>-modus op de verbindingen (inclusief 0-lijnen) die op het kritieke pad liggen (ze kleuren rood).
+      </div>
+
+      <div class="ex3-toolbar" id="play-toolbar">
+        <button class="ex3-tool active" data-tool="select">&#8598; Selecteer</button>
+        <button class="ex3-tool" data-tool="node">&#8853; Knooppunt</button>
+        <button class="ex3-tool" data-tool="edge">&#8594; Activiteit</button>
+        <button class="ex3-tool" data-tool="relay">&#8674; 0-lijn</button>
+        <button class="ex3-tool" data-tool="delete">&#10005; Verwijder</button>
+      </div>
+
+      <div class="ex3-canvas-wrap" id="play-canvas-wrap">
+        <svg id="play-svg" viewBox="0 0 960 500" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="play-m-def" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#888"/></marker>
+            <marker id="play-m-dash" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#bbb"/></marker>
+            <marker id="play-m-sel" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="var(--accent)"/></marker>
+            <marker id="play-m-ghost" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#457b9d" opacity=".5"/></marker>
+            <clipPath id="play-cl"><rect x="-30" y="-30" width="30" height="60"/></clipPath>
+            <clipPath id="play-ctr"><rect x="0" y="-30" width="30" height="30"/></clipPath>
+            <clipPath id="play-cbr"><rect x="0" y="0" width="30" height="30"/></clipPath>
+          </defs>
+          <g id="play-grid" opacity=".15"></g>
+          <line id="play-ghost" x1="0" y1="0" x2="0" y2="0" stroke="#457b9d" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#play-m-ghost)" opacity="0" pointer-events="none"/>
+          <g id="play-edges"></g>
+          <g id="play-nodes"></g>
+        </svg>
+        <div class="ex3-edge-popup" id="play-edge-popup" style="display:none;">
+          <label for="play-popup-act">Activiteit</label>
+          <input type="text" id="play-popup-act" placeholder="bv. A" style="width:100%;padding:4px 6px;border:1px solid var(--border);border-radius:4px;font-size:.85rem;">
+          <label for="play-popup-dur">Duurtijd</label>
+          <input type="number" id="play-popup-dur" min="0" placeholder="0">
+          <div class="ex3-edge-popup-btns">
+            <button class="ex3-popup-ok" id="play-popup-ok">OK</button>
+            <button class="ex3-popup-cancel" id="play-popup-cancel">Annuleer</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex1-controls" style="margin-top:1rem;">
+        <button class="ex1-reset-btn" id="play-net-reset">Opnieuw beginnen</button>
+      </div>
+    </div>
+
+  </section><!-- /playground -->
+
 </main>
 
 <footer style="background:#030203;padding:1.5rem 1.5rem;">
@@ -3064,21 +3130,16 @@
     document.getElementById('ex2-reset').addEventListener('click', reset);
   })();
 
-  /* ── EXERCISE 3: DE PIRAMIDE VAN DE FARAO ──────────────── */
-  (function () {
-    const ACTIVITIES = [
-      { id:'A', desc:'Maak de plannen',               pred:[],        to:1, tl:2, tp:3,  te:2 },
-      { id:'B', desc:'Zoek voldoende dienaren',       pred:[],        to:3, tl:3, tp:3,  te:3 },
-      { id:'C', desc:'Hak en transporteer rotsen',    pred:['A','B'], to:8, tl:8, tp:14, te:9 },
-      { id:'D', desc:'Leid dienaren op als beeldhouwers', pred:['B'], to:2, tl:3, tp:4,  te:3 },
-      { id:'E', desc:'Beeldhouw figuren',             pred:['C','D'], to:8, tl:10,tp:12, te:10 },
-      { id:'F', desc:'Leg de fundamenten',            pred:['C'],     to:5, tl:10,tp:15, te:10 },
-      { id:'G', desc:'Verplaats beeld naar piramide', pred:['E','F'], to:3, tl:5, tp:7,  te:5 },
-      { id:'H', desc:'Vorm piramide met rotsblokken', pred:['G'],     to:27,tl:32,tp:43, te:33 },
-    ];
-
-    const ROMAN = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
-    const R = 30;
+  /* ── SHARED PERT BUILDER FACTORY ───────────────────────── */
+  function createPertBuilder(cfg) {
+    var prefix = cfg.prefix;
+    var activities = cfg.activities;
+    var durField = cfg.durField;
+    var canvasHeight = cfg.canvasHeight || 500;
+    var labels = cfg.labels;
+    var edgeLabelFn = cfg.edgeLabelFn;
+    var popupDurReadonly = cfg.popupDurReadonly;
+    var R = 30;
 
     // ── STATE ──
     var nodes = [];
@@ -3091,21 +3152,21 @@
     var nextEdgeId = 1;
 
     // ── DOM REFS ──
-    var svg = document.getElementById('ex3-svg');
-    if (!svg) return;
-    var edgesG = document.getElementById('ex3-edges');
-    var nodesG = document.getElementById('ex3-nodes');
-    var ghost = document.getElementById('ex3-ghost');
-    var canvasWrap = document.getElementById('ex3-canvas-wrap');
-    var popup = document.getElementById('ex3-edge-popup');
-    var popupAct = document.getElementById('ex3-popup-act');
-    var popupDur = document.getElementById('ex3-popup-dur');
-    var toolbar = document.getElementById('ex3-toolbar');
+    var svg = document.getElementById(prefix + '-svg');
+    if (!svg) return null;
+    var edgesG     = document.getElementById(prefix + '-edges');
+    var nodesG     = document.getElementById(prefix + '-nodes');
+    var ghost      = document.getElementById(prefix + '-ghost');
+    var canvasWrap = document.getElementById(prefix + '-canvas-wrap');
+    var popup      = document.getElementById(prefix + '-edge-popup');
+    var popupAct   = document.getElementById(prefix + '-popup-act');
+    var popupDur   = document.getElementById(prefix + '-popup-dur');
+    var toolbar    = document.getElementById(prefix + '-toolbar');
 
     // ── DOT GRID ──
-    var gridG = document.getElementById('ex3-grid');
+    var gridG = document.getElementById(prefix + '-grid');
     for (var gx = 20; gx < 960; gx += 40) {
-      for (var gy = 20; gy < 500; gy += 40) {
+      for (var gy = 20; gy < canvasHeight; gy += 40) {
         var dot = document.createElementNS('http://www.w3.org/2000/svg','circle');
         dot.setAttribute('cx', gx); dot.setAttribute('cy', gy);
         dot.setAttribute('r', '1.5'); dot.setAttribute('fill', '#999');
@@ -3163,7 +3224,7 @@
 
     function addNode(x, y) {
       var id = nextId++;
-      var label = ROMAN[id - 1] || toRoman(id);
+      var label = labels[id - 1] || toRoman(id);
       var node = { id:id, label:label, x:x, y:y, gEl:null, _teInput:null, _tlInput:null };
 
       var g = document.createElementNS('http://www.w3.org/2000/svg','g');
@@ -3171,24 +3232,21 @@
       g.classList.add('ex3-node-group');
       g.dataset.nodeId = id;
 
-      // Background sections
       var bgL = document.createElementNS('http://www.w3.org/2000/svg','circle');
-      bgL.setAttribute('r',R); bgL.setAttribute('fill','#eef0f2'); bgL.setAttribute('clip-path','url(#ex3-cl)');
+      bgL.setAttribute('r',R); bgL.setAttribute('fill','#eef0f2'); bgL.setAttribute('clip-path','url(#' + prefix + '-cl)');
       g.appendChild(bgL);
       var bgTR = document.createElementNS('http://www.w3.org/2000/svg','circle');
-      bgTR.setAttribute('r',R); bgTR.setAttribute('fill','#e8f5e9'); bgTR.setAttribute('clip-path','url(#ex3-ctr)');
+      bgTR.setAttribute('r',R); bgTR.setAttribute('fill','#e8f5e9'); bgTR.setAttribute('clip-path','url(#' + prefix + '-ctr)');
       g.appendChild(bgTR);
       var bgBR = document.createElementNS('http://www.w3.org/2000/svg','circle');
-      bgBR.setAttribute('r',R); bgBR.setAttribute('fill','#e3f0fb'); bgBR.setAttribute('clip-path','url(#ex3-cbr)');
+      bgBR.setAttribute('r',R); bgBR.setAttribute('fill','#e3f0fb'); bgBR.setAttribute('clip-path','url(#' + prefix + '-cbr)');
       g.appendChild(bgBR);
 
-      // Border
       var border = document.createElementNS('http://www.w3.org/2000/svg','circle');
       border.setAttribute('r',R); border.setAttribute('fill','none');
       border.setAttribute('stroke','#333'); border.setAttribute('stroke-width','2.5');
       g.appendChild(border);
 
-      // Dividers
       var lineV = document.createElementNS('http://www.w3.org/2000/svg','line');
       lineV.setAttribute('x1',0); lineV.setAttribute('y1',-R); lineV.setAttribute('x2',0); lineV.setAttribute('y2',R);
       lineV.setAttribute('stroke','#555'); lineV.setAttribute('stroke-width','1.6');
@@ -3198,7 +3256,6 @@
       lineH.setAttribute('stroke','#555'); lineH.setAttribute('stroke-width','1.6');
       g.appendChild(lineH);
 
-      // Label
       var txt = document.createElementNS('http://www.w3.org/2000/svg','text');
       txt.setAttribute('x', -R/2); txt.setAttribute('y', 5);
       txt.setAttribute('text-anchor','middle');
@@ -3209,7 +3266,6 @@
       txt.textContent = label;
       g.appendChild(txt);
 
-      // TE input (top-right quadrant)
       var foTE = document.createElementNS('http://www.w3.org/2000/svg','foreignObject');
       foTE.setAttribute('x', 2); foTE.setAttribute('y', -R + 3);
       foTE.setAttribute('width', R - 4); foTE.setAttribute('height', R - 3);
@@ -3221,7 +3277,6 @@
       g.appendChild(foTE);
       node._teInput = teInput;
 
-      // TL input (bottom-right quadrant)
       var foTL = document.createElementNS('http://www.w3.org/2000/svg','foreignObject');
       foTL.setAttribute('x', 2); foTL.setAttribute('y', 2);
       foTL.setAttribute('width', R - 4); foTL.setAttribute('height', R - 3);
@@ -3265,11 +3320,10 @@
       line.setAttribute('stroke', dashed ? '#bbb' : '#888');
       line.setAttribute('stroke-width', dashed ? '1.6' : '2');
       if (dashed) line.setAttribute('stroke-dasharray','6 4');
-      line.setAttribute('marker-end', dashed ? 'url(#ex3-m-dash)' : 'url(#ex3-m-def)');
+      line.setAttribute('marker-end', dashed ? 'url(#' + prefix + '-m-dash)' : 'url(#' + prefix + '-m-def)');
       g.appendChild(line);
       edge._line = line;
 
-      // Label
       var mx = (ep.x1+ep.x2)/2, my = (ep.y1+ep.y2)/2;
       var dx = ep.x2-ep.x1, dy = ep.y2-ep.y1;
       var dist = Math.sqrt(dx*dx+dy*dy) || 1;
@@ -3281,11 +3335,10 @@
       lbl.setAttribute('font-size','10'); lbl.setAttribute('font-weight','600');
       lbl.setAttribute('fill', dashed ? '#bbb' : '#666');
       lbl.setAttribute('pointer-events','none');
-      lbl.textContent = dashed ? '0' : (act ? act + '(' + dur + ')' : '');
+      lbl.textContent = dashed ? '0' : (act ? edgeLabelFn(act, dur) : '');
       g.appendChild(lbl);
       edge._lbl = lbl;
 
-      // Hit area
       var hit = document.createElementNS('http://www.w3.org/2000/svg','line');
       hit.setAttribute('x1',ep.x1); hit.setAttribute('y1',ep.y1);
       hit.setAttribute('x2',ep.x2); hit.setAttribute('y2',ep.y2);
@@ -3327,6 +3380,7 @@
 
     // ── EDGE POPUP ──
     var pendingEdge = null;
+    var isFreeMode = popupAct.tagName !== 'SELECT';
 
     function showEdgePopup(edge, svgX, svgY) {
       pendingEdge = edge;
@@ -3340,28 +3394,31 @@
       popup.style.top = Math.max(0, top - 30) + 'px';
       popup.style.display = 'block';
 
-      // Populate activity dropdown with unused activities
-      var usedActs = {};
-      edges.forEach(function(e) { if (e.act && e.id !== edge.id) usedActs[e.act] = true; });
-      popupAct.innerHTML = '<option value="">— Kies —</option>';
-      ACTIVITIES.forEach(function(a) {
-        if (!usedActs[a.id]) {
-          var opt = document.createElement('option');
-          opt.value = a.id;
-          opt.textContent = a.id + ' — ' + a.desc;
-          popupAct.appendChild(opt);
-        }
-      });
-      if (edge.act) popupAct.value = edge.act;
-      // Auto-fill duration from the te value of the selected activity
-      var _selAct = ACTIVITIES.find(function(a) { return a.id === popupAct.value; });
-      popupDur.value = _selAct ? _selAct.te : '';
-      popupAct.focus();
+      if (isFreeMode) {
+        popupAct.value = edge.act || '';
+        popupDur.value = edge.dur || '';
+      } else {
+        var usedActs = {};
+        edges.forEach(function(e) { if (e.act && e.id !== edge.id) usedActs[e.act] = true; });
+        popupAct.innerHTML = '<option value="">— Kies —</option>';
+        activities.forEach(function(a) {
+          if (!usedActs[a.id]) {
+            var opt = document.createElement('option');
+            opt.value = a.id;
+            opt.textContent = cfg.optionLabelFn ? cfg.optionLabelFn(a) : (a.id + ' — ' + a.desc);
+            popupAct.appendChild(opt);
+          }
+        });
+        if (edge.act) popupAct.value = edge.act;
+        var _selAct = activities.find(function(a) { return a.id === popupAct.value; });
+        popupDur.value = _selAct ? _selAct[durField] : '';
 
-      popupAct.onchange = function() {
-        var a = ACTIVITIES.find(function(a) { return a.id === popupAct.value; });
-        popupDur.value = a ? a.te : '';
-      };
+        popupAct.onchange = function() {
+          var a = activities.find(function(a) { return a.id === popupAct.value; });
+          popupDur.value = a ? a[durField] : '';
+        };
+      }
+      popupAct.focus();
     }
 
     function hideEdgePopup() {
@@ -3369,15 +3426,15 @@
       pendingEdge = null;
     }
 
-    document.getElementById('ex3-popup-ok').addEventListener('click', function() {
+    document.getElementById(prefix + '-popup-ok').addEventListener('click', function() {
       if (!pendingEdge) return;
       pendingEdge.act = popupAct.value;
       pendingEdge.dur = parseInt(popupDur.value, 10) || 0;
-      pendingEdge._lbl.textContent = pendingEdge.act ? pendingEdge.act + '(' + pendingEdge.dur + ')' : String(pendingEdge.dur);
+      pendingEdge._lbl.textContent = pendingEdge.act ? edgeLabelFn(pendingEdge.act, pendingEdge.dur) : String(pendingEdge.dur);
       hideEdgePopup();
     });
 
-    document.getElementById('ex3-popup-cancel').addEventListener('click', function() {
+    document.getElementById(prefix + '-popup-cancel').addEventListener('click', function() {
       if (pendingEdge && !pendingEdge.act && !pendingEdge.dashed) {
         removeEdge(pendingEdge.id);
       }
@@ -3412,12 +3469,12 @@
             if (edge.selected) {
               edge._line.setAttribute('stroke', 'var(--accent)');
               edge._line.setAttribute('stroke-width', '3');
-              edge._line.setAttribute('marker-end', 'url(#ex3-m-sel)');
+              edge._line.setAttribute('marker-end', 'url(#' + prefix + '-m-sel)');
               edge._lbl.setAttribute('fill', 'var(--accent)');
             } else {
               edge._line.setAttribute('stroke', edge.dashed ? '#bbb' : '#888');
               edge._line.setAttribute('stroke-width', edge.dashed ? '1.6' : '2');
-              edge._line.setAttribute('marker-end', edge.dashed ? 'url(#ex3-m-dash)' : 'url(#ex3-m-def)');
+              edge._line.setAttribute('marker-end', edge.dashed ? 'url(#' + prefix + '-m-dash)' : 'url(#' + prefix + '-m-def)');
               edge._lbl.setAttribute('fill', edge.dashed ? '#bbb' : '#666');
             }
           }
@@ -3471,7 +3528,7 @@
       if (dragNode) {
         var pt = svgPoint(evt);
         dragNode.x = Math.max(R, Math.min(960 - R, pt.x - dragOffset.x));
-        dragNode.y = Math.max(R, Math.min(500 - R, pt.y - dragOffset.y));
+        dragNode.y = Math.max(R, Math.min(canvasHeight - R, pt.y - dragOffset.y));
         dragNode.gEl.setAttribute('transform', 'translate(' + dragNode.x + ',' + dragNode.y + ')');
         updateEdgePositions();
         evt.preventDefault();
@@ -3491,7 +3548,6 @@
       }
     });
 
-    // Double-click edge to edit label
     svg.addEventListener('dblclick', function(evt) {
       var edgeG = evt.target.closest('[data-edge-id]');
       if (edgeG && tool === 'select') {
@@ -3504,7 +3560,6 @@
       }
     });
 
-    // Escape cancels edge drawing or popup
     document.addEventListener('keydown', function(evt) {
       if (evt.key === 'Escape') {
         if (edgeSource !== null) {
@@ -3518,6 +3573,93 @@
         }
       }
     });
+
+    // ── GRAPH TRAVERSAL (for validation) ──
+    function computeTE(nodeId, visited) {
+      if (!visited) visited = {};
+      if (visited[nodeId]) return 0;
+      visited[nodeId] = true;
+      var incoming = edges.filter(function(e) { return e.toId === nodeId; });
+      if (incoming.length === 0) return 0;
+      var maxTE = 0;
+      incoming.forEach(function(e) {
+        var v = computeTE(e.fromId, Object.assign({}, visited)) + e.dur;
+        if (v > maxTE) maxTE = v;
+      });
+      return maxTE;
+    }
+
+    function computeTL(nodeId, projectEnd, visited) {
+      if (!visited) visited = {};
+      if (visited[nodeId]) return Infinity;
+      visited[nodeId] = true;
+      var outgoing = edges.filter(function(e) { return e.fromId === nodeId; });
+      if (outgoing.length === 0) return projectEnd;
+      var minTL = Infinity;
+      outgoing.forEach(function(e) {
+        var v = computeTL(e.toId, projectEnd, Object.assign({}, visited)) - e.dur;
+        if (v < minTL) minTL = v;
+      });
+      return minTL;
+    }
+
+    function canReach(fromId, toId, visited) {
+      if (fromId === toId) return true;
+      if (visited[fromId]) return false;
+      visited[fromId] = true;
+      return edges.filter(function(e) { return e.fromId === fromId; })
+        .some(function(e) { return canReach(e.toId, toId, Object.assign({}, visited)); });
+    }
+
+    // ── RESET ──
+    function resetBuilder() {
+      while (edges.length) { edges[0].gEl.remove(); edges.splice(0, 1); }
+      while (nodes.length) { nodes[0].gEl.remove(); nodes.splice(0, 1); }
+      nextId = 1; nextEdgeId = 1;
+      edgeSource = null;
+      ghost.setAttribute('opacity', '0');
+      hideEdgePopup();
+      setTool('select');
+    }
+
+    return {
+      nodes: nodes,
+      edges: edges,
+      computeTE: computeTE,
+      computeTL: computeTL,
+      canReach: canReach,
+      findNode: findNode,
+      hideEdgePopup: hideEdgePopup,
+      setTool: setTool,
+      resetBuilder: resetBuilder
+    };
+  }
+
+  /* ── EXERCISE 3: DE PIRAMIDE VAN DE FARAO ──────────────── */
+  (function () {
+    var ACTIVITIES = [
+      { id:'A', desc:'Maak de plannen',               pred:[],        to:1, tl:2, tp:3,  te:2 },
+      { id:'B', desc:'Zoek voldoende dienaren',       pred:[],        to:3, tl:3, tp:3,  te:3 },
+      { id:'C', desc:'Hak en transporteer rotsen',    pred:['A','B'], to:8, tl:8, tp:14, te:9 },
+      { id:'D', desc:'Leid dienaren op als beeldhouwers', pred:['B'], to:2, tl:3, tp:4,  te:3 },
+      { id:'E', desc:'Beeldhouw figuren',             pred:['C','D'], to:8, tl:10,tp:12, te:10 },
+      { id:'F', desc:'Leg de fundamenten',            pred:['C'],     to:5, tl:10,tp:15, te:10 },
+      { id:'G', desc:'Verplaats beeld naar piramide', pred:['E','F'], to:3, tl:5, tp:7,  te:5 },
+      { id:'H', desc:'Vorm piramide met rotsblokken', pred:['G'],     to:27,tl:32,tp:43, te:33 },
+    ];
+
+    var builder = createPertBuilder({
+      prefix: 'ex3',
+      activities: ACTIVITIES,
+      durField: 'te',
+      canvasHeight: 500,
+      labels: ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'],
+      edgeLabelFn: function(act, dur) { return act + '(' + dur + ')'; },
+      optionLabelFn: function(a) { return a.id + ' — ' + a.desc; },
+      popupDurReadonly: true
+    });
+    if (!builder) return;
+    var nodes = builder.nodes, edges = builder.edges;
 
     // ── TE TABLE ──
     var teInputs = {};
@@ -3569,54 +3711,16 @@
     });
 
     // ── NETWORK VALIDATION ──
-    function computeTE(nodeId, visited) {
-      if (!visited) visited = {};
-      if (visited[nodeId]) return 0;
-      visited[nodeId] = true;
-      var incoming = edges.filter(function(e) { return e.toId === nodeId; });
-      if (incoming.length === 0) return 0;
-      var maxTE = 0;
-      incoming.forEach(function(e) {
-        var v = computeTE(e.fromId, Object.assign({}, visited)) + e.dur;
-        if (v > maxTE) maxTE = v;
-      });
-      return maxTE;
-    }
-
-    function computeTL(nodeId, projectEnd, visited) {
-      if (!visited) visited = {};
-      if (visited[nodeId]) return Infinity;
-      visited[nodeId] = true;
-      var outgoing = edges.filter(function(e) { return e.fromId === nodeId; });
-      if (outgoing.length === 0) return projectEnd;
-      var minTL = Infinity;
-      outgoing.forEach(function(e) {
-        var v = computeTL(e.toId, projectEnd, Object.assign({}, visited)) - e.dur;
-        if (v < minTL) minTL = v;
-      });
-      return minTL;
-    }
-
-    function canReach(fromId, toId, visited) {
-      if (fromId === toId) return true;
-      if (visited[fromId]) return false;
-      visited[fromId] = true;
-      return edges.filter(function(e) { return e.fromId === fromId; })
-        .some(function(e) { return canReach(e.toId, toId, Object.assign({}, visited)); });
-    }
+    var computeTE = builder.computeTE, computeTL = builder.computeTL, canReach = builder.canReach;
 
     document.getElementById('ex3-net-check').addEventListener('click', function() {
       var fb = document.getElementById('ex3-net-feedback');
       var score = 0, total = 0, messages = [];
 
-      // Count checks
       var actEdges = edges.filter(function(e) { return !e.dashed; });
-      var relayEdges = edges.filter(function(e) { return e.dashed; });
-
       total += 1;
       if (actEdges.length === 8) score++; else messages.push('Activiteiten: ' + actEdges.length + '/8');
 
-      // Check each activity has correct duration
       var actMap = {};
       actEdges.forEach(function(e) { if (e.act) actMap[e.act] = e; });
 
@@ -3628,13 +3732,11 @@
         else { messages.push('Act ' + a.id + ': duur ' + edge.dur + ' (verwacht ' + a.te + ')'); }
       });
 
-      // Check predecessor relationships
       ACTIVITIES.forEach(function(a) {
         total++;
         var edge = actMap[a.id];
         if (!edge) return;
         var srcId = edge.fromId;
-
         if (a.pred.length === 0) {
           var incoming = edges.filter(function(e) { return e.toId === srcId; });
           if (incoming.length === 0) score++;
@@ -3651,47 +3753,26 @@
         }
       });
 
-      // Compute project end (TE of end nodes)
       var projectEnd = 0;
-      nodes.forEach(function(n) {
-        var te = computeTE(n.id);
-        if (te > projectEnd) projectEnd = te;
-      });
+      nodes.forEach(function(n) { var te = computeTE(n.id); if (te > projectEnd) projectEnd = te; });
 
-      // Check TE/TL values
       nodes.forEach(function(n) {
         var teVal = n._teInput.value.trim() === '' ? NaN : parseInt(n._teInput.value, 10);
         var tlVal = n._tlInput.value.trim() === '' ? NaN : parseInt(n._tlInput.value, 10);
-        var expectedTE = computeTE(n.id);
-        var expectedTL = computeTL(n.id, projectEnd);
-
+        var expectedTE = computeTE(n.id), expectedTL = computeTL(n.id, projectEnd);
         total++;
-        if (!isNaN(teVal) && teVal === expectedTE) {
-          n._teInput.classList.remove('wrong'); n._teInput.classList.add('correct'); score++;
-        } else {
-          n._teInput.classList.remove('correct');
-          if (!isNaN(teVal)) n._teInput.classList.add('wrong');
-        }
-
+        if (!isNaN(teVal) && teVal === expectedTE) { n._teInput.classList.remove('wrong'); n._teInput.classList.add('correct'); score++; }
+        else { n._teInput.classList.remove('correct'); if (!isNaN(teVal)) n._teInput.classList.add('wrong'); }
         total++;
-        if (!isNaN(tlVal) && !isNaN(expectedTL) && isFinite(expectedTL) && tlVal === expectedTL) {
-          n._tlInput.classList.remove('wrong'); n._tlInput.classList.add('correct'); score++;
-        } else {
-          n._tlInput.classList.remove('correct');
-          if (!isNaN(tlVal)) n._tlInput.classList.add('wrong');
-        }
+        if (!isNaN(tlVal) && !isNaN(expectedTL) && isFinite(expectedTL) && tlVal === expectedTL) { n._tlInput.classList.remove('wrong'); n._tlInput.classList.add('correct'); score++; }
+        else { n._tlInput.classList.remove('correct'); if (!isNaN(tlVal)) n._tlInput.classList.add('wrong'); }
       });
 
-      // Critical path validation
       var criticalEdges = [];
       edges.forEach(function(e) {
-        var fromTE = computeTE(e.fromId);
-        var toTE = computeTE(e.toId);
-        var fromTL = computeTL(e.fromId, projectEnd);
-        var toTL = computeTL(e.toId, projectEnd);
-        if (fromTE === fromTL && toTE === toTL && fromTE + e.dur === toTE) {
-          criticalEdges.push(e);
-        }
+        var fromTE = computeTE(e.fromId), toTE = computeTE(e.toId);
+        var fromTL = computeTL(e.fromId, projectEnd), toTL = computeTL(e.toId, projectEnd);
+        if (fromTE === fromTL && toTE === toTL && fromTE + e.dur === toTE) criticalEdges.push(e);
       });
       var cpCorrect = 0, cpWrong = 0;
       edges.forEach(function(e) {
@@ -3700,8 +3781,7 @@
         if (!isCrit && e.selected) cpWrong++;
       });
       var cpTotal = criticalEdges.length;
-      total += cpTotal;
-      score += cpCorrect;
+      total += cpTotal; score += cpCorrect;
       var cpPerfect = cpCorrect === cpTotal && cpWrong === 0;
 
       var pct = total > 0 ? Math.round(score / total * 100) : 0;
@@ -3720,13 +3800,7 @@
 
     // ── RESET ──
     document.getElementById('ex3-net-reset').addEventListener('click', function() {
-      while (edges.length) { edges[0].gEl.remove(); edges.splice(0, 1); }
-      while (nodes.length) { nodes[0].gEl.remove(); nodes.splice(0, 1); }
-      nextId = 1; nextEdgeId = 1;
-      edgeSource = null;
-      ghost.setAttribute('opacity', '0');
-      hideEdgePopup();
-      setTool('select');
+      builder.resetBuilder();
       var fb = document.getElementById('ex3-net-feedback');
       fb.textContent = ''; fb.className = 'ex1-feedback';
     });
@@ -3751,471 +3825,25 @@
       { id:'14', desc:'Integratie ERP-CRM',             pred:['12','13'], dur:10 },
     ];
 
-    const LABELS = ['I','II','III','IV','VI','VII','VIII','IX','X','XI','XII','XIII','XIV'];
-    const R = 30;
-
-    var nodes = [];
-    var edges = [];
-    var tool = 'select';
-    var edgeSource = null;
-    var dragNode = null;
-    var dragOffset = { x:0, y:0 };
-    var nextId = 1;
-    var nextEdgeId = 1;
-
-    var svg = document.getElementById('ex4-svg');
-    if (!svg) return;
-    var edgesG = document.getElementById('ex4-edges');
-    var nodesG = document.getElementById('ex4-nodes');
-    var ghost = document.getElementById('ex4-ghost');
-    var canvasWrap = document.getElementById('ex4-canvas-wrap');
-    var popup = document.getElementById('ex4-edge-popup');
-    var popupAct = document.getElementById('ex4-popup-act');
-    var popupDur = document.getElementById('ex4-popup-dur');
-    var toolbar = document.getElementById('ex4-toolbar');
-
-    var gridG = document.getElementById('ex4-grid');
-    for (var gx = 20; gx < 960; gx += 40) {
-      for (var gy = 20; gy < 600; gy += 40) {
-        var dot = document.createElementNS('http://www.w3.org/2000/svg','circle');
-        dot.setAttribute('cx', gx); dot.setAttribute('cy', gy);
-        dot.setAttribute('r', '1.5'); dot.setAttribute('fill', '#999');
-        gridG.appendChild(dot);
-      }
-    }
-
-    function svgPoint(evt) {
-      var pt = svg.createSVGPoint();
-      pt.x = evt.clientX; pt.y = evt.clientY;
-      return pt.matrixTransform(svg.getScreenCTM().inverse());
-    }
-
-    function edgeEndpoints(fn, tn) {
-      var dx = tn.x - fn.x, dy = tn.y - fn.y;
-      var dist = Math.sqrt(dx*dx + dy*dy);
-      if (dist === 0) return { x1:fn.x, y1:fn.y, x2:tn.x, y2:tn.y };
-      var ux = dx/dist, uy = dy/dist;
-      return { x1: fn.x + ux*R, y1: fn.y + uy*R, x2: tn.x - ux*(R+10), y2: tn.y - uy*(R+10) };
-    }
-
-    function setTool(t) {
-      tool = t;
-      edgeSource = null;
-      ghost.setAttribute('opacity', '0');
-      canvasWrap.classList.remove('tool-node','tool-edge','tool-delete');
-      if (t === 'node') canvasWrap.classList.add('tool-node');
-      else if (t === 'edge' || t === 'relay') canvasWrap.classList.add('tool-edge');
-      else if (t === 'delete') canvasWrap.classList.add('tool-delete');
-      nodes.forEach(function(n) { n.gEl.classList.remove('source-highlight'); });
-      toolbar.querySelectorAll('.ex3-tool').forEach(function(btn) {
-        btn.classList.toggle('active', btn.dataset.tool === t);
-      });
-    }
-
-    toolbar.addEventListener('click', function(e) {
-      var btn = e.target.closest('.ex3-tool');
-      if (btn) setTool(btn.dataset.tool);
+    var builder = createPertBuilder({
+      prefix: 'ex4',
+      activities: ACTIVITIES,
+      durField: 'dur',
+      canvasHeight: 600,
+      labels: ['I','II','III','IV','VI','VII','VIII','IX','X','XI','XII','XIII','XIV'],
+      edgeLabelFn: function(act, dur) { return 'Act ' + act + '(' + dur + ')'; },
+      optionLabelFn: function(a) { return 'Act ' + a.id + ' — ' + a.desc; },
+      popupDurReadonly: true
     });
-
-    function findNode(id) { return nodes.find(function(n) { return n.id === id; }); }
-
-    function toRoman(num) {
-      var vals = [1000,900,500,400,100,90,50,40,10,9,5,4,1];
-      var syms = ['M','CM','D','CD','C','XC','L','XL','X','IX','V','IV','I'];
-      var result = '';
-      for (var i = 0; i < vals.length; i++) {
-        while (num >= vals[i]) { result += syms[i]; num -= vals[i]; }
-      }
-      return result;
-    }
-
-    function addNode(x, y) {
-      var id = nextId++;
-      var label = LABELS[id - 1] || toRoman(id);
-      var node = { id:id, label:label, x:x, y:y, gEl:null, _teInput:null, _tlInput:null };
-
-      var g = document.createElementNS('http://www.w3.org/2000/svg','g');
-      g.setAttribute('transform', 'translate(' + x + ',' + y + ')');
-      g.classList.add('ex3-node-group');
-      g.dataset.nodeId = id;
-
-      var bgL = document.createElementNS('http://www.w3.org/2000/svg','circle');
-      bgL.setAttribute('r',R); bgL.setAttribute('fill','#eef0f2'); bgL.setAttribute('clip-path','url(#ex4-cl)');
-      g.appendChild(bgL);
-      var bgTR = document.createElementNS('http://www.w3.org/2000/svg','circle');
-      bgTR.setAttribute('r',R); bgTR.setAttribute('fill','#e8f5e9'); bgTR.setAttribute('clip-path','url(#ex4-ctr)');
-      g.appendChild(bgTR);
-      var bgBR = document.createElementNS('http://www.w3.org/2000/svg','circle');
-      bgBR.setAttribute('r',R); bgBR.setAttribute('fill','#e3f0fb'); bgBR.setAttribute('clip-path','url(#ex4-cbr)');
-      g.appendChild(bgBR);
-
-      var border = document.createElementNS('http://www.w3.org/2000/svg','circle');
-      border.setAttribute('r',R); border.setAttribute('fill','none');
-      border.setAttribute('stroke','#333'); border.setAttribute('stroke-width','2.5');
-      g.appendChild(border);
-
-      var lineV = document.createElementNS('http://www.w3.org/2000/svg','line');
-      lineV.setAttribute('x1',0); lineV.setAttribute('y1',-R); lineV.setAttribute('x2',0); lineV.setAttribute('y2',R);
-      lineV.setAttribute('stroke','#555'); lineV.setAttribute('stroke-width','1.6');
-      g.appendChild(lineV);
-      var lineH = document.createElementNS('http://www.w3.org/2000/svg','line');
-      lineH.setAttribute('x1',0); lineH.setAttribute('y1',0); lineH.setAttribute('x2',R); lineH.setAttribute('y2',0);
-      lineH.setAttribute('stroke','#555'); lineH.setAttribute('stroke-width','1.6');
-      g.appendChild(lineH);
-
-      var txt = document.createElementNS('http://www.w3.org/2000/svg','text');
-      txt.setAttribute('x', -R/2); txt.setAttribute('y', 5);
-      txt.setAttribute('text-anchor','middle');
-      txt.setAttribute('font-family','Segoe UI,sans-serif');
-      txt.setAttribute('font-size', label.length > 3 ? '9' : label.length > 2 ? '10' : '13');
-      txt.setAttribute('font-weight','700'); txt.setAttribute('fill','#333');
-      txt.setAttribute('pointer-events','none');
-      txt.textContent = label;
-      g.appendChild(txt);
-
-      var foTE = document.createElementNS('http://www.w3.org/2000/svg','foreignObject');
-      foTE.setAttribute('x', 2); foTE.setAttribute('y', -R + 3);
-      foTE.setAttribute('width', R - 4); foTE.setAttribute('height', R - 3);
-      var teInput = document.createElement('input');
-      teInput.type = 'number'; teInput.className = 'ex1-input';
-      teInput.style.width = '26px'; teInput.style.height = '18px'; teInput.style.fontSize = '10px';
-      teInput.placeholder = '?';
-      foTE.appendChild(teInput);
-      g.appendChild(foTE);
-      node._teInput = teInput;
-
-      var foTL = document.createElementNS('http://www.w3.org/2000/svg','foreignObject');
-      foTL.setAttribute('x', 2); foTL.setAttribute('y', 2);
-      foTL.setAttribute('width', R - 4); foTL.setAttribute('height', R - 3);
-      var tlInput = document.createElement('input');
-      tlInput.type = 'number'; tlInput.className = 'ex1-input';
-      tlInput.style.width = '26px'; tlInput.style.height = '18px'; tlInput.style.fontSize = '10px';
-      tlInput.placeholder = '?';
-      foTL.appendChild(tlInput);
-      g.appendChild(foTL);
-      node._tlInput = tlInput;
-
-      nodesG.appendChild(g);
-      node.gEl = g;
-      nodes.push(node);
-      return node;
-    }
-
-    function removeNode(nodeId) {
-      var idx = nodes.findIndex(function(n) { return n.id === nodeId; });
-      if (idx === -1) return;
-      nodes[idx].gEl.remove();
-      nodes.splice(idx, 1);
-      var connected = edges.filter(function(e) { return e.fromId === nodeId || e.toId === nodeId; });
-      connected.forEach(function(e) { removeEdge(e.id); });
-    }
-
-    function addEdge(fromId, toId, dashed, act, dur) {
-      var id = nextEdgeId++;
-      var fn = findNode(fromId), tn = findNode(toId);
-      if (!fn || !tn) return null;
-      var edge = { id:id, fromId:fromId, toId:toId, dashed:!!dashed, act:act||'', dur:dur||0, selected:false };
-
-      var g = document.createElementNS('http://www.w3.org/2000/svg','g');
-      g.dataset.edgeId = id;
-      var ep = edgeEndpoints(fn, tn);
-
-      var line = document.createElementNS('http://www.w3.org/2000/svg','line');
-      line.setAttribute('x1',ep.x1); line.setAttribute('y1',ep.y1);
-      line.setAttribute('x2',ep.x2); line.setAttribute('y2',ep.y2);
-      line.setAttribute('stroke', dashed ? '#bbb' : '#888');
-      line.setAttribute('stroke-width', dashed ? '1.6' : '2');
-      if (dashed) line.setAttribute('stroke-dasharray','6 4');
-      line.setAttribute('marker-end', dashed ? 'url(#ex4-m-dash)' : 'url(#ex4-m-def)');
-      g.appendChild(line);
-      edge._line = line;
-
-      var mx = (ep.x1+ep.x2)/2, my = (ep.y1+ep.y2)/2;
-      var dx = ep.x2-ep.x1, dy = ep.y2-ep.y1;
-      var dist = Math.sqrt(dx*dx+dy*dy) || 1;
-      var perpX = -(dy/dist)*14, perpY = (dx/dist)*14;
-      var lbl = document.createElementNS('http://www.w3.org/2000/svg','text');
-      lbl.setAttribute('x', mx+perpX); lbl.setAttribute('y', my+perpY);
-      lbl.setAttribute('text-anchor','middle');
-      lbl.setAttribute('font-family','Segoe UI,sans-serif');
-      lbl.setAttribute('font-size','10'); lbl.setAttribute('font-weight','600');
-      lbl.setAttribute('fill', dashed ? '#bbb' : '#666');
-      lbl.setAttribute('pointer-events','none');
-      lbl.textContent = dashed ? '0' : (act ? act + '(' + dur + ')' : '');
-      g.appendChild(lbl);
-      edge._lbl = lbl;
-
-      var hit = document.createElementNS('http://www.w3.org/2000/svg','line');
-      hit.setAttribute('x1',ep.x1); hit.setAttribute('y1',ep.y1);
-      hit.setAttribute('x2',ep.x2); hit.setAttribute('y2',ep.y2);
-      hit.setAttribute('stroke','transparent'); hit.setAttribute('stroke-width','18');
-      hit.setAttribute('fill','none'); hit.style.cursor = 'pointer';
-      g.appendChild(hit);
-      edge._hit = hit;
-
-      edgesG.appendChild(g);
-      edge.gEl = g;
-      edges.push(edge);
-      return edge;
-    }
-
-    function removeEdge(edgeId) {
-      var idx = edges.findIndex(function(e) { return e.id === edgeId; });
-      if (idx === -1) return;
-      edges[idx].gEl.remove();
-      edges.splice(idx, 1);
-    }
-
-    function updateEdgePositions() {
-      edges.forEach(function(e) {
-        var fn = findNode(e.fromId), tn = findNode(e.toId);
-        if (!fn || !tn) return;
-        var ep = edgeEndpoints(fn, tn);
-        e._line.setAttribute('x1',ep.x1); e._line.setAttribute('y1',ep.y1);
-        e._line.setAttribute('x2',ep.x2); e._line.setAttribute('y2',ep.y2);
-        e._hit.setAttribute('x1',ep.x1); e._hit.setAttribute('y1',ep.y1);
-        e._hit.setAttribute('x2',ep.x2); e._hit.setAttribute('y2',ep.y2);
-        var mx = (ep.x1+ep.x2)/2, my = (ep.y1+ep.y2)/2;
-        var dx = ep.x2-ep.x1, dy = ep.y2-ep.y1;
-        var dist = Math.sqrt(dx*dx+dy*dy) || 1;
-        var perpX = -(dy/dist)*14, perpY = (dx/dist)*14;
-        e._lbl.setAttribute('x', mx+perpX);
-        e._lbl.setAttribute('y', my+perpY);
-      });
-    }
-
-    var pendingEdge = null;
-
-    function showEdgePopup(edge, svgX, svgY) {
-      pendingEdge = edge;
-      var svgRect = svg.getBoundingClientRect();
-      var vb = svg.viewBox.baseVal;
-      var scaleX = svgRect.width / vb.width;
-      var scaleY = svgRect.height / vb.height;
-      var left = svgX * scaleX;
-      var top = svgY * scaleY;
-      popup.style.left = Math.min(left, svgRect.width - 210) + 'px';
-      popup.style.top = Math.max(0, top - 30) + 'px';
-      popup.style.display = 'block';
-
-      var usedActs = {};
-      edges.forEach(function(e) { if (e.act && e.id !== edge.id) usedActs[e.act] = true; });
-      popupAct.innerHTML = '<option value="">— Kies —</option>';
-      ACTIVITIES.forEach(function(a) {
-        if (!usedActs[a.id]) {
-          var opt = document.createElement('option');
-          opt.value = a.id;
-          opt.textContent = 'Act ' + a.id + ' — ' + a.desc;
-          popupAct.appendChild(opt);
-        }
-      });
-      if (edge.act) popupAct.value = edge.act;
-      var _selAct = ACTIVITIES.find(function(a) { return a.id === popupAct.value; });
-      popupDur.value = _selAct ? _selAct.dur : '';
-      popupAct.focus();
-
-      popupAct.onchange = function() {
-        var a = ACTIVITIES.find(function(a) { return a.id === popupAct.value; });
-        popupDur.value = a ? a.dur : '';
-      };
-    }
-
-    function hideEdgePopup() {
-      popup.style.display = 'none';
-      pendingEdge = null;
-    }
-
-    document.getElementById('ex4-popup-ok').addEventListener('click', function() {
-      if (!pendingEdge) return;
-      pendingEdge.act = popupAct.value;
-      pendingEdge.dur = parseInt(popupDur.value, 10) || 0;
-      pendingEdge._lbl.textContent = pendingEdge.act ? 'Act ' + pendingEdge.act + '(' + pendingEdge.dur + ')' : String(pendingEdge.dur);
-      hideEdgePopup();
-    });
-
-    document.getElementById('ex4-popup-cancel').addEventListener('click', function() {
-      if (pendingEdge && !pendingEdge.act && !pendingEdge.dashed) {
-        removeEdge(pendingEdge.id);
-      }
-      hideEdgePopup();
-    });
-
-    svg.addEventListener('pointerdown', function(evt) {
-      if (popup.style.display !== 'none') return;
-      var pt = svgPoint(evt);
-      var target = evt.target;
-      var nodeG = target.closest('.ex3-node-group');
-      var edgeG = target.closest('[data-edge-id]');
-
-      if (tool === 'select') {
-        if (nodeG && !target.closest('foreignObject')) {
-          var nid = parseInt(nodeG.dataset.nodeId);
-          var node = findNode(nid);
-          if (node) {
-            dragNode = node;
-            dragOffset.x = pt.x - node.x;
-            dragOffset.y = pt.y - node.y;
-            nodeG.classList.add('dragging');
-            svg.setPointerCapture(evt.pointerId);
-            evt.preventDefault();
-          }
-        } else if (edgeG && !nodeG) {
-          var eid = parseInt(edgeG.dataset.edgeId);
-          var edge = edges.find(function(e) { return e.id === eid; });
-          if (edge) {
-            edge.selected = !edge.selected;
-            if (edge.selected) {
-              edge._line.setAttribute('stroke', 'var(--accent)');
-              edge._line.setAttribute('stroke-width', '3');
-              edge._line.setAttribute('marker-end', 'url(#ex4-m-sel)');
-              edge._lbl.setAttribute('fill', 'var(--accent)');
-            } else {
-              edge._line.setAttribute('stroke', edge.dashed ? '#bbb' : '#888');
-              edge._line.setAttribute('stroke-width', edge.dashed ? '1.6' : '2');
-              edge._line.setAttribute('marker-end', edge.dashed ? 'url(#ex4-m-dash)' : 'url(#ex4-m-def)');
-              edge._lbl.setAttribute('fill', edge.dashed ? '#bbb' : '#666');
-            }
-          }
-        }
-      }
-
-      else if (tool === 'node') {
-        if (!nodeG) {
-          addNode(pt.x, pt.y);
-          setTool('select');
-        }
-      }
-
-      else if (tool === 'edge' || tool === 'relay') {
-        if (nodeG) {
-          var nid2 = parseInt(nodeG.dataset.nodeId);
-          if (edgeSource === null) {
-            edgeSource = nid2;
-            nodeG.classList.add('source-highlight');
-            var srcNode = findNode(nid2);
-            ghost.setAttribute('x1', srcNode.x);
-            ghost.setAttribute('y1', srcNode.y);
-            ghost.setAttribute('x2', srcNode.x);
-            ghost.setAttribute('y2', srcNode.y);
-            ghost.setAttribute('opacity', '1');
-          } else if (nid2 !== edgeSource) {
-            ghost.setAttribute('opacity', '0');
-            nodes.forEach(function(n) { n.gEl.classList.remove('source-highlight'); });
-            var isDashed = (tool === 'relay');
-            var newEdge = addEdge(edgeSource, nid2, isDashed);
-            edgeSource = null;
-            if (newEdge && !isDashed) {
-              var fromN = findNode(newEdge.fromId), toN = findNode(newEdge.toId);
-              var emx = (fromN.x + toN.x) / 2, emy = (fromN.y + toN.y) / 2;
-              showEdgePopup(newEdge, emx, emy);
-            }
-          }
-        }
-      }
-
-      else if (tool === 'delete') {
-        if (nodeG) {
-          removeNode(parseInt(nodeG.dataset.nodeId));
-        } else if (edgeG) {
-          removeEdge(parseInt(edgeG.dataset.edgeId));
-        }
-      }
-    });
-
-    svg.addEventListener('pointermove', function(evt) {
-      if (dragNode) {
-        var pt = svgPoint(evt);
-        dragNode.x = Math.max(R, Math.min(960 - R, pt.x - dragOffset.x));
-        dragNode.y = Math.max(R, Math.min(600 - R, pt.y - dragOffset.y));
-        dragNode.gEl.setAttribute('transform', 'translate(' + dragNode.x + ',' + dragNode.y + ')');
-        updateEdgePositions();
-        evt.preventDefault();
-      }
-      if (edgeSource !== null) {
-        var pt2 = svgPoint(evt);
-        ghost.setAttribute('x2', pt2.x);
-        ghost.setAttribute('y2', pt2.y);
-      }
-    });
-
-    svg.addEventListener('pointerup', function(evt) {
-      if (dragNode) {
-        dragNode.gEl.classList.remove('dragging');
-        dragNode = null;
-        svg.releasePointerCapture(evt.pointerId);
-      }
-    });
-
-    svg.addEventListener('dblclick', function(evt) {
-      var edgeG = evt.target.closest('[data-edge-id]');
-      if (edgeG && tool === 'select') {
-        var eid = parseInt(edgeG.dataset.edgeId);
-        var edge = edges.find(function(e) { return e.id === eid; });
-        if (edge && !edge.dashed) {
-          var fn = findNode(edge.fromId), tn = findNode(edge.toId);
-          showEdgePopup(edge, (fn.x+tn.x)/2, (fn.y+tn.y)/2);
-        }
-      }
-    });
-
-    document.addEventListener('keydown', function(evt) {
-      if (evt.key === 'Escape') {
-        if (edgeSource !== null) {
-          edgeSource = null;
-          ghost.setAttribute('opacity', '0');
-          nodes.forEach(function(n) { n.gEl.classList.remove('source-highlight'); });
-        }
-        if (popup.style.display !== 'none') {
-          if (pendingEdge && !pendingEdge.act && !pendingEdge.dashed) removeEdge(pendingEdge.id);
-          hideEdgePopup();
-        }
-      }
-    });
-
-    // ── NETWORK VALIDATION ──
-    function computeTE(nodeId, visited) {
-      if (!visited) visited = {};
-      if (visited[nodeId]) return 0;
-      visited[nodeId] = true;
-      var incoming = edges.filter(function(e) { return e.toId === nodeId; });
-      if (incoming.length === 0) return 0;
-      var maxTE = 0;
-      incoming.forEach(function(e) {
-        var v = computeTE(e.fromId, Object.assign({}, visited)) + e.dur;
-        if (v > maxTE) maxTE = v;
-      });
-      return maxTE;
-    }
-
-    function computeTL(nodeId, projectEnd, visited) {
-      if (!visited) visited = {};
-      if (visited[nodeId]) return Infinity;
-      visited[nodeId] = true;
-      var outgoing = edges.filter(function(e) { return e.fromId === nodeId; });
-      if (outgoing.length === 0) return projectEnd;
-      var minTL = Infinity;
-      outgoing.forEach(function(e) {
-        var v = computeTL(e.toId, projectEnd, Object.assign({}, visited)) - e.dur;
-        if (v < minTL) minTL = v;
-      });
-      return minTL;
-    }
-
-    function canReach(fromId, toId, visited) {
-      if (fromId === toId) return true;
-      if (visited[fromId]) return false;
-      visited[fromId] = true;
-      return edges.filter(function(e) { return e.fromId === fromId; })
-        .some(function(e) { return canReach(e.toId, toId, Object.assign({}, visited)); });
-    }
+    if (!builder) return;
+    var nodes = builder.nodes, edges = builder.edges;
+    var computeTE = builder.computeTE, computeTL = builder.computeTL, canReach = builder.canReach;
 
     document.getElementById('ex4-net-check').addEventListener('click', function() {
       var fb = document.getElementById('ex4-net-feedback');
       var score = 0, total = 0, messages = [];
 
       var actEdges = edges.filter(function(e) { return !e.dashed; });
-      var relayEdges = edges.filter(function(e) { return e.dashed; });
-
       total += 1;
       if (actEdges.length === 14) score++; else messages.push('Activiteiten: ' + actEdges.length + '/14');
 
@@ -4235,7 +3863,6 @@
         var edge = actMap[a.id];
         if (!edge) return;
         var srcId = edge.fromId;
-
         if (a.pred.length === 0) {
           var incoming = edges.filter(function(e) { return e.toId === srcId; });
           if (incoming.length === 0) score++;
@@ -4253,44 +3880,25 @@
       });
 
       var projectEnd = 0;
-      nodes.forEach(function(n) {
-        var te = computeTE(n.id);
-        if (te > projectEnd) projectEnd = te;
-      });
+      nodes.forEach(function(n) { var te = computeTE(n.id); if (te > projectEnd) projectEnd = te; });
 
       nodes.forEach(function(n) {
         var teVal = n._teInput.value.trim() === '' ? NaN : parseInt(n._teInput.value, 10);
         var tlVal = n._tlInput.value.trim() === '' ? NaN : parseInt(n._tlInput.value, 10);
-        var expectedTE = computeTE(n.id);
-        var expectedTL = computeTL(n.id, projectEnd);
-
+        var expectedTE = computeTE(n.id), expectedTL = computeTL(n.id, projectEnd);
         total++;
-        if (!isNaN(teVal) && teVal === expectedTE) {
-          n._teInput.classList.remove('wrong'); n._teInput.classList.add('correct'); score++;
-        } else {
-          n._teInput.classList.remove('correct');
-          if (!isNaN(teVal)) n._teInput.classList.add('wrong');
-        }
-
+        if (!isNaN(teVal) && teVal === expectedTE) { n._teInput.classList.remove('wrong'); n._teInput.classList.add('correct'); score++; }
+        else { n._teInput.classList.remove('correct'); if (!isNaN(teVal)) n._teInput.classList.add('wrong'); }
         total++;
-        if (!isNaN(tlVal) && !isNaN(expectedTL) && isFinite(expectedTL) && tlVal === expectedTL) {
-          n._tlInput.classList.remove('wrong'); n._tlInput.classList.add('correct'); score++;
-        } else {
-          n._tlInput.classList.remove('correct');
-          if (!isNaN(tlVal)) n._tlInput.classList.add('wrong');
-        }
+        if (!isNaN(tlVal) && !isNaN(expectedTL) && isFinite(expectedTL) && tlVal === expectedTL) { n._tlInput.classList.remove('wrong'); n._tlInput.classList.add('correct'); score++; }
+        else { n._tlInput.classList.remove('correct'); if (!isNaN(tlVal)) n._tlInput.classList.add('wrong'); }
       });
 
-      // Critical path validation
       var criticalEdges = [];
       edges.forEach(function(e) {
-        var fromTE = computeTE(e.fromId);
-        var toTE = computeTE(e.toId);
-        var fromTL = computeTL(e.fromId, projectEnd);
-        var toTL = computeTL(e.toId, projectEnd);
-        if (fromTE === fromTL && toTE === toTL && fromTE + e.dur === toTE) {
-          criticalEdges.push(e);
-        }
+        var fromTE = computeTE(e.fromId), toTE = computeTE(e.toId);
+        var fromTL = computeTL(e.fromId, projectEnd), toTL = computeTL(e.toId, projectEnd);
+        if (fromTE === fromTL && toTE === toTL && fromTE + e.dur === toTE) criticalEdges.push(e);
       });
       var cpCorrect = 0, cpWrong = 0;
       edges.forEach(function(e) {
@@ -4299,8 +3907,7 @@
         if (!isCrit && e.selected) cpWrong++;
       });
       var cpTotal = criticalEdges.length;
-      total += cpTotal;
-      score += cpCorrect;
+      total += cpTotal; score += cpCorrect;
       var cpPerfect = cpCorrect === cpTotal && cpWrong === 0;
 
       var pct = total > 0 ? Math.round(score / total * 100) : 0;
@@ -4318,10 +3925,7 @@
     });
 
     document.getElementById('ex4-net-reset').addEventListener('click', function() {
-      while (edges.length) { edges[0].gEl.remove(); edges.splice(0, 1); }
-      while (nodes.length) { nodes[0].gEl.remove(); nodes.splice(0, 1); }
-      nextId = 1; nextEdgeId = 1;
-      setTool('select');
+      builder.resetBuilder();
       var fb = document.getElementById('ex4-net-feedback');
       fb.textContent = ''; fb.className = 'ex1-feedback';
     });
@@ -4344,435 +3948,18 @@
       { id:'12', desc:'Afwerking/oplevering',     pred:['10','11'],  to:6, tl:15, tp:18, te:14 },
     ];
 
-    const ROMAN = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
-    const R = 30;
-
-    // ── STATE ──
-    var nodes = [];
-    var edges = [];
-    var tool = 'select';
-    var edgeSource = null;
-    var dragNode = null;
-    var dragOffset = { x:0, y:0 };
-    var nextId = 1;
-    var nextEdgeId = 1;
-
-    // ── DOM REFS ──
-    var svg = document.getElementById('ex5-svg');
-    if (!svg) return;
-    var edgesG = document.getElementById('ex5-edges');
-    var nodesG = document.getElementById('ex5-nodes');
-    var ghost = document.getElementById('ex5-ghost');
-    var canvasWrap = document.getElementById('ex5-canvas-wrap');
-    var popup = document.getElementById('ex5-edge-popup');
-    var popupAct = document.getElementById('ex5-popup-act');
-    var popupDur = document.getElementById('ex5-popup-dur');
-    var toolbar = document.getElementById('ex5-toolbar');
-
-    // ── DOT GRID ──
-    var gridG = document.getElementById('ex5-grid');
-    for (var gx = 20; gx < 960; gx += 40) {
-      for (var gy = 20; gy < 500; gy += 40) {
-        var dot = document.createElementNS('http://www.w3.org/2000/svg','circle');
-        dot.setAttribute('cx', gx); dot.setAttribute('cy', gy);
-        dot.setAttribute('r', '1.5'); dot.setAttribute('fill', '#999');
-        gridG.appendChild(dot);
-      }
-    }
-
-    // ── COORDINATE HELPERS ──
-    function svgPoint(evt) {
-      var pt = svg.createSVGPoint();
-      pt.x = evt.clientX; pt.y = evt.clientY;
-      return pt.matrixTransform(svg.getScreenCTM().inverse());
-    }
-
-    function edgeEndpoints(fn, tn) {
-      var dx = tn.x - fn.x, dy = tn.y - fn.y;
-      var dist = Math.sqrt(dx*dx + dy*dy);
-      if (dist === 0) return { x1:fn.x, y1:fn.y, x2:tn.x, y2:tn.y };
-      var ux = dx/dist, uy = dy/dist;
-      return { x1: fn.x + ux*R, y1: fn.y + uy*R, x2: tn.x - ux*(R+10), y2: tn.y - uy*(R+10) };
-    }
-
-    // ── TOOLBAR ──
-    function setTool(t) {
-      tool = t;
-      edgeSource = null;
-      ghost.setAttribute('opacity', '0');
-      canvasWrap.classList.remove('tool-node','tool-edge','tool-delete');
-      if (t === 'node') canvasWrap.classList.add('tool-node');
-      else if (t === 'edge' || t === 'relay') canvasWrap.classList.add('tool-edge');
-      else if (t === 'delete') canvasWrap.classList.add('tool-delete');
-      nodes.forEach(function(n) { n.gEl.classList.remove('source-highlight'); });
-      toolbar.querySelectorAll('.ex3-tool').forEach(function(btn) {
-        btn.classList.toggle('active', btn.dataset.tool === t);
-      });
-    }
-
-    toolbar.addEventListener('click', function(e) {
-      var btn = e.target.closest('.ex3-tool');
-      if (btn) setTool(btn.dataset.tool);
+    var builder = createPertBuilder({
+      prefix: 'ex5',
+      activities: ACTIVITIES,
+      durField: 'te',
+      canvasHeight: 500,
+      labels: ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'],
+      edgeLabelFn: function(act, dur) { return 'Act ' + act + '(' + dur + ')'; },
+      optionLabelFn: function(a) { return 'Act ' + a.id + ' — ' + a.desc; },
+      popupDurReadonly: true
     });
-
-    // ── NODE OPERATIONS ──
-    function findNode(id) { return nodes.find(function(n) { return n.id === id; }); }
-
-    function toRoman(num) {
-      var vals = [1000,900,500,400,100,90,50,40,10,9,5,4,1];
-      var syms = ['M','CM','D','CD','C','XC','L','XL','X','IX','V','IV','I'];
-      var result = '';
-      for (var i = 0; i < vals.length; i++) {
-        while (num >= vals[i]) { result += syms[i]; num -= vals[i]; }
-      }
-      return result;
-    }
-
-    function addNode(x, y) {
-      var id = nextId++;
-      var label = ROMAN[id - 1] || toRoman(id);
-      var node = { id:id, label:label, x:x, y:y, gEl:null, _teInput:null, _tlInput:null };
-
-      var g = document.createElementNS('http://www.w3.org/2000/svg','g');
-      g.setAttribute('transform', 'translate(' + x + ',' + y + ')');
-      g.classList.add('ex3-node-group');
-      g.dataset.nodeId = id;
-
-      var bgL = document.createElementNS('http://www.w3.org/2000/svg','circle');
-      bgL.setAttribute('r',R); bgL.setAttribute('fill','#eef0f2'); bgL.setAttribute('clip-path','url(#ex5-cl)');
-      g.appendChild(bgL);
-      var bgTR = document.createElementNS('http://www.w3.org/2000/svg','circle');
-      bgTR.setAttribute('r',R); bgTR.setAttribute('fill','#e8f5e9'); bgTR.setAttribute('clip-path','url(#ex5-ctr)');
-      g.appendChild(bgTR);
-      var bgBR = document.createElementNS('http://www.w3.org/2000/svg','circle');
-      bgBR.setAttribute('r',R); bgBR.setAttribute('fill','#e3f0fb'); bgBR.setAttribute('clip-path','url(#ex5-cbr)');
-      g.appendChild(bgBR);
-
-      var border = document.createElementNS('http://www.w3.org/2000/svg','circle');
-      border.setAttribute('r',R); border.setAttribute('fill','none');
-      border.setAttribute('stroke','#333'); border.setAttribute('stroke-width','2.5');
-      g.appendChild(border);
-
-      var lineV = document.createElementNS('http://www.w3.org/2000/svg','line');
-      lineV.setAttribute('x1',0); lineV.setAttribute('y1',-R); lineV.setAttribute('x2',0); lineV.setAttribute('y2',R);
-      lineV.setAttribute('stroke','#555'); lineV.setAttribute('stroke-width','1.6');
-      g.appendChild(lineV);
-      var lineH = document.createElementNS('http://www.w3.org/2000/svg','line');
-      lineH.setAttribute('x1',0); lineH.setAttribute('y1',0); lineH.setAttribute('x2',R); lineH.setAttribute('y2',0);
-      lineH.setAttribute('stroke','#555'); lineH.setAttribute('stroke-width','1.6');
-      g.appendChild(lineH);
-
-      var txt = document.createElementNS('http://www.w3.org/2000/svg','text');
-      txt.setAttribute('x', -R/2); txt.setAttribute('y', 5);
-      txt.setAttribute('text-anchor','middle');
-      txt.setAttribute('font-family','Segoe UI,sans-serif');
-      txt.setAttribute('font-size', label.length > 3 ? '9' : label.length > 2 ? '10' : '13');
-      txt.setAttribute('font-weight','700'); txt.setAttribute('fill','#333');
-      txt.setAttribute('pointer-events','none');
-      txt.textContent = label;
-      g.appendChild(txt);
-
-      var foTE = document.createElementNS('http://www.w3.org/2000/svg','foreignObject');
-      foTE.setAttribute('x', 2); foTE.setAttribute('y', -R + 3);
-      foTE.setAttribute('width', R - 4); foTE.setAttribute('height', R - 3);
-      var teInput = document.createElement('input');
-      teInput.type = 'number'; teInput.className = 'ex1-input';
-      teInput.style.width = '26px'; teInput.style.height = '18px'; teInput.style.fontSize = '10px';
-      teInput.placeholder = '?';
-      foTE.appendChild(teInput);
-      g.appendChild(foTE);
-      node._teInput = teInput;
-
-      var foTL = document.createElementNS('http://www.w3.org/2000/svg','foreignObject');
-      foTL.setAttribute('x', 2); foTL.setAttribute('y', 2);
-      foTL.setAttribute('width', R - 4); foTL.setAttribute('height', R - 3);
-      var tlInput = document.createElement('input');
-      tlInput.type = 'number'; tlInput.className = 'ex1-input';
-      tlInput.style.width = '26px'; tlInput.style.height = '18px'; tlInput.style.fontSize = '10px';
-      tlInput.placeholder = '?';
-      foTL.appendChild(tlInput);
-      g.appendChild(foTL);
-      node._tlInput = tlInput;
-
-      nodesG.appendChild(g);
-      node.gEl = g;
-      nodes.push(node);
-      return node;
-    }
-
-    function removeNode(nodeId) {
-      var idx = nodes.findIndex(function(n) { return n.id === nodeId; });
-      if (idx === -1) return;
-      nodes[idx].gEl.remove();
-      nodes.splice(idx, 1);
-      var connected = edges.filter(function(e) { return e.fromId === nodeId || e.toId === nodeId; });
-      connected.forEach(function(e) { removeEdge(e.id); });
-    }
-
-    // ── EDGE OPERATIONS ──
-    function addEdge(fromId, toId, dashed, act, dur) {
-      var id = nextEdgeId++;
-      var fn = findNode(fromId), tn = findNode(toId);
-      if (!fn || !tn) return null;
-      var edge = { id:id, fromId:fromId, toId:toId, dashed:!!dashed, act:act||'', dur:dur||0, selected:false };
-
-      var g = document.createElementNS('http://www.w3.org/2000/svg','g');
-      g.dataset.edgeId = id;
-      var ep = edgeEndpoints(fn, tn);
-
-      var line = document.createElementNS('http://www.w3.org/2000/svg','line');
-      line.setAttribute('x1',ep.x1); line.setAttribute('y1',ep.y1);
-      line.setAttribute('x2',ep.x2); line.setAttribute('y2',ep.y2);
-      line.setAttribute('stroke', dashed ? '#bbb' : '#888');
-      line.setAttribute('stroke-width', dashed ? '1.6' : '2');
-      if (dashed) line.setAttribute('stroke-dasharray','6 4');
-      line.setAttribute('marker-end', dashed ? 'url(#ex5-m-dash)' : 'url(#ex5-m-def)');
-      g.appendChild(line);
-      edge._line = line;
-
-      var mx = (ep.x1+ep.x2)/2, my = (ep.y1+ep.y2)/2;
-      var dx = ep.x2-ep.x1, dy = ep.y2-ep.y1;
-      var dist = Math.sqrt(dx*dx+dy*dy) || 1;
-      var perpX = -(dy/dist)*14, perpY = (dx/dist)*14;
-      var lbl = document.createElementNS('http://www.w3.org/2000/svg','text');
-      lbl.setAttribute('x', mx+perpX); lbl.setAttribute('y', my+perpY);
-      lbl.setAttribute('text-anchor','middle');
-      lbl.setAttribute('font-family','Segoe UI,sans-serif');
-      lbl.setAttribute('font-size','10'); lbl.setAttribute('font-weight','600');
-      lbl.setAttribute('fill', dashed ? '#bbb' : '#666');
-      lbl.setAttribute('pointer-events','none');
-      lbl.textContent = dashed ? '0' : (act ? 'Act ' + act + '(' + dur + ')' : '');
-      g.appendChild(lbl);
-      edge._lbl = lbl;
-
-      var hit = document.createElementNS('http://www.w3.org/2000/svg','line');
-      hit.setAttribute('x1',ep.x1); hit.setAttribute('y1',ep.y1);
-      hit.setAttribute('x2',ep.x2); hit.setAttribute('y2',ep.y2);
-      hit.setAttribute('stroke','transparent'); hit.setAttribute('stroke-width','18');
-      hit.setAttribute('fill','none'); hit.style.cursor = 'pointer';
-      g.appendChild(hit);
-      edge._hit = hit;
-
-      edgesG.appendChild(g);
-      edge.gEl = g;
-      edges.push(edge);
-      return edge;
-    }
-
-    function removeEdge(edgeId) {
-      var idx = edges.findIndex(function(e) { return e.id === edgeId; });
-      if (idx === -1) return;
-      edges[idx].gEl.remove();
-      edges.splice(idx, 1);
-    }
-
-    function updateEdgePositions() {
-      edges.forEach(function(e) {
-        var fn = findNode(e.fromId), tn = findNode(e.toId);
-        if (!fn || !tn) return;
-        var ep = edgeEndpoints(fn, tn);
-        e._line.setAttribute('x1',ep.x1); e._line.setAttribute('y1',ep.y1);
-        e._line.setAttribute('x2',ep.x2); e._line.setAttribute('y2',ep.y2);
-        e._hit.setAttribute('x1',ep.x1); e._hit.setAttribute('y1',ep.y1);
-        e._hit.setAttribute('x2',ep.x2); e._hit.setAttribute('y2',ep.y2);
-        var mx = (ep.x1+ep.x2)/2, my = (ep.y1+ep.y2)/2;
-        var dx = ep.x2-ep.x1, dy = ep.y2-ep.y1;
-        var dist = Math.sqrt(dx*dx+dy*dy) || 1;
-        var perpX = -(dy/dist)*14, perpY = (dx/dist)*14;
-        e._lbl.setAttribute('x', mx+perpX);
-        e._lbl.setAttribute('y', my+perpY);
-      });
-    }
-
-    // ── EDGE POPUP ──
-    var pendingEdge = null;
-
-    function showEdgePopup(edge, svgX, svgY) {
-      pendingEdge = edge;
-      var svgRect = svg.getBoundingClientRect();
-      var vb = svg.viewBox.baseVal;
-      var scaleX = svgRect.width / vb.width;
-      var scaleY = svgRect.height / vb.height;
-      var left = svgX * scaleX;
-      var top = svgY * scaleY;
-      popup.style.left = Math.min(left, svgRect.width - 210) + 'px';
-      popup.style.top = Math.max(0, top - 30) + 'px';
-      popup.style.display = 'block';
-
-      var usedActs = {};
-      edges.forEach(function(e) { if (e.act && e.id !== edge.id) usedActs[e.act] = true; });
-      popupAct.innerHTML = '<option value="">— Kies —</option>';
-      ACTIVITIES.forEach(function(a) {
-        if (!usedActs[a.id]) {
-          var opt = document.createElement('option');
-          opt.value = a.id;
-          opt.textContent = 'Act ' + a.id + ' — ' + a.desc;
-          popupAct.appendChild(opt);
-        }
-      });
-      if (edge.act) popupAct.value = edge.act;
-      var _selAct = ACTIVITIES.find(function(a) { return a.id === popupAct.value; });
-      popupDur.value = _selAct ? _selAct.te : '';
-      popupAct.focus();
-
-      popupAct.onchange = function() {
-        var a = ACTIVITIES.find(function(a) { return a.id === popupAct.value; });
-        popupDur.value = a ? a.te : '';
-      };
-    }
-
-    function hideEdgePopup() {
-      popup.style.display = 'none';
-      pendingEdge = null;
-    }
-
-    document.getElementById('ex5-popup-ok').addEventListener('click', function() {
-      if (!pendingEdge) return;
-      pendingEdge.act = popupAct.value;
-      pendingEdge.dur = parseInt(popupDur.value, 10) || 0;
-      pendingEdge._lbl.textContent = pendingEdge.act ? 'Act ' + pendingEdge.act + '(' + pendingEdge.dur + ')' : String(pendingEdge.dur);
-      hideEdgePopup();
-    });
-
-    document.getElementById('ex5-popup-cancel').addEventListener('click', function() {
-      if (pendingEdge && !pendingEdge.act && !pendingEdge.dashed) {
-        removeEdge(pendingEdge.id);
-      }
-      hideEdgePopup();
-    });
-
-    // ── SVG EVENTS ──
-    svg.addEventListener('pointerdown', function(evt) {
-      if (popup.style.display !== 'none') return;
-      var pt = svgPoint(evt);
-      var target = evt.target;
-      var nodeG = target.closest('.ex3-node-group');
-      var edgeG = target.closest('[data-edge-id]');
-
-      if (tool === 'select') {
-        if (nodeG && !target.closest('foreignObject')) {
-          var nid = parseInt(nodeG.dataset.nodeId);
-          var node = findNode(nid);
-          if (node) {
-            dragNode = node;
-            dragOffset.x = pt.x - node.x;
-            dragOffset.y = pt.y - node.y;
-            nodeG.classList.add('dragging');
-            svg.setPointerCapture(evt.pointerId);
-            evt.preventDefault();
-          }
-        } else if (edgeG && !nodeG) {
-          var eid = parseInt(edgeG.dataset.edgeId);
-          var edge = edges.find(function(e) { return e.id === eid; });
-          if (edge) {
-            edge.selected = !edge.selected;
-            if (edge.selected) {
-              edge._line.setAttribute('stroke', 'var(--accent)');
-              edge._line.setAttribute('stroke-width', '3');
-              edge._line.setAttribute('marker-end', 'url(#ex5-m-sel)');
-              edge._lbl.setAttribute('fill', 'var(--accent)');
-            } else {
-              edge._line.setAttribute('stroke', edge.dashed ? '#bbb' : '#888');
-              edge._line.setAttribute('stroke-width', edge.dashed ? '1.6' : '2');
-              edge._line.setAttribute('marker-end', edge.dashed ? 'url(#ex5-m-dash)' : 'url(#ex5-m-def)');
-              edge._lbl.setAttribute('fill', edge.dashed ? '#bbb' : '#666');
-            }
-          }
-        }
-      }
-
-      else if (tool === 'node') {
-        if (!nodeG) {
-          addNode(pt.x, pt.y);
-          setTool('select');
-        }
-      }
-
-      else if (tool === 'edge' || tool === 'relay') {
-        if (nodeG) {
-          var nid2 = parseInt(nodeG.dataset.nodeId);
-          if (edgeSource === null) {
-            edgeSource = nid2;
-            nodeG.classList.add('source-highlight');
-            var srcNode = findNode(nid2);
-            ghost.setAttribute('x1', srcNode.x);
-            ghost.setAttribute('y1', srcNode.y);
-            ghost.setAttribute('x2', srcNode.x);
-            ghost.setAttribute('y2', srcNode.y);
-            ghost.setAttribute('opacity', '1');
-          } else if (nid2 !== edgeSource) {
-            ghost.setAttribute('opacity', '0');
-            nodes.forEach(function(n) { n.gEl.classList.remove('source-highlight'); });
-            var isDashed = (tool === 'relay');
-            var newEdge = addEdge(edgeSource, nid2, isDashed);
-            edgeSource = null;
-            if (newEdge && !isDashed) {
-              var fromN = findNode(newEdge.fromId), toN = findNode(newEdge.toId);
-              var emx = (fromN.x + toN.x) / 2, emy = (fromN.y + toN.y) / 2;
-              showEdgePopup(newEdge, emx, emy);
-            }
-          }
-        }
-      }
-
-      else if (tool === 'delete') {
-        if (nodeG) {
-          removeNode(parseInt(nodeG.dataset.nodeId));
-        } else if (edgeG) {
-          removeEdge(parseInt(edgeG.dataset.edgeId));
-        }
-      }
-    });
-
-    svg.addEventListener('pointermove', function(evt) {
-      if (dragNode) {
-        var pt = svgPoint(evt);
-        dragNode.x = Math.max(R, Math.min(960 - R, pt.x - dragOffset.x));
-        dragNode.y = Math.max(R, Math.min(500 - R, pt.y - dragOffset.y));
-        dragNode.gEl.setAttribute('transform', 'translate(' + dragNode.x + ',' + dragNode.y + ')');
-        updateEdgePositions();
-        evt.preventDefault();
-      }
-      if (edgeSource !== null) {
-        var pt2 = svgPoint(evt);
-        ghost.setAttribute('x2', pt2.x);
-        ghost.setAttribute('y2', pt2.y);
-      }
-    });
-
-    svg.addEventListener('pointerup', function(evt) {
-      if (dragNode) {
-        dragNode.gEl.classList.remove('dragging');
-        dragNode = null;
-        svg.releasePointerCapture(evt.pointerId);
-      }
-    });
-
-    svg.addEventListener('dblclick', function(evt) {
-      var edgeG = evt.target.closest('[data-edge-id]');
-      if (edgeG && tool === 'select') {
-        var eid = parseInt(edgeG.dataset.edgeId);
-        var edge = edges.find(function(e) { return e.id === eid; });
-        if (edge && !edge.dashed) {
-          var fn = findNode(edge.fromId), tn = findNode(edge.toId);
-          showEdgePopup(edge, (fn.x+tn.x)/2, (fn.y+tn.y)/2);
-        }
-      }
-    });
-
-    document.addEventListener('keydown', function(evt) {
-      if (evt.key === 'Escape') {
-        if (edgeSource !== null) {
-          edgeSource = null;
-          ghost.setAttribute('opacity', '0');
-          nodes.forEach(function(n) { n.gEl.classList.remove('source-highlight'); });
-        }
-        if (popup.style.display !== 'none') {
-          if (pendingEdge && !pendingEdge.act && !pendingEdge.dashed) removeEdge(pendingEdge.id);
-          hideEdgePopup();
-        }
-      }
-    });
+    if (!builder) return;
+    var nodes = builder.nodes, edges = builder.edges;
 
     // ── TE TABLE ──
     var teInputs = {};
@@ -4823,49 +4010,13 @@
     });
 
     // ── NETWORK VALIDATION ──
-    function computeTE(nodeId, visited) {
-      if (!visited) visited = {};
-      if (visited[nodeId]) return 0;
-      visited[nodeId] = true;
-      var incoming = edges.filter(function(e) { return e.toId === nodeId; });
-      if (incoming.length === 0) return 0;
-      var maxTE = 0;
-      incoming.forEach(function(e) {
-        var v = computeTE(e.fromId, Object.assign({}, visited)) + e.dur;
-        if (v > maxTE) maxTE = v;
-      });
-      return maxTE;
-    }
-
-    function computeTL(nodeId, projectEnd, visited) {
-      if (!visited) visited = {};
-      if (visited[nodeId]) return Infinity;
-      visited[nodeId] = true;
-      var outgoing = edges.filter(function(e) { return e.fromId === nodeId; });
-      if (outgoing.length === 0) return projectEnd;
-      var minTL = Infinity;
-      outgoing.forEach(function(e) {
-        var v = computeTL(e.toId, projectEnd, Object.assign({}, visited)) - e.dur;
-        if (v < minTL) minTL = v;
-      });
-      return minTL;
-    }
-
-    function canReach(fromId, toId, visited) {
-      if (fromId === toId) return true;
-      if (visited[fromId]) return false;
-      visited[fromId] = true;
-      return edges.filter(function(e) { return e.fromId === fromId; })
-        .some(function(e) { return canReach(e.toId, toId, Object.assign({}, visited)); });
-    }
+    var computeTE = builder.computeTE, computeTL = builder.computeTL, canReach = builder.canReach;
 
     document.getElementById('ex5-net-check').addEventListener('click', function() {
       var fb = document.getElementById('ex5-net-feedback');
       var score = 0, total = 0, messages = [];
 
       var actEdges = edges.filter(function(e) { return !e.dashed; });
-      var relayEdges = edges.filter(function(e) { return e.dashed; });
-
       total += 1;
       if (actEdges.length === 12) score++; else messages.push('Activiteiten: ' + actEdges.length + '/12');
 
@@ -4885,7 +4036,6 @@
         var edge = actMap[a.id];
         if (!edge) return;
         var srcId = edge.fromId;
-
         if (a.pred.length === 0) {
           var incoming = edges.filter(function(e) { return e.toId === srcId; });
           if (incoming.length === 0) score++;
@@ -4903,43 +4053,25 @@
       });
 
       var projectEnd = 0;
-      nodes.forEach(function(n) {
-        var te = computeTE(n.id);
-        if (te > projectEnd) projectEnd = te;
-      });
+      nodes.forEach(function(n) { var te = computeTE(n.id); if (te > projectEnd) projectEnd = te; });
 
       nodes.forEach(function(n) {
         var teVal = n._teInput.value.trim() === '' ? NaN : parseInt(n._teInput.value, 10);
         var tlVal = n._tlInput.value.trim() === '' ? NaN : parseInt(n._tlInput.value, 10);
-        var expectedTE = computeTE(n.id);
-        var expectedTL = computeTL(n.id, projectEnd);
-
+        var expectedTE = computeTE(n.id), expectedTL = computeTL(n.id, projectEnd);
         total++;
-        if (!isNaN(teVal) && teVal === expectedTE) {
-          n._teInput.classList.remove('wrong'); n._teInput.classList.add('correct'); score++;
-        } else {
-          n._teInput.classList.remove('correct');
-          if (!isNaN(teVal)) n._teInput.classList.add('wrong');
-        }
-
+        if (!isNaN(teVal) && teVal === expectedTE) { n._teInput.classList.remove('wrong'); n._teInput.classList.add('correct'); score++; }
+        else { n._teInput.classList.remove('correct'); if (!isNaN(teVal)) n._teInput.classList.add('wrong'); }
         total++;
-        if (!isNaN(tlVal) && !isNaN(expectedTL) && isFinite(expectedTL) && tlVal === expectedTL) {
-          n._tlInput.classList.remove('wrong'); n._tlInput.classList.add('correct'); score++;
-        } else {
-          n._tlInput.classList.remove('correct');
-          if (!isNaN(tlVal)) n._tlInput.classList.add('wrong');
-        }
+        if (!isNaN(tlVal) && !isNaN(expectedTL) && isFinite(expectedTL) && tlVal === expectedTL) { n._tlInput.classList.remove('wrong'); n._tlInput.classList.add('correct'); score++; }
+        else { n._tlInput.classList.remove('correct'); if (!isNaN(tlVal)) n._tlInput.classList.add('wrong'); }
       });
 
       var criticalEdges = [];
       edges.forEach(function(e) {
-        var fromTE = computeTE(e.fromId);
-        var toTE = computeTE(e.toId);
-        var fromTL = computeTL(e.fromId, projectEnd);
-        var toTL = computeTL(e.toId, projectEnd);
-        if (fromTE === fromTL && toTE === toTL && fromTE + e.dur === toTE) {
-          criticalEdges.push(e);
-        }
+        var fromTE = computeTE(e.fromId), toTE = computeTE(e.toId);
+        var fromTL = computeTL(e.fromId, projectEnd), toTL = computeTL(e.toId, projectEnd);
+        if (fromTE === fromTL && toTE === toTL && fromTE + e.dur === toTE) criticalEdges.push(e);
       });
       var cpCorrect = 0, cpWrong = 0;
       edges.forEach(function(e) {
@@ -4948,8 +4080,7 @@
         if (!isCrit && e.selected) cpWrong++;
       });
       var cpTotal = criticalEdges.length;
-      total += cpTotal;
-      score += cpCorrect;
+      total += cpTotal; score += cpCorrect;
       var cpPerfect = cpCorrect === cpTotal && cpWrong === 0;
 
       var pct = total > 0 ? Math.round(score / total * 100) : 0;
@@ -4968,22 +4099,34 @@
 
     // ── RESET ──
     document.getElementById('ex5-net-reset').addEventListener('click', function() {
-      while (edges.length) { edges[0].gEl.remove(); edges.splice(0, 1); }
-      while (nodes.length) { nodes[0].gEl.remove(); nodes.splice(0, 1); }
-      nextId = 1; nextEdgeId = 1;
-      edgeSource = null;
-      ghost.setAttribute('opacity', '0');
-      hideEdgePopup();
-      setTool('select');
+      builder.resetBuilder();
       var fb = document.getElementById('ex5-net-feedback');
       fb.textContent = ''; fb.className = 'ex1-feedback';
+    });
+  })();
+
+  /* ── PLAYGROUND ──────────────────────────────────────────── */
+  (function () {
+    var builder = createPertBuilder({
+      prefix: 'play',
+      activities: null,
+      durField: null,
+      canvasHeight: 500,
+      labels: ['I','II','III','IV','V','VI','VII','VIII','IX','X',
+               'XI','XII','XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX'],
+      edgeLabelFn: function(act, dur) { return act + '(' + dur + ')'; },
+      popupDurReadonly: false
+    });
+
+    document.getElementById('play-net-reset').addEventListener('click', function() {
+      builder.resetBuilder();
     });
   })();
 
   /* ── NAV: highlight active link on scroll ──────────────── */
   (function () {
     const links    = document.querySelectorAll('.nav-link:not(.disabled)');
-    const sections = ['theorie','demo','oefening1','oefening2','oefening3','oefening4','oefening5']
+    const sections = ['theorie','demo','oefening1','oefening2','oefening3','oefening4','oefening5','playground']
                       .map(id => document.getElementById(id))
                       .filter(Boolean);
 

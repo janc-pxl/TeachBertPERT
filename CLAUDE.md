@@ -23,8 +23,9 @@ Build an interactive webpage that teaches students PERT (Program Evaluation and 
 
 ## Architecture
 - Everything in a single file: `teachpert.html` (HTML + CSS + JS)
-- Each exercise is encapsulated in its own JavaScript IIFE to avoid global scope pollution
-- CSS uses `ex1-`, `ex3-` class prefixes; element IDs use `ex1-`, `ex2-`, `ex3-`, `ex4-`, `ex5-` prefixes
+- Shared `createPertBuilder(cfg)` factory function for network builder UI (used by ex3, ex4, ex5, playground)
+- Each exercise is encapsulated in its own JavaScript IIFE that calls the factory + adds exercise-specific logic (te-step, validation)
+- CSS uses `ex1-`, `ex3-` class prefixes; element IDs use `ex1-`, `ex2-`, `ex3-`, `ex4-`, `ex5-`, `play-` prefixes
 - SVG-based diagrams with foreignObject for input fields inside nodes
 
 ## Exercises overview
@@ -76,6 +77,13 @@ Build an interactive webpage that teaches students PERT (Program Evaluation and 
 - Only checks activity edge count (12), not node or dummy counts
 - Project duration: 47 days
 - Critical path: Act 1 → Act 4 → Act 6 → Act 9 → Act 11 → Act 12
+
+### Playground — Free-form PERT builder
+- No predefined activities — students enter activity names and durations freely
+- Same builder UI as exercises (toolbar, SVG canvas, nodes, edges, 0-lines)
+- Popup has text input for activity name + editable number input for duration (vs dropdown in exercises)
+- No validation yet (future feature) — only a Reset button
+- Canvas: 960x500, node labels use Roman numerals (I–XX)
 
 ## Validation design principles
 - **Don't enforce exact node/dummy counts** — students may use valid alternative topologies with extra intermediate nodes and dummy edges. Only enforce the activity edge count.
