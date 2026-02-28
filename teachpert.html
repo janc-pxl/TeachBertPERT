@@ -2154,7 +2154,9 @@
       </div>
 
       <div class="ex1-controls" style="margin-top:1rem;">
+        <button class="ex1-check-btn" id="play-net-check">Controleer</button>
         <button class="ex1-reset-btn" id="play-net-reset">Opnieuw beginnen</button>
+        <div class="ex1-feedback" id="play-net-feedback"></div>
       </div>
     </div>
 
@@ -4118,8 +4120,79 @@
       popupDurReadonly: false
     });
 
+    document.getElementById('play-net-check').addEventListener('click', function() {
+      var fb = document.getElementById('play-net-feedback');
+      var nodes = builder.nodes;
+      var edges = builder.edges;
+
+      if (nodes.length < 2 || edges.length < 1) {
+        fb.textContent = 'Voeg minstens 2 knooppunten en 1 verbinding toe.';
+        fb.className = 'ex1-feedback fail';
+        return;
+      }
+
+      var score = 0, total = 0;
+
+      var projectEnd = 0;
+      nodes.forEach(function(n) {
+        var te = builder.computeTE(n.id);
+        if (te > projectEnd) projectEnd = te;
+      });
+
+      nodes.forEach(function(n) {
+        var teVal = n._teInput.value.trim() === '' ? NaN : parseInt(n._teInput.value, 10);
+        var tlVal = n._tlInput.value.trim() === '' ? NaN : parseInt(n._tlInput.value, 10);
+        var expectedTE = builder.computeTE(n.id);
+        var expectedTL = builder.computeTL(n.id, projectEnd);
+
+        total++;
+        if (!isNaN(teVal) && teVal === expectedTE) {
+          n._teInput.classList.remove('wrong'); n._teInput.classList.add('correct'); score++;
+        } else {
+          n._teInput.classList.remove('correct'); if (!isNaN(teVal)) n._teInput.classList.add('wrong');
+        }
+
+        total++;
+        if (!isNaN(tlVal) && !isNaN(expectedTL) && isFinite(expectedTL) && tlVal === expectedTL) {
+          n._tlInput.classList.remove('wrong'); n._tlInput.classList.add('correct'); score++;
+        } else {
+          n._tlInput.classList.remove('correct'); if (!isNaN(tlVal)) n._tlInput.classList.add('wrong');
+        }
+      });
+
+      var criticalEdges = [];
+      edges.forEach(function(e) {
+        var fromTE = builder.computeTE(e.fromId), toTE = builder.computeTE(e.toId);
+        var fromTL = builder.computeTL(e.fromId, projectEnd), toTL = builder.computeTL(e.toId, projectEnd);
+        if (fromTE === fromTL && toTE === toTL && fromTE + e.dur === toTE) criticalEdges.push(e);
+      });
+      var cpCorrect = 0, cpWrong = 0;
+      edges.forEach(function(e) {
+        var isCrit = criticalEdges.indexOf(e) >= 0;
+        if (isCrit && e.selected) cpCorrect++;
+        if (!isCrit && e.selected) cpWrong++;
+      });
+      var cpTotal = criticalEdges.length;
+      total += cpTotal; score += cpCorrect;
+      var cpPerfect = cpCorrect === cpTotal && cpWrong === 0;
+
+      var pct = total > 0 ? Math.round(score / total * 100) : 0;
+      var msg = 'Score: ' + score + '/' + total + ' (' + pct + '%)';
+      if (cpTotal > 0) {
+        if (cpPerfect) msg += ' — Kritiek pad correct!';
+        else if (cpWrong > 0) msg += ' — Kritiek pad: niet correct.';
+        else if (cpCorrect === 0) msg += ' — Kritiek pad: niet aangeduid.';
+        else msg += ' — Kritiek pad: niet volledig.';
+      }
+      if (score === total) msg = 'Uitstekend! ' + score + '/' + total + ' — Het netwerk is perfect!';
+      fb.textContent = msg;
+      fb.className = score === total ? 'ex1-feedback success' : pct >= 60 ? 'ex1-feedback partial' : 'ex1-feedback fail';
+    });
+
     document.getElementById('play-net-reset').addEventListener('click', function() {
       builder.resetBuilder();
+      var fb = document.getElementById('play-net-feedback');
+      fb.textContent = ''; fb.className = 'ex1-feedback';
     });
   })();
 
