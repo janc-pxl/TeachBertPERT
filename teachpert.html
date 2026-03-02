@@ -682,6 +682,14 @@
     }
     .ex3-tool:hover { border-color: var(--blue); color: var(--blue); }
     .ex3-tool.active { border-color: var(--primary); background: #f0f0ee; color: var(--primary); }
+    .ex3-tool-download {
+      display: inline-flex; align-items: center; gap: .35rem;
+      padding: .45rem .85rem; border: 2px solid var(--border); border-radius: 8px;
+      background: #fff; font-size: .82rem; font-weight: 600; cursor: pointer;
+      font-family: inherit; transition: all .15s; color: var(--text);
+      margin-left: auto;
+    }
+    .ex3-tool-download:hover { border-color: var(--blue); color: var(--blue); }
 
     .ex3-canvas-wrap {
       background: #f8f9fb; border: 1px solid var(--border); border-top: none;
@@ -2123,6 +2131,7 @@
         <button class="ex3-tool" data-tool="edge">&#8594; Activiteit</button>
         <button class="ex3-tool" data-tool="relay">&#8674; 0-lijn</button>
         <button class="ex3-tool" data-tool="delete">&#10005; Verwijder</button>
+        <button class="ex3-tool-download" id="play-net-download">&#8681; Download</button>
       </div>
 
       <div class="ex3-canvas-wrap" id="play-canvas-wrap">
@@ -4194,6 +4203,91 @@
       var fb = document.getElementById('play-net-feedback');
       fb.textContent = ''; fb.className = 'ex1-feedback';
     });
+
+    function downloadPlaygroundAsJpg() {
+      var ACCENT = '#e63946';
+
+      // Capture TE/TL values from live inputs BEFORE cloning (cloneNode doesn't copy .value)
+      var nodeValues = {};
+      builder.nodes.forEach(function(n) {
+        nodeValues[n.id] = { te: n._teInput.value, tl: n._tlInput.value };
+      });
+
+      var liveSvg = document.getElementById('play-svg');
+      var clone = liveSvg.cloneNode(true);
+      clone.setAttribute('width', '960');
+      clone.setAttribute('height', '500');
+
+      // White background
+      var bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      bg.setAttribute('x', '0'); bg.setAttribute('y', '0');
+      bg.setAttribute('width', '960'); bg.setAttribute('height', '500');
+      bg.setAttribute('fill', '#ffffff');
+      clone.insertBefore(bg, clone.firstChild);
+
+      // Hide ghost line
+      var ghostEl = clone.getElementById('play-ghost');
+      if (ghostEl) ghostEl.setAttribute('opacity', '0');
+
+      // Resolve var(--accent) in selected marker polygon
+      var markerSel = clone.getElementById('play-m-sel');
+      if (markerSel) {
+        var poly = markerSel.querySelector('polygon');
+        if (poly) poly.setAttribute('fill', ACCENT);
+      }
+
+      // Resolve var(--accent) on selected edges and labels
+      clone.querySelectorAll('[stroke="var(--accent)"]').forEach(function(el) {
+        el.setAttribute('stroke', ACCENT);
+      });
+      clone.querySelectorAll('[fill="var(--accent)"]').forEach(function(el) {
+        el.setAttribute('fill', ACCENT);
+      });
+
+      // Replace foreignObjects with SVG text (R=30; TE: x=2,y=-27,w=26,h=27; TL: x=2,y=2,w=26,h=27)
+      clone.querySelectorAll('.ex3-node-group').forEach(function(g) {
+        var nid = parseInt(g.dataset.nodeId, 10);
+        var vals = nodeValues[nid] || { te: '', tl: '' };
+        g.querySelectorAll('foreignObject').forEach(function(fo) { fo.parentNode.removeChild(fo); });
+
+        function makeTxt(x, y, val) {
+          var t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          t.setAttribute('x', x); t.setAttribute('y', y);
+          t.setAttribute('text-anchor', 'middle'); t.setAttribute('dominant-baseline', 'middle');
+          t.setAttribute('font-family', 'Segoe UI,sans-serif');
+          t.setAttribute('font-size', '10'); t.setAttribute('font-weight', '600');
+          t.setAttribute('fill', '#333'); t.setAttribute('pointer-events', 'none');
+          t.textContent = val;
+          return t;
+        }
+        g.appendChild(makeTxt('15', '-14', vals.te)); // TE: top-right quadrant center
+        g.appendChild(makeTxt('15', '15', vals.tl));  // TL: bottom-right quadrant center
+      });
+
+      // Serialize → blob → Image → Canvas → JPG download
+      var svgStr = new XMLSerializer().serializeToString(clone);
+      var blob = new Blob([svgStr], { type: 'image/svg+xml;charset=utf-8' });
+      var url = URL.createObjectURL(blob);
+      var img = new Image();
+      img.onload = function() {
+        var canvas = document.createElement('canvas');
+        canvas.width = 960; canvas.height = 500;
+        var ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, 960, 500);
+        ctx.drawImage(img, 0, 0, 960, 500);
+        URL.revokeObjectURL(url);
+        var a = document.createElement('a');
+        a.href = canvas.toDataURL('image/jpeg', 0.92);
+        a.download = 'pert-netwerk.jpg';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      };
+      img.onerror = function() { URL.revokeObjectURL(url); };
+      img.src = url;
+    }
+    document.getElementById('play-net-download').addEventListener('click', downloadPlaygroundAsJpg);
   })();
 
   /* ── NAV: highlight active link on scroll ──────────────── */
