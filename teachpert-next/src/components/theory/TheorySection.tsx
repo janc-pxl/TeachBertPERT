@@ -123,8 +123,7 @@ export function TheorySection() {
           <summary>Wist je dat? — Geschiedenis van PERT</summary>
           <div className="detail-body">
             De PERT-methode werd uitgevonden door de <em>United States Department of Defense&apos;s US Navy
-            Special Projects Office</em> in <strong>1958</strong> als onderdeel van het
-            <strong>Polaris-project</strong> (de ontwikkeling van nucleaire onderzeeërs).
+            Special Projects Office</em> in <strong>1958</strong> als onderdeel van het <strong>Polaris-project</strong> (de ontwikkeling van nucleaire onderzeeërs).
             PERT lijkt sterk op de <em>kritieke pad methode</em> (CPM), maar bij PERT wordt een
             kansberekening toegepast op de duurtijden, terwijl CPM uitgaat van vaste tijden.
           </div>

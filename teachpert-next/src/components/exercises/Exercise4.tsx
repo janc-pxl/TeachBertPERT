@@ -141,7 +141,7 @@ export function Exercise4() {
       </div>
 
       <div className="card">
-        <div className="card-title">Activiteitenoverzicht</div>
+        <div className="card-title">📋 Activiteitenoverzicht</div>
         <p style={{ color: 'var(--muted)', fontSize: '.88rem', marginBottom: '.75rem' }}>
           Het transportbedrijf <em>&quot;H. Oessers&quot;</em> voert een groot digitaliseringsproject uit met 14 activiteiten.
         </p>
@@ -165,7 +165,7 @@ export function Exercise4() {
       </div>
 
       <div className="card">
-        <div className="card-title">Bouw het PERT-netwerk</div>
+        <div className="card-title">🔨 Bouw het PERT-netwerk</div>
         <div className="ex1-instructions" style={{ marginBottom: '1rem' }}>
           <strong>Instructies:</strong> Gebruik de werkbalk om knooppunten te plaatsen en verbindingen te tekenen.
           <strong>(1)</strong> Klik <em>Knooppunt</em> en klik op het canvas om een knooppunt toe te voegen.

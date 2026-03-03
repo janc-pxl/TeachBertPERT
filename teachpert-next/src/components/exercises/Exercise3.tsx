@@ -194,7 +194,7 @@ export function Exercise3() {
       </div>
 
       <div className="card">
-        <div className="card-title">Opdracht</div>
+        <div className="card-title">📜 Opdracht</div>
         <p style={{ color: 'var(--muted)', fontSize: '.9rem', lineHeight: 1.7 }}>
           Een farao wil een piramide laten bouwen. Het project bestaat uit 8 activiteiten.
           <strong>(1)</strong> Bereken eerst de verwachte tijd t<sub>e</sub> voor elke activiteit.
@@ -205,7 +205,7 @@ export function Exercise3() {
 
       {/* STAP 1 */}
       <div className="card">
-        <div className="card-title">Stap 1 — Bereken t<sub>e</sub></div>
+        <div className="card-title">📊 Stap 1 — Bereken t<sub>e</sub></div>
         <p style={{ color: 'var(--muted)', fontSize: '.88rem', marginBottom: '1rem' }}>
           Gebruik de formule t<sub>e</sub> = (t<sub>o</sub> + 4 · t<sub>l</sub> + t<sub>p</sub>) / 6 en rond af naar het dichtstbijzijnde geheel getal.
         </p>
@@ -232,12 +232,12 @@ export function Exercise3() {
         {locked && (
           <div className="ex3-lock-overlay" id="ex3-lock-overlay">
             <div className="ex3-lock-msg">
-              <strong>Stap 2 is vergrendeld</strong>
+              <strong>🔒 Stap 2 is vergrendeld</strong>
               <p>Voltooi eerst Stap 1 (alle t<sub>e</sub> waarden correct).</p>
             </div>
           </div>
         )}
-        <div className="card-title">Stap 2 — Bouw het PERT-netwerk</div>
+        <div className="card-title">🔨 Stap 2 — Bouw het PERT-netwerk</div>
         <div className="ex1-instructions" style={{ marginBottom: '1rem' }}>
           <strong>Instructies:</strong> Gebruik de werkbalk om knooppunten te plaatsen en verbindingen te tekenen.
           <strong>(1)</strong> Klik <em>Knooppunt</em> en klik op het canvas om een knooppunt toe te voegen.

@@ -55,9 +55,9 @@ export function Exercise5() {
         `<td style="text-align:left;font-size:.82rem;">${a.desc}</td>` +
         `<td>${a.pred.length ? a.pred.join(', ') : '—'}</td>` +
         `<td>${a.to}</td><td>${a.tl}</td><td>${a.tp}</td>` +
-        `<td><input type="number" class="ex5-te-input" data-act="${a.id}" placeholder="?"></td>`;
+        `<td><input type="number" class="ex3-te-input" data-act="${a.id}" placeholder="?"></td>`;
       tbody.appendChild(tr);
-      teInputsRef.current[a.id] = tr.querySelector('.ex5-te-input') as HTMLInputElement;
+      teInputsRef.current[a.id] = tr.querySelector('.ex3-te-input') as HTMLInputElement;
     });
   }, []);
 
@@ -198,7 +198,7 @@ export function Exercise5() {
       </div>
 
       <div className="card">
-        <div className="card-title">Opdracht</div>
+        <div className="card-title">📜 Opdracht</div>
         <p style={{ color: 'var(--muted)', fontSize: '.9rem', lineHeight: 1.7 }}>
           Het bedrijf WalkerWhite wil een applicatie maken voor smartphones over de serie Game of Thrones.
           De televisiezender HBO heeft voorlopig de goedkeuring gegeven aan het bedrijf indien zij de voorgestelde
@@ -213,7 +213,7 @@ export function Exercise5() {
 
       {/* STAP 1 */}
       <div className="card">
-        <div className="card-title">Stap 1 — Bereken t<sub>e</sub></div>
+        <div className="card-title">📊 Stap 1 — Bereken t<sub>e</sub></div>
         <p style={{ color: 'var(--muted)', fontSize: '.88rem', marginBottom: '1rem' }}>
           Gebruik de formule t<sub>e</sub> = (t<sub>o</sub> + 4 · t<sub>l</sub> + t<sub>p</sub>) / 6 en rond af naar het dichtstbijzijnde geheel getal.
         </p>
@@ -240,12 +240,12 @@ export function Exercise5() {
         {locked && (
           <div className="ex3-lock-overlay" id="ex5-lock-overlay">
             <div className="ex3-lock-msg">
-              <strong>Stap 2 is vergrendeld</strong>
+              <strong>🔒 Stap 2 is vergrendeld</strong>
               <p>Voltooi eerst Stap 1 (alle t<sub>e</sub> waarden correct).</p>
             </div>
           </div>
         )}
-        <div className="card-title">Stap 2 — Bouw het PERT-netwerk</div>
+        <div className="card-title">🔨 Stap 2 — Bouw het PERT-netwerk</div>
         <div className="ex1-instructions" style={{ marginBottom: '1rem' }}>
           <strong>Instructies:</strong> Gebruik de werkbalk om knooppunten te plaatsen en verbindingen te tekenen.
           <strong>(1)</strong> Klik <em>Knooppunt</em> en klik op het canvas om een knooppunt toe te voegen.

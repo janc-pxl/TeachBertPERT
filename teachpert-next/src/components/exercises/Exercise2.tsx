@@ -74,8 +74,6 @@ const ACTIVITIES = [
   { act: 'K',              desc: 'Feedback verzamelen en verwerken',   dur: '8 dagen',  pre: 'D, E' },
   { act: 'L',              desc: 'Trainingsprogramma ontwikkelen',     dur: '2 dagen',  pre: 'G, H' },
   { act: 'M',              desc: 'Prestatieanalyse uitvoeren',         dur: '7 dagen',  pre: 'I' },
-  { act: 'Relatielijn 8\u21922', desc: '',                             dur: '0 dagen',  pre: '—' },
-  { act: 'Relatielijn 9\u21926', desc: '',                             dur: '0 dagen',  pre: '—' },
 ];
 
 // ── Edge state stored outside React (imperative SVG refs) ────────────────────
@@ -352,13 +350,13 @@ export default function Exercise2() {
       </div>
 
       <div className="ex1-instructions">
-        <strong>Opdracht:</strong> Hieronder zie je een PERT-netwerk met 10 knooppunten, 13
-        activiteiten en 2 relatielijnen (stippellijnen met duur 0).{' '}
+        <strong>Opdracht:</strong> Hieronder zie je een PERT-netwerk met 10 knooppunten en 13
+        activiteiten.{' '}
         <strong>(1)</strong> Vul voor elk knooppunt de T<sub>E</sub> (vroegst mogelijke
         tijdstip) en T<sub>L</sub> (laatste toelaatbare tijdstip) in.{' '}
         <strong>(2)</strong> Klik op de pijlen die op het{' '}
         <span style={{ color: 'var(--color-accent)', fontWeight: 700 }}>kritieke pad</span>{' '}
-        liggen (ook relatielijnen kunnen op het kritieke pad liggen!).{' '}
+        liggen.{' '}
         <strong>(3)</strong> Klik op <em>Controleer</em> om je antwoorden te checken.
       </div>
 
