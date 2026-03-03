@@ -1,0 +1,3 @@
+:HL["/TeachBertPERT/_next/static/chunks/bf3f4b92f5826a7b.css","style"]
+:HL["/TeachBertPERT/_next/static/media/c825fd02acae0153-s.p.1692d83b.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+0:{"buildId":"hbpTK2nwrOxHpl7QImcZK","tree":{"name":"","paramType":null,"paramKey":"","hasRuntimePrefetch":false,"slots":{"children":{"name":"__PAGE__","paramType":null,"paramKey":"__PAGE__","hasRuntimePrefetch":false,"slots":null,"isRootLayout":false}},"isRootLayout":true},"staleTime":300}
