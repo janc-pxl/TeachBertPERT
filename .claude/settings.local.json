@@ -3,7 +3,10 @@
     "allow": [
       "Bash(git -C \"C:/Users/20003936/gitpxl/TeachBertPERT\" status)",
       "Bash(git -C \"C:/Users/20003936/gitpxl/TeachBertPERT\" init)",
-      "WebFetch(domain:i.imgur.com)"
+      "WebFetch(domain:i.imgur.com)",
+      "Bash(identify /Users/jan/gitpxl/TeachBertPERT/pxl-logo-64.png)",
+      "Bash(npx create-next-app@latest teachpert-next --typescript --tailwind --app --src-dir --import-alias \"@/*\" --no-eslint --no-git)",
+      "Bash(npm run build)"
     ]
   }
 }

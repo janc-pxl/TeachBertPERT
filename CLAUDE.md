@@ -16,17 +16,73 @@ Build an interactive webpage that teaches students PERT (Program Evaluation and 
 - `source/1314_logo_pxl_bol_witrand.png` — original PXL logo (high-res)
 
 ## Requirements
-- Single-page HTML/CSS/JS app (no framework, no build step)
+- Single-page scroll layout (all sections on one page, nav links are anchor scrolls)
 - Interactive elements: interactive PERT diagram builder
 - Clean, modern design
 - Max-width: 1100px (optimized for 1920x1080 student screens)
 
 ## Architecture
-- Everything in a single file: `teachpert.html` (HTML + CSS + JS)
-- Shared `createPertBuilder(cfg)` factory function for network builder UI (used by ex3, ex4, ex5, playground)
-- Each exercise is encapsulated in its own JavaScript IIFE that calls the factory + adds exercise-specific logic (te-step, validation)
-- CSS uses `ex1-`, `ex3-` class prefixes; element IDs use `ex1-`, `ex2-`, `ex3-`, `ex4-`, `ex5-`, `play-` prefixes
-- SVG-based diagrams with foreignObject for input fields inside nodes
+
+The app lives in `teachpert-next/` — a **Next.js 15 + TypeScript + Tailwind v4** project with static export.
+
+`teachpert.html` in the root is the original single-file prototype (archived reference).
+
+### Tech stack
+- **Framework**: Next.js 15 (App Router), static export (`output: 'export'`)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4 (CSS-native `@theme inline` config) + manual SVG CSS in `globals.css`
+- **Fonts**: `next/font/google` (Raleway 600–900)
+- **State**: `useState` / `useEffect` per component (no global state)
+- **SVG builder**: Imperative via `useRef` + `useEffect` (avoids rewriting 500+ lines of battle-tested SVG event code)
+- **Hosting**: GitHub Pages via `gh-pages` branch (`.github/workflows/deploy.yml`)
+
+### Dev commands (run inside `teachpert-next/`)
+```bash
+npm run dev    # development server on localhost:3000
+npm run build  # production build + type check (outputs to out/)
+```
+
+### File structure
+```
+teachpert-next/src/
+├── app/
+│   ├── layout.tsx          # NavBar, Footer, Raleway font, metadata
+│   ├── page.tsx            # Main page — all sections
+│   └── globals.css         # Tailwind @theme + SVG-specific CSS
+├── components/
+│   ├── layout/
+│   │   ├── NavBar.tsx      # Sticky nav with IntersectionObserver scroll-spy
+│   │   └── Footer.tsx      # PXL logo + address
+│   ├── theory/
+│   │   └── TheorySection.tsx
+│   ├── demo/
+│   │   └── DemoSection.tsx
+│   ├── exercises/
+│   │   ├── Exercise1.tsx   # Pre-built static diagram + validation
+│   │   ├── Exercise2.tsx   # Pre-built with dummy edges
+│   │   ├── Exercise3.tsx   # Two-step: TECalc + builder
+│   │   ├── Exercise4.tsx   # Builder only
+│   │   └── Exercise5.tsx   # Two-step: TECalc + builder
+│   └── playground/
+│       └── Playground.tsx
+└── lib/
+    └── pert/
+        ├── types.ts             # PertNode, PertEdge, Activity, BuilderConfig
+        ├── createPertBuilder.ts # SVG builder factory (imperative DOM)
+        ├── algorithms.ts        # computeTE, computeTL, canReach, toRoman
+        └── download.ts          # downloadSvgAsJpg
+```
+
+### SVG builder approach
+`createPertBuilder` is a factory that takes a config object and operates directly on the DOM. In React components it is called inside `useEffect` after the SVG element mounts:
+```tsx
+useEffect(() => {
+  if (!svgRef.current) return;
+  const builder = createPertBuilder({ ...config, svgEl: svgRef.current });
+  return () => builder.destroy();
+}, []);
+```
+CSS uses `ex1-`, `ex2-`, `ex3-`, `ex4-`, `ex5-`, `play-` prefixes for IDs and classes (same as the original).
 
 ## Exercises overview
 
