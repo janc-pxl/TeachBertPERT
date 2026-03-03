@@ -1,11 +1,13 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPertBuilder } from '@/lib/pert/createPertBuilder';
 import { downloadSvgAsJpg } from '@/lib/pert/download';
 import type { PertBuilderAPI } from '@/lib/pert/types';
 
 export function Playground() {
   const builderRef = useRef<PertBuilderAPI | null>(null);
+  const [feedback, setFeedback] = useState('');
+  const [feedbackClass, setFeedbackClass] = useState('ex1-feedback');
 
   useEffect(() => {
     const builder = createPertBuilder({
@@ -21,25 +23,82 @@ export function Playground() {
     return () => { builderRef.current = null; };
   }, []);
 
+  function handleCheck() {
+    const builder = builderRef.current;
+    if (!builder) return;
+    const { nodes, edges, computeTE, computeTL } = builder;
+
+    if (nodes.length === 0) {
+      setFeedback('Voeg eerst knooppunten en verbindingen toe.');
+      setFeedbackClass('ex1-feedback fail');
+      return;
+    }
+
+    let projectEnd = 0;
+    nodes.forEach((n) => { const te = computeTE(n.id); if (te > projectEnd) projectEnd = te; });
+
+    const criticalEdges = edges.filter((e) => {
+      const fromTE = computeTE(e.fromId), toTE = computeTE(e.toId);
+      const fromTL = computeTL(e.fromId, projectEnd), toTL = computeTL(e.toId, projectEnd);
+      return fromTE === fromTL && toTE === toTL && fromTE + e.dur === toTE;
+    });
+
+    let cpCorrect = 0, cpWrong = 0;
+    edges.forEach((e) => {
+      const isCrit = criticalEdges.includes(e);
+      if (isCrit && e.selected) cpCorrect++;
+      if (!isCrit && e.selected) cpWrong++;
+    });
+    const cpTotal = criticalEdges.length;
+    const cpPerfect = cpCorrect === cpTotal && cpWrong === 0;
+
+    if (cpTotal === 0) {
+      setFeedback('Vul eerst de TE- en TL-waarden in bij alle knooppunten.');
+      setFeedbackClass('ex1-feedback fail');
+      return;
+    }
+
+    let msg = '';
+    let cls = 'ex1-feedback';
+    if (cpPerfect) {
+      msg = `✓ Kritiek pad correct! (${cpTotal} verbinding${cpTotal !== 1 ? 'en' : ''})`;
+      cls = 'ex1-feedback success';
+    } else if (cpWrong > 0) {
+      msg = 'Kritiek pad: niet correct — sommige geselecteerde verbindingen zijn niet kritiek.';
+      cls = 'ex1-feedback fail';
+    } else if (cpCorrect === 0) {
+      msg = 'Kritiek pad: niet aangeduid — klik op de kritieke verbindingen in Selecteer-modus.';
+      cls = 'ex1-feedback fail';
+    } else {
+      msg = 'Kritiek pad: niet volledig — niet alle kritieke verbindingen zijn geselecteerd.';
+      cls = 'ex1-feedback partial';
+    }
+    setFeedback(msg);
+    setFeedbackClass(cls);
+  }
+
   function handleReset() {
     builderRef.current?.resetBuilder();
+    setFeedback('');
+    setFeedbackClass('ex1-feedback');
   }
 
   return (
     <section id="playground" style={{ marginTop: '3rem' }}>
       <div className="section-header">
-        <div className="section-badge">Playground</div>
+        <div className="section-badge">PERT Playground</div>
         <h1>Vrije PERT-builder</h1>
         <p>Bouw zelf een PERT-netwerk van nul. Geen voorgedefinieerde activiteiten — volledig vrij.</p>
       </div>
 
       <div className="card">
-        <div className="card-title">Bouw je eigen PERT-netwerk</div>
+        <div className="card-title">🔨 Bouw je eigen PERT-netwerk</div>
         <div className="ex1-instructions" style={{ marginBottom: '1rem' }}>
-          <strong>Instructies:</strong> Gebruik de werkbalk om knooppunten te plaatsen en verbindingen te tekenen.
-          <strong>(1)</strong> Klik <em>Knooppunt</em> en klik op het canvas om een knooppunt toe te voegen.
-          <strong>(2)</strong> Klik <em>Activiteit</em> of <em>0-lijn</em> en klik achtereenvolgens op twee knooppunten.
-          <strong>(3)</strong> In het popup: vul zelf de naam en duur van de activiteit in.
+          <strong>Instructies:</strong> Gebruik de werkbalk om knooppunten te plaatsen en verbindingen te tekenen.{' '}
+          <strong>(1)</strong> Klik <em>Knooppunt</em> en klik op het canvas om een knooppunt toe te voegen.{' '}
+          <strong>(2)</strong> Klik <em>Activiteit</em> of <em>0-lijn</em> en klik achtereenvolgens op twee knooppunten.{' '}
+          <strong>(3)</strong> In het popup: vul de naam en duur van de activiteit in. Vul ook de T<sub>E</sub> en T<sub>L</sub> in bij elk knooppunt.{' '}
+          <strong>(4)</strong> Duid het kritieke pad aan in <em>Selecteer</em>-modus en klik <em>Controleer</em>.
         </div>
 
         <div className="ex3-toolbar" id="play-toolbar">
@@ -80,7 +139,9 @@ export function Playground() {
         </div>
 
         <div className="ex1-controls" style={{ marginTop: '1rem' }}>
+          <button className="ex1-check-btn" onClick={handleCheck}>Controleer</button>
           <button className="ex1-reset-btn" onClick={handleReset}>&#8634; Opnieuw beginnen</button>
+          <div className={feedbackClass}>{feedback}</div>
         </div>
       </div>
     </section>

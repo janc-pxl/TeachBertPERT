@@ -11,7 +11,7 @@ const NAV_LINKS = [
   { href: "#oefening3",  label: "Oefening 3" },
   { href: "#oefening4",  label: "Oefening 4" },
   { href: "#oefening5",  label: "Oefening 5" },
-  { href: "#playground", label: "Playground" },
+  { href: "#playground", label: "PERT Playground" },
 ];
 
 export function NavBar() {

@@ -212,8 +212,7 @@ export function TheorySection() {
                 van het vorige knooppunt.
               </p>
               <div className="nip-rule">
-                📌 <strong>Regel:</strong> Bij meerdere inkomende paden neem je de
-                <strong>grootste</strong> som (= het traagste pad bepaalt de vroegste aankomst).
+                📌 <strong>Regel:</strong> Bij meerdere inkomende paden neem je de <strong>grootste</strong> som (= het traagste pad bepaalt de vroegste aankomst).
               </div>
             </div>
             <div className="nip-item" id="nip-tl">
@@ -227,8 +226,7 @@ export function TheorySection() {
                 van het volgende knooppunt.
               </p>
               <div className="nip-rule">
-                📌 <strong>Regel:</strong> Bij meerdere uitgaande activiteiten neem je de
-                <strong>kleinste</strong> waarde (= de strengste deadline bepaalt de T<sub>L</sub>).
+                📌 <strong>Regel:</strong> Bij meerdere uitgaande activiteiten neem je de <strong>kleinste</strong> waarde (= de strengste deadline bepaalt de T<sub>L</sub>).
               </div>
             </div>
           </div>
