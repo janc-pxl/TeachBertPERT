@@ -34,9 +34,36 @@ export function Playground() {
       return;
     }
 
+    let score = 0, total = 0;
+
     let projectEnd = 0;
     nodes.forEach((n) => { const te = computeTE(n.id); if (te > projectEnd) projectEnd = te; });
 
+    // Validate TE and TL values
+    nodes.forEach((n) => {
+      const expectedTE = computeTE(n.id);
+      const expectedTL = computeTL(n.id, projectEnd);
+      const teVal = n._teInput.value.trim() === '' ? NaN : parseInt(n._teInput.value, 10);
+      const tlVal = n._tlInput.value.trim() === '' ? NaN : parseInt(n._tlInput.value, 10);
+
+      total++;
+      if (!isNaN(teVal) && teVal === expectedTE) {
+        n._teInput.classList.remove('wrong'); n._teInput.classList.add('correct'); score++;
+      } else {
+        n._teInput.classList.remove('correct');
+        if (!isNaN(teVal)) n._teInput.classList.add('wrong');
+      }
+
+      total++;
+      if (!isNaN(tlVal) && isFinite(expectedTL) && tlVal === expectedTL) {
+        n._tlInput.classList.remove('wrong'); n._tlInput.classList.add('correct'); score++;
+      } else {
+        n._tlInput.classList.remove('correct');
+        if (!isNaN(tlVal)) n._tlInput.classList.add('wrong');
+      }
+    });
+
+    // Validate critical path
     const criticalEdges = edges.filter((e) => {
       const fromTE = computeTE(e.fromId), toTE = computeTE(e.toId);
       const fromTL = computeTL(e.fromId, projectEnd), toTL = computeTL(e.toId, projectEnd);
@@ -50,35 +77,44 @@ export function Playground() {
       if (!isCrit && e.selected) cpWrong++;
     });
     const cpTotal = criticalEdges.length;
+    total += cpTotal;
+    score += cpCorrect;
     const cpPerfect = cpCorrect === cpTotal && cpWrong === 0;
 
-    if (cpTotal === 0) {
-      setFeedback('Vul eerst de TE- en TL-waarden in bij alle knooppunten.');
-      setFeedbackClass('ex1-feedback fail');
-      return;
+    const pct = total > 0 ? Math.round(score / total * 100) : 0;
+    let msg = `Score: ${score}/${total} (${pct}%)`;
+    let cls = 'ex1-feedback';
+
+    if (cpTotal > 0) {
+      if (cpPerfect) msg += ' — Kritiek pad correct!';
+      else if (cpWrong > 0) msg += ' — Kritiek pad: niet correct.';
+      else if (cpCorrect === 0) msg += ' — Kritiek pad: niet aangeduid.';
+      else msg += ' — Kritiek pad: niet volledig.';
+    } else {
+      msg += ' — Vul de T\u1D38- en T\u1D38-waarden in bij alle knooppunten.';
     }
 
-    let msg = '';
-    let cls = 'ex1-feedback';
-    if (cpPerfect) {
-      msg = `✓ Kritiek pad correct! (${cpTotal} verbinding${cpTotal !== 1 ? 'en' : ''})`;
+    if (score === total && total > 0) {
+      msg = `Uitstekend! ${score}/${total} — Alles correct!`;
       cls = 'ex1-feedback success';
-    } else if (cpWrong > 0) {
-      msg = 'Kritiek pad: niet correct — sommige geselecteerde verbindingen zijn niet kritiek.';
-      cls = 'ex1-feedback fail';
-    } else if (cpCorrect === 0) {
-      msg = 'Kritiek pad: niet aangeduid — klik op de kritieke verbindingen in Selecteer-modus.';
-      cls = 'ex1-feedback fail';
-    } else {
-      msg = 'Kritiek pad: niet volledig — niet alle kritieke verbindingen zijn geselecteerd.';
+    } else if (pct >= 60) {
       cls = 'ex1-feedback partial';
+    } else {
+      cls = 'ex1-feedback fail';
     }
     setFeedback(msg);
     setFeedbackClass(cls);
   }
 
   function handleReset() {
-    builderRef.current?.resetBuilder();
+    const builder = builderRef.current;
+    if (builder) {
+      builder.nodes.forEach((n) => {
+        n._teInput.classList.remove('correct', 'wrong');
+        n._tlInput.classList.remove('correct', 'wrong');
+      });
+      builder.resetBuilder();
+    }
     setFeedback('');
     setFeedbackClass('ex1-feedback');
   }
@@ -115,7 +151,7 @@ export function Playground() {
             <defs>
               <marker id="play-m-def" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#888"/></marker>
               <marker id="play-m-dash" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#bbb"/></marker>
-              <marker id="play-m-sel" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="var(--accent)"/></marker>
+              <marker id="play-m-sel" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#e63946"/></marker>
               <marker id="play-m-ghost" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#457b9d" opacity=".5"/></marker>
               <clipPath id="play-cl"><rect x="-30" y="-30" width="30" height="60"/></clipPath>
               <clipPath id="play-ctr"><rect x="0" y="-30" width="30" height="30"/></clipPath>

@@ -269,7 +269,7 @@ export function Exercise5() {
             <defs>
               <marker id="ex5-m-def" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#888"/></marker>
               <marker id="ex5-m-dash" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#bbb"/></marker>
-              <marker id="ex5-m-sel" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="var(--accent)"/></marker>
+              <marker id="ex5-m-sel" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#e63946"/></marker>
               <marker id="ex5-m-ghost" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#457b9d" opacity=".5"/></marker>
               <clipPath id="ex5-cl"><rect x="-30" y="-30" width="30" height="60"/></clipPath>
               <clipPath id="ex5-ctr"><rect x="0" y="-30" width="30" height="30"/></clipPath>

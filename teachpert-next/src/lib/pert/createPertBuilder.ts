@@ -339,10 +339,10 @@ export function createPertBuilder(cfg: PertBuilderConfig): PertBuilderAPI | null
         if (edge) {
           edge.selected = !edge.selected;
           if (edge.selected) {
-            edge._line.setAttribute('stroke', 'var(--accent)');
+            edge._line.setAttribute('stroke', '#e63946');
             edge._line.setAttribute('stroke-width', '3');
             edge._line.setAttribute('marker-end', `url(#${prefix}-m-sel)`);
-            edge._lbl.setAttribute('fill', 'var(--accent)');
+            edge._lbl.setAttribute('fill', '#e63946');
           } else {
             edge._line.setAttribute('stroke', edge.dashed ? '#bbb' : '#888');
             edge._line.setAttribute('stroke-width', edge.dashed ? '1.6' : '2');

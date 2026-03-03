@@ -15,6 +15,11 @@
   --color-orange:   #e76f51;
 }
 
+/* ── Legacy SVG tokens (used by createPertBuilder & markers) ── */
+:root {
+  --accent: #e63946;
+}
+
 /* ── Base ───────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
