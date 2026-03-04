@@ -177,14 +177,18 @@ export function Exercise4() {
         </div>
 
         <div className="ex3-toolbar" id="ex4-toolbar">
-          <button className="ex3-tool active" data-tool="select">&#8598; Selecteer</button>
-          <button className="ex3-tool" data-tool="node">&#8853; Knooppunt</button>
-          <button className="ex3-tool" data-tool="edge">&#8594; Activiteit</button>
-          <button className="ex3-tool" data-tool="relay">&#8674; 0-lijn</button>
-          <button className="ex3-tool" data-tool="delete">&#10005; Verwijder</button>
-          <button className="ex3-tool-download" onClick={() => builderRef.current && exportNetwork(builderRef.current, 'ex4', 'oefening-4.json')}>&#8593; Exporteer</button>
-          <button className="ex3-tool-download" onClick={() => builderRef.current && importNetwork(builderRef.current, 'ex4')}>&#8595; Importeer</button>
-          <button className="ex3-tool-download" onClick={() => downloadSvgAsJpg('ex4-svg', 'oefening-4.jpg')}>&#8681; Download</button>
+          <div className="ex3-tool-group">
+            <button className="ex3-tool active" data-tool="select">&#8598; Selecteer</button>
+            <button className="ex3-tool" data-tool="node">&#8853; Knooppunt</button>
+            <button className="ex3-tool" data-tool="edge">&#8594; Activiteit</button>
+            <button className="ex3-tool" data-tool="relay">&#8674; 0-lijn</button>
+            <button className="ex3-tool" data-tool="delete">&#10005; Verwijder</button>
+          </div>
+          <div className="ex3-tool-file-group">
+            <button className="ex3-tool-file" onClick={() => builderRef.current && exportNetwork(builderRef.current, 'ex4', 'oefening-4.json')}>&#8593; Exporteer</button>
+            <button className="ex3-tool-file" onClick={() => builderRef.current && importNetwork(builderRef.current, 'ex4')}>&#8595; Importeer</button>
+            <button className="ex3-tool-download" onClick={() => downloadSvgAsJpg('ex4-svg', 'oefening-4.jpg')}>&#8681; Download</button>
+          </div>
         </div>
 
         <div className="ex3-canvas-wrap" id="ex4-canvas-wrap">

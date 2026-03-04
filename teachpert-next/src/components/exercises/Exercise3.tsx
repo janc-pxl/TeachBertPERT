@@ -249,14 +249,18 @@ export function Exercise3() {
         </div>
 
         <div className="ex3-toolbar" id="ex3-toolbar">
-          <button className="ex3-tool active" data-tool="select">&#8598; Selecteer</button>
-          <button className="ex3-tool" data-tool="node">&#8853; Knooppunt</button>
-          <button className="ex3-tool" data-tool="edge">&#8594; Activiteit</button>
-          <button className="ex3-tool" data-tool="relay">&#8674; 0-lijn</button>
-          <button className="ex3-tool" data-tool="delete">&#10005; Verwijder</button>
-          <button className="ex3-tool-download" onClick={() => builderRef.current && exportNetwork(builderRef.current, 'ex3', 'oefening-3.json')}>&#8593; Exporteer</button>
-          <button className="ex3-tool-download" disabled={locked} title={locked ? 'Ontgrendel eerst Stap 1' : undefined} onClick={() => builderRef.current && importNetwork(builderRef.current, 'ex3')}>&#8595; Importeer</button>
-          <button className="ex3-tool-download" onClick={() => downloadSvgAsJpg('ex3-svg', 'oefening-3.jpg')}>&#8681; Download</button>
+          <div className="ex3-tool-group">
+            <button className="ex3-tool active" data-tool="select">&#8598; Selecteer</button>
+            <button className="ex3-tool" data-tool="node">&#8853; Knooppunt</button>
+            <button className="ex3-tool" data-tool="edge">&#8594; Activiteit</button>
+            <button className="ex3-tool" data-tool="relay">&#8674; 0-lijn</button>
+            <button className="ex3-tool" data-tool="delete">&#10005; Verwijder</button>
+          </div>
+          <div className="ex3-tool-file-group">
+            <button className="ex3-tool-file" onClick={() => builderRef.current && exportNetwork(builderRef.current, 'ex3', 'oefening-3.json')}>&#8593; Exporteer</button>
+            <button className="ex3-tool-file" disabled={locked} title={locked ? 'Ontgrendel eerst Stap 1' : undefined} onClick={() => builderRef.current && importNetwork(builderRef.current, 'ex3')}>&#8595; Importeer</button>
+            <button className="ex3-tool-download" onClick={() => downloadSvgAsJpg('ex3-svg', 'oefening-3.jpg')}>&#8681; Download</button>
+          </div>
         </div>
 
         <div className="ex3-canvas-wrap" id="ex3-canvas-wrap">

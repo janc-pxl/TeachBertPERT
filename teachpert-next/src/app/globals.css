@@ -408,24 +408,41 @@ details[open] summary::before { transform: rotate(90deg); }
 .ex3-te-input.correct { border-color: #16a34a; background: #f0fdf4; }
 .ex3-te-input.wrong   { border-color: #dc2626; background: #fef2f2; color: #dc2626; }
 .ex3-toolbar {
-  display: flex; gap: .5rem; padding: .75rem; background: #f5f5f3;
-  border: 1px solid #dde2ea; border-radius: 10px 10px 0 0; flex-wrap: wrap;
+  display: flex; gap: .75rem; padding: .75rem; background: #f5f5f3;
+  border: 1px solid #dde2ea; border-radius: 10px 10px 0 0; align-items: center;
+  flex-wrap: wrap;
+}
+/* Drawing tools — connected pill group */
+.ex3-tool-group {
+  display: flex; border: 2px solid #dde2ea; border-radius: 8px; overflow: hidden;
 }
 .ex3-tool {
   display: inline-flex; align-items: center; gap: .35rem;
-  padding: .45rem .85rem; border: 2px solid #dde2ea; border-radius: 8px;
+  padding: .45rem .85rem; border: none; border-right: 1px solid #dde2ea;
+  border-radius: 0; background: #fff; font-size: .82rem; font-weight: 600;
+  cursor: pointer; font-family: inherit; transition: background .15s; color: #030203;
+}
+.ex3-tool:last-child { border-right: none; }
+.ex3-tool:hover { background: #f5f5f3; }
+.ex3-tool.active { background: #f0f0ee; }
+/* File tools — right-aligned group */
+.ex3-tool-file-group { margin-left: auto; display: flex; gap: .4rem; align-items: center; }
+.ex3-tool-file {
+  display: inline-flex; align-items: center; gap: .35rem;
+  padding: .45rem .85rem; border: 2px solid #AE9A64; border-radius: 8px;
   background: #fff; font-size: .82rem; font-weight: 600; cursor: pointer;
   font-family: inherit; transition: all .15s; color: #030203;
 }
-.ex3-tool:hover { border-color: #030203; color: #030203; }
-.ex3-tool.active { border-color: #030203; background: #f0f0ee; color: #030203; }
+.ex3-tool-file:hover { background: #fdf9f0; }
+.ex3-tool-file:disabled { opacity: .4; cursor: not-allowed; }
+/* Download — dark filled */
 .ex3-tool-download {
   display: inline-flex; align-items: center; gap: .35rem;
-  padding: .45rem .85rem; border: 2px solid #dde2ea; border-radius: 8px;
-  background: #fff; font-size: .82rem; font-weight: 600; cursor: pointer;
-  font-family: inherit; transition: all .15s; color: #030203; margin-left: auto;
+  padding: .45rem .85rem; border: 2px solid #030203; border-radius: 8px;
+  background: #030203; font-size: .82rem; font-weight: 600; cursor: pointer;
+  font-family: inherit; transition: all .15s; color: #AE9A64;
 }
-.ex3-tool-download:hover { border-color: #030203; color: #030203; }
+.ex3-tool-download:hover { background: #1e1c1e; border-color: #1e1c1e; }
 .ex3-canvas-wrap {
   background: #f8f9fb; border: 1px solid #dde2ea; border-top: none;
   border-radius: 0 0 10px 10px; overflow: hidden; position: relative;
