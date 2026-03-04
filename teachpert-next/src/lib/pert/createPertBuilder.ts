@@ -1,4 +1,4 @@
-import type { PertBuilderConfig, PertBuilderAPI, PertNode, PertEdge } from './types';
+import type { PertBuilderConfig, PertBuilderAPI, PertNode, PertEdge, PertNetworkFile } from './types';
 
 export function createPertBuilder(cfg: PertBuilderConfig): PertBuilderAPI | null {
   const prefix = cfg.prefix;
@@ -486,6 +486,30 @@ export function createPertBuilder(cfg: PertBuilderConfig): PertBuilderAPI | null
     setTool('select');
   }
 
+  // ── LOAD STATE ──
+  function loadState(data: PertNetworkFile) {
+    resetBuilder();
+    data.nodes.forEach(n => {
+      nextId = n.id; // addNode uses nextId++ so the node gets exactly n.id
+      const node = addNode(n.x, n.y);
+      if (n.te !== null) node._teInput.value = String(n.te);
+      if (n.tl !== null) node._tlInput.value = String(n.tl);
+    });
+    // nextId is now max(n.id) + 1 — correct for future additions
+    data.edges.forEach(e => {
+      nextEdgeId = e.id; // addEdge uses nextEdgeId++ so the edge gets exactly e.id
+      const edge = addEdge(e.fromId, e.toId, e.dashed, e.act, e.dur);
+      if (edge && e.selected) {
+        edge.selected = true;
+        edge._line.setAttribute('stroke', '#e63946');
+        edge._line.setAttribute('stroke-width', '3');
+        edge._line.setAttribute('marker-end', `url(#${prefix}-m-sel)`);
+        edge._lbl.setAttribute('fill', '#e63946');
+      }
+    });
+    // nextEdgeId is now max(e.id) + 1 — correct for future additions
+  }
+
   return {
     nodes,
     edges,
@@ -496,5 +520,6 @@ export function createPertBuilder(cfg: PertBuilderConfig): PertBuilderAPI | null
     hideEdgePopup,
     setTool,
     resetBuilder,
+    loadState,
   };
 }

@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPertBuilder } from '@/lib/pert/createPertBuilder';
 import { downloadSvgAsJpg } from '@/lib/pert/download';
+import { exportNetwork, importNetwork } from '@/lib/pert/importExport';
 import type { Activity, PertBuilderAPI } from '@/lib/pert/types';
 
 const ACTIVITIES: Activity[] = [
@@ -181,6 +182,8 @@ export function Exercise4() {
           <button className="ex3-tool" data-tool="edge">&#8594; Activiteit</button>
           <button className="ex3-tool" data-tool="relay">&#8674; 0-lijn</button>
           <button className="ex3-tool" data-tool="delete">&#10005; Verwijder</button>
+          <button className="ex3-tool-download" onClick={() => builderRef.current && exportNetwork(builderRef.current, 'oefening-4.json')}>&#8593; Exporteer</button>
+          <button className="ex3-tool-download" onClick={() => builderRef.current && importNetwork(builderRef.current)}>&#8595; Importeer</button>
           <button className="ex3-tool-download" onClick={() => downloadSvgAsJpg('ex4-svg', 'oefening-4.jpg')}>&#8681; Download</button>
         </div>
 

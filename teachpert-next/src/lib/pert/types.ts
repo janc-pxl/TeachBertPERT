@@ -44,6 +44,31 @@ export interface PertEdge {
   _hit: SVGLineElement;
 }
 
+export interface SerializedNode {
+  id: number;
+  label: string;
+  x: number;
+  y: number;
+  te: number | null;
+  tl: number | null;
+}
+
+export interface SerializedEdge {
+  id: number;
+  fromId: number;
+  toId: number;
+  dashed: boolean;
+  act: string;
+  dur: number;
+  selected: boolean;
+}
+
+export interface PertNetworkFile {
+  version: 1;
+  nodes: SerializedNode[];
+  edges: SerializedEdge[];
+}
+
 export interface PertBuilderAPI {
   nodes: PertNode[];
   edges: PertEdge[];
@@ -54,4 +79,5 @@ export interface PertBuilderAPI {
   hideEdgePopup: () => void;
   setTool: (tool: string) => void;
   resetBuilder: () => void;
+  loadState: (data: PertNetworkFile) => void;
 }
