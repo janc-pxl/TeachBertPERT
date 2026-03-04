@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import pxlLogo from "../../../public/pxl-logo-64.png";
 
 const NAV_LINKS = [
   { href: "#theorie",    label: "Theorie" },
@@ -78,7 +79,7 @@ export function NavBar() {
         }}
       >
         <Image
-          src="/pxl-logo-64.png"
+          src={pxlLogo}
           alt="Hogeschool PXL"
           width={28}
           height={28}

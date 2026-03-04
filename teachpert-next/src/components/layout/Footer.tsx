@@ -1,4 +1,5 @@
 import Image from "next/image";
+import pxlLogo from "../../../public/pxl-logo-64.png";
 
 export function Footer() {
   return (
@@ -14,7 +15,7 @@ export function Footer() {
         }}
       >
         <Image
-          src="/pxl-logo-64.png"
+          src={pxlLogo}
           alt="Hogeschool PXL"
           width={36}
           height={36}
