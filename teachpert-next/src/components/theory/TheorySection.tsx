@@ -269,18 +269,19 @@ export function TheorySection() {
 
           <div className="concept-card">
             <svg width="180" height="90" viewBox="0 0 180 90">
+              <defs>
+                <marker id="net-arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                  <polygon points="0 0,8 3,0 6" fill="#333"/>
+                </marker>
+              </defs>
               <circle cx="20" cy="45" r="14" fill="#fff" stroke="#333" strokeWidth="1.8"/>
               <circle cx="80" cy="20" r="14" fill="#fff" stroke="#333" strokeWidth="1.8"/>
               <circle cx="80" cy="70" r="14" fill="#fff" stroke="#333" strokeWidth="1.8"/>
               <circle cx="160" cy="45" r="14" fill="#fff" stroke="#333" strokeWidth="1.8"/>
-              <line x1="34" y1="39" x2="64" y2="24" stroke="#333" strokeWidth="1.5"/>
-              <polygon points="64,24 57,30 68,32" fill="#333"/>
-              <line x1="34" y1="51" x2="64" y2="66" stroke="#333" strokeWidth="1.5"/>
-              <polygon points="64,66 57,60 68,58" fill="#333"/>
-              <line x1="94" y1="24" x2="142" y2="40" stroke="#333" strokeWidth="1.5"/>
-              <polygon points="142,40 134,36 138,46" fill="#333"/>
-              <line x1="94" y1="66" x2="142" y2="51" stroke="#333" strokeWidth="1.5"/>
-              <polygon points="142,51 134,54 138,44" fill="#333"/>
+              <line x1="34" y1="39" x2="66" y2="25" stroke="#333" strokeWidth="1.5" markerEnd="url(#net-arr)"/>
+              <line x1="34" y1="51" x2="66" y2="65" stroke="#333" strokeWidth="1.5" markerEnd="url(#net-arr)"/>
+              <line x1="94" y1="25" x2="146" y2="41" stroke="#333" strokeWidth="1.5" markerEnd="url(#net-arr)"/>
+              <line x1="94" y1="65" x2="146" y2="49" stroke="#333" strokeWidth="1.5" markerEnd="url(#net-arr)"/>
               <text x="20" y="49" textAnchor="middle" fontFamily="Segoe UI,sans-serif" fontSize="9" fill="#555">I</text>
               <text x="80" y="24" textAnchor="middle" fontFamily="Segoe UI,sans-serif" fontSize="9" fill="#555">II</text>
               <text x="80" y="74" textAnchor="middle" fontFamily="Segoe UI,sans-serif" fontSize="9" fill="#555">III</text>
