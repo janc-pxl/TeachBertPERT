@@ -124,6 +124,12 @@ export default function Exercise1() {
       const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
       const key = e.from + '-' + e.to;
 
+      const hit = document.createElementNS(SVG_NS, 'line') as SVGLineElement;
+      hit.setAttribute('x1', String(x1)); hit.setAttribute('y1', String(y1));
+      hit.setAttribute('x2', String(x2)); hit.setAttribute('y2', String(y2));
+      hit.classList.add('ex1-edge-hit');
+      edgesG.appendChild(hit);
+
       const line = document.createElementNS(SVG_NS, 'line') as SVGLineElement;
       line.setAttribute('x1', String(x1)); line.setAttribute('y1', String(y1));
       line.setAttribute('x2', String(x2)); line.setAttribute('y2', String(y2));
@@ -145,12 +151,6 @@ export default function Exercise1() {
       lbl.classList.add('ex1-edge-lbl');
       lbl.textContent = e.act + ' (' + e.dur + 'd)';
       edgesG.appendChild(lbl);
-
-      const hit = document.createElementNS(SVG_NS, 'line') as SVGLineElement;
-      hit.setAttribute('x1', String(x1)); hit.setAttribute('y1', String(y1));
-      hit.setAttribute('x2', String(x2)); hit.setAttribute('y2', String(y2));
-      hit.classList.add('ex1-edge-hit');
-      edgesG.appendChild(hit);
 
       edgeEls[key] = { hit, line, lbl, selected: false };
 

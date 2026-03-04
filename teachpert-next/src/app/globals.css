@@ -356,8 +356,7 @@ details[open] summary::before { transform: rotate(90deg); }
 .ex1-input.wrong   { border-color: #dc2626; background: #fef2f2; color: #dc2626; }
 .ex1-input.readonly { background: #e9ecef; color: #6b7280; cursor: default; }
 .ex1-edge-hit { cursor: pointer; stroke: transparent; stroke-width: 18; fill: none; }
-.ex1-edge-hit:hover + line,
-.ex1-edge-hit:hover + path { stroke: #030203; stroke-width: 2.5; }
+.ex1-edge-hit:hover + line { stroke: #030203; stroke-width: 2.5; }
 .ex1-edge-line { pointer-events: none; transition: stroke .2s, stroke-width .2s; }
 .ex1-edge-line.selected { stroke: #e63946 !important; stroke-width: 3 !important; }
 .ex1-edge-lbl { pointer-events: none; transition: fill .2s; }
