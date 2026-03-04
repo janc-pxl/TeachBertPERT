@@ -144,8 +144,8 @@ export function Playground() {
           <button className="ex3-tool" data-tool="edge">&#8594; Activiteit</button>
           <button className="ex3-tool" data-tool="relay">&#8674; 0-lijn</button>
           <button className="ex3-tool" data-tool="delete">&#10005; Verwijder</button>
-          <button className="ex3-tool-download" onClick={() => builderRef.current && exportNetwork(builderRef.current, 'playground.json')}>&#8593; Exporteer</button>
-          <button className="ex3-tool-download" onClick={() => builderRef.current && importNetwork(builderRef.current)}>&#8595; Importeer</button>
+          <button className="ex3-tool-download" onClick={() => builderRef.current && exportNetwork(builderRef.current, 'playground', 'playground.json')}>&#8593; Exporteer</button>
+          <button className="ex3-tool-download" onClick={() => builderRef.current && importNetwork(builderRef.current, 'playground')}>&#8595; Importeer</button>
           <button className="ex3-tool-download" onClick={() => downloadSvgAsJpg('play-svg', 'playground.jpg')}>&#8681; Download</button>
         </div>
 

@@ -1,8 +1,9 @@
 import type { PertBuilderAPI, PertNetworkFile } from './types';
 
-export function exportNetwork(builder: PertBuilderAPI, filename = 'pert-netwerk.json'): void {
+export function exportNetwork(builder: PertBuilderAPI, context: string, filename = 'pert-netwerk.json'): void {
   const data: PertNetworkFile = {
     version: 1,
+    context,
     nodes: builder.nodes.map(n => ({
       id: n.id,
       label: n.label,
@@ -30,7 +31,7 @@ export function exportNetwork(builder: PertBuilderAPI, filename = 'pert-netwerk.
   URL.revokeObjectURL(url);
 }
 
-export function importNetwork(builder: PertBuilderAPI): void {
+export function importNetwork(builder: PertBuilderAPI, context: string): void {
   const input = document.createElement('input');
   input.type = 'file';
   input.accept = '.json,application/json';
@@ -41,6 +42,10 @@ export function importNetwork(builder: PertBuilderAPI): void {
       const data: PertNetworkFile = JSON.parse(await file.text());
       if (data.version !== 1 || !Array.isArray(data.nodes) || !Array.isArray(data.edges)) {
         alert('Ongeldig bestandsformaat.');
+        return;
+      }
+      if (data.context !== context) {
+        alert(`Dit bestand is gemaakt voor een andere oefening (${data.context}) en kan hier niet worden ingeladen.`);
         return;
       }
       builder.loadState(data);

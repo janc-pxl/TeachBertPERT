@@ -65,6 +65,7 @@ export interface SerializedEdge {
 
 export interface PertNetworkFile {
   version: 1;
+  context: string;
   nodes: SerializedNode[];
   edges: SerializedEdge[];
 }

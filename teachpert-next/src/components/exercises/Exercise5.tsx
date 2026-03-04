@@ -262,8 +262,8 @@ export function Exercise5() {
           <button className="ex3-tool" data-tool="edge">&#8594; Activiteit</button>
           <button className="ex3-tool" data-tool="relay">&#8674; 0-lijn</button>
           <button className="ex3-tool" data-tool="delete">&#10005; Verwijder</button>
-          <button className="ex3-tool-download" onClick={() => builderRef.current && exportNetwork(builderRef.current, 'oefening-5.json')}>&#8593; Exporteer</button>
-          <button className="ex3-tool-download" disabled={locked} title={locked ? 'Ontgrendel eerst Stap 1' : undefined} onClick={() => builderRef.current && importNetwork(builderRef.current)}>&#8595; Importeer</button>
+          <button className="ex3-tool-download" onClick={() => builderRef.current && exportNetwork(builderRef.current, 'ex5', 'oefening-5.json')}>&#8593; Exporteer</button>
+          <button className="ex3-tool-download" disabled={locked} title={locked ? 'Ontgrendel eerst Stap 1' : undefined} onClick={() => builderRef.current && importNetwork(builderRef.current, 'ex5')}>&#8595; Importeer</button>
           <button className="ex3-tool-download" onClick={() => downloadSvgAsJpg('ex5-svg', 'oefening-5.jpg')}>&#8681; Download</button>
         </div>
 
