@@ -51,7 +51,7 @@ teachpert-next/src/
 │   └── globals.css         # Tailwind @theme + SVG-specific CSS
 ├── components/
 │   ├── layout/
-│   │   ├── NavBar.tsx      # Sticky nav with IntersectionObserver scroll-spy
+│   │   ├── NavBar.tsx      # Sticky nav with hamburger menu + IntersectionObserver scroll-spy
 │   │   └── Footer.tsx      # PXL logo + address
 │   ├── theory/
 │   │   └── TheorySection.tsx
@@ -159,7 +159,7 @@ CSS uses `ex1-`, `ex2-`, `ex3-`, `ex4-`, `ex5-`, `play-` prefixes for IDs and cl
 - Edge hit areas: invisible 18px-wide transparent lines for easy clicking
 - `toRoman()` helper in ex3, ex4 and ex5 IIFEs ensures extra nodes get proper Roman numeral labels
 - Edge popup for network builders: dropdown of unused activities, auto-fills duration
-- `pxl-logo-64.png` — resized (64x64) PXL logo used in nav bar and footer
+- `pxl-logo-64.png` — resized (64x64) PXL logo used in nav bar and footer. **Must be imported as a module** (`import pxlLogo from "../../../public/pxl-logo-64.png"`) — NOT as a string path. String paths don't get the `basePath` prefix in static export, causing 404s on GitHub Pages.
 
 ## Styling (PXL Hogeschool huisstijl)
 - Based on `2025_10_huisstijlhandboek.pdf`
@@ -168,5 +168,5 @@ CSS uses `ex1-`, `ex2-`, `ex3-`, `ex4-`, `ex5-`, `play-` prefixes for IDs and cl
 - **CSS design tokens**: `--primary`, `--accent` (red, diagrams only), `--gold` (UI accents), `--green`, `--blue`, `--orange`, `--bg`, `--card`, `--border`, `--text`, `--muted`
 - **Gold accents** used for: nav active indicator, section badges, definition block borders/labels, summary toggles, instruction borders
 - **Diagram colors untouched**: node backgrounds, edge strokes, input validation colors unchanged
-- **Nav bar**: black background with PXL logo (`pxl-logo-64.png`) + "PERT" text
+- **Nav bar**: black background with PXL logo (`pxl-logo-64.png`) + "PERT" text + hamburger menu (dropdown, closes on outside click / Escape, bars animate to X). CSS classes in `globals.css`: `.nav-hamburger`, `.nav-dropdown`, `.nav-dropdown.open`.
 - **Footer**: black background with PXL logo + address (Elfde-Liniestraat 24, B-3500 HASSELT)
