@@ -17,6 +17,7 @@ const NAV_LINKS = [
 
 export function NavBar() {
   const [active, setActive] = useState("theorie");
+  const [open, setOpen] = useState(false);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
@@ -46,6 +47,22 @@ export function NavBar() {
     return () => observerRef.current?.disconnect();
   }, []);
 
+  // Close on outside click or Escape
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    const onClick = (e: MouseEvent) => {
+      const t = e.target as Element;
+      if (!t.closest(".nav-hamburger") && !t.closest(".nav-dropdown")) setOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("click", onClick);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("click", onClick);
+    };
+  }, [open]);
+
   return (
     <nav
       style={{
@@ -57,10 +74,9 @@ export function NavBar() {
         alignItems: "center",
         padding: "0 1.5rem",
         boxShadow: "0 2px 14px rgba(0,0,0,.3)",
-        overflowX: "auto",
-        scrollbarWidth: "none",
       }}
     >
+      {/* Brand */}
       <div
         style={{
           display: "flex",
@@ -88,28 +104,31 @@ export function NavBar() {
         PERT
       </div>
 
-      {NAV_LINKS.map((link) => {
-        const id = link.href.slice(1);
-        const isActive = active === id;
-        return (
+      {/* Hamburger button */}
+      <button
+        className="nav-hamburger"
+        aria-label="Menu"
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+      >
+        <span />
+        <span />
+        <span />
+      </button>
+
+      {/* Dropdown */}
+      <div className={`nav-dropdown${open ? " open" : ""}`}>
+        {NAV_LINKS.map((link) => (
           <a
             key={link.href}
             href={link.href}
-            style={{
-              color: isActive ? "#fff" : "rgba(255,255,255,.6)",
-              textDecoration: "none",
-              padding: "0.85rem 0.8rem",
-              fontSize: "0.85rem",
-              whiteSpace: "nowrap",
-              borderBottom: isActive ? "2px solid #AE9A64" : "2px solid transparent",
-              transition: "color .15s",
-              flexShrink: 0,
-            }}
+            className={active === link.href.slice(1) ? "active" : undefined}
+            onClick={() => setOpen(false)}
           >
             {link.label}
           </a>
-        );
-      })}
+        ))}
+      </div>
     </nav>
   );
 }
