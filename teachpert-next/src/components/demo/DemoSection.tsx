@@ -225,41 +225,6 @@ export function DemoSection() {
            een schijnactiviteit en een gezamenlijke release. Doorloop het netwerk stap voor stap.</p>
       </div>
 
-      {/* Schijnactiviteit detail card */}
-      <div className="card">
-        <div className="card-title">🔗 De schijnactiviteit (0-lijn) in detail</div>
-        <p style={{ color: 'var(--muted)', fontSize: '.9rem', marginBottom: '1.1rem' }}>
-          In dit netwerk loopt er een schijnactiviteit van knooppunt II naar knooppunt III.
-          Hieronder zie je precies wat dat betekent en hoe je ermee rekent.
-        </p>
-        <table className="slack-table" style={{ marginBottom: '1.25rem' }}>
-          <thead>
-            <tr><th>Type</th><th>Symbool</th><th>Tijd</th><th>Mankracht / middelen</th><th>Gebruik</th></tr>
-          </thead>
-          <tbody>
-            <tr><td><strong>Activiteit</strong></td><td>Volle pijl</td><td>Ja (duurtijd &gt; 0)</td><td>Ja</td><td>Een echte taak (bv. iOS bouwen)</td></tr>
-            <tr style={{ background: '#fffbeb' }}><td><strong>Wachttijd</strong></td><td>Stippelpijl</td><td>Ja (wachttijd)</td><td>Nee</td><td>Technische wachttijd (bv. beton uitharden)</td></tr>
-            <tr style={{ background: '#eef5fb' }}><td><strong>Schijnactiviteit</strong></td><td>Stippelpijl met <strong>0</strong></td><td><strong>Nee</strong> (duurtijd = 0)</td><td>Nee</td><td>Noodzakelijk logisch verband zonder tijdskost</td></tr>
-          </tbody>
-        </table>
-        <div className="pass-grid">
-          <div className="pass-card forward">
-            <div className="pass-title">➡ Voorwaartse gang via schijnactiviteit</div>
-            <p className="pass-desc">De schijnactiviteit <strong>II → III</strong> heeft duurtijd 0.</p>
-            <div className="pass-rule">T<sub>E</sub>(III) via II = T<sub>E</sub>(II) + <strong>0</strong> = 4 + 0 = 4</div>
-            <div className="pass-rule">T<sub>E</sub>(III) via I (Act 2) = T<sub>E</sub>(I) + 8 = 0 + 8 = <strong>8</strong></div>
-            <div className="pass-rule">📌 Neem de <strong>grootste</strong>: T<sub>E</sub>(III) = <strong>8</strong></div>
-          </div>
-          <div className="pass-card backward">
-            <div className="pass-title">⬅ Achterwaartse gang via schijnactiviteit</div>
-            <p className="pass-desc">In de achterwaartse gang gaat de schijnactiviteit <em>omgekeerd</em> (III → II).</p>
-            <div className="pass-rule">T<sub>L</sub>(II) = T<sub>L</sub>(III) − <strong>0</strong> = 8 − 0 = <strong>8</strong></div>
-            <div className="pass-rule" style={{ marginTop: '.5rem' }}>Speling knooppunt II = T<sub>L</sub> − T<sub>E</sub> = 8 − 4 = <strong>4</strong> → positieve speling, <em>niet kritiek</em>.</div>
-            <div className="pass-rule" style={{ marginTop: '.5rem', background: '#fee2e2' }}>⚠️ De schijnactiviteit zelf is <strong>niet kritiek</strong> omdat knooppunt II speling heeft.</div>
-          </div>
-        </div>
-      </div>
-
       {/* DEMO 1 */}
       <div className="demo-card">
         <div className="demo-header">
@@ -333,6 +298,41 @@ export function DemoSection() {
         </div>
         <div className="demo-footer">
           <button className="demo-btn-reset" id="demo-reset" onClick={() => setD1Cur(0)}>↺ Opnieuw beginnen</button>
+        </div>
+      </div>
+
+      {/* Schijnactiviteit detail card */}
+      <div className="card">
+        <div className="card-title">🔗 De schijnactiviteit (0-lijn) in detail</div>
+        <p style={{ color: 'var(--muted)', fontSize: '.9rem', marginBottom: '1.1rem' }}>
+          In dit netwerk loopt er een schijnactiviteit van knooppunt II naar knooppunt III.
+          Hieronder zie je precies wat dat betekent en hoe je ermee rekent.
+        </p>
+        <table className="slack-table" style={{ marginBottom: '1.25rem' }}>
+          <thead>
+            <tr><th>Type</th><th>Symbool</th><th>Tijd</th><th>Mankracht / middelen</th><th>Gebruik</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Activiteit</strong></td><td>Volle pijl</td><td>Ja (duurtijd &gt; 0)</td><td>Ja</td><td>Een echte taak (bv. iOS bouwen)</td></tr>
+            <tr style={{ background: '#fffbeb' }}><td><strong>Wachttijd</strong></td><td>Stippelpijl</td><td>Ja (wachttijd)</td><td>Nee</td><td>Technische wachttijd (bv. beton uitharden)</td></tr>
+            <tr style={{ background: '#eef5fb' }}><td><strong>Schijnactiviteit</strong></td><td>Stippelpijl met <strong>0</strong></td><td><strong>Nee</strong> (duurtijd = 0)</td><td>Nee</td><td>Noodzakelijk logisch verband zonder tijdskost</td></tr>
+          </tbody>
+        </table>
+        <div className="pass-grid">
+          <div className="pass-card forward">
+            <div className="pass-title">➡ Voorwaartse gang via schijnactiviteit</div>
+            <p className="pass-desc">De schijnactiviteit <strong>II → III</strong> heeft duurtijd 0.</p>
+            <div className="pass-rule">T<sub>E</sub>(III) via II = T<sub>E</sub>(II) + <strong>0</strong> = 4 + 0 = 4</div>
+            <div className="pass-rule">T<sub>E</sub>(III) via I (Act 2) = T<sub>E</sub>(I) + 8 = 0 + 8 = <strong>8</strong></div>
+            <div className="pass-rule">📌 Neem de <strong>grootste</strong>: T<sub>E</sub>(III) = <strong>8</strong></div>
+          </div>
+          <div className="pass-card backward">
+            <div className="pass-title">⬅ Achterwaartse gang via schijnactiviteit</div>
+            <p className="pass-desc">In de achterwaartse gang gaat de schijnactiviteit <em>omgekeerd</em> (III → II).</p>
+            <div className="pass-rule">T<sub>L</sub>(II) = T<sub>L</sub>(III) − <strong>0</strong> = 8 − 0 = <strong>8</strong></div>
+            <div className="pass-rule" style={{ marginTop: '.5rem' }}>Speling knooppunt II = T<sub>L</sub> − T<sub>E</sub> = 8 − 4 = <strong>4</strong> → positieve speling, <em>niet kritiek</em>.</div>
+            <div className="pass-rule" style={{ marginTop: '.5rem', background: '#fee2e2' }}>⚠️ De schijnactiviteit zelf is <strong>niet kritiek</strong> omdat knooppunt II speling heeft.</div>
+          </div>
         </div>
       </div>
 
