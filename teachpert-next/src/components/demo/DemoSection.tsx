@@ -114,7 +114,13 @@ function renderDemo(
   const titleEl = document.getElementById(`${prefix}-title`);
   if (titleEl) titleEl.innerHTML = s.title;
   const explEl = document.getElementById(`${prefix}-explanation`);
-  if (explEl) explEl.innerHTML = s.expl;
+  if (explEl) {
+    // Voorwaartse/achterwaartse stappen behandelen telkens één knooppunt: zet dat vooraan.
+    const nodeLabel = (s.phase === 'forward' || s.phase === 'backward') && s.hi.length === 1
+      ? `<strong style="color:#AE9A64">Knooppunt ${s.hi[0]}:</strong> `
+      : '';
+    explEl.innerHTML = nodeLabel + s.expl;
+  }
   const badge = document.getElementById(`${prefix}-phase-badge`);
   if (badge) {
     badge.textContent = s.lbl;
