@@ -238,8 +238,8 @@ export function DemoSection() {
           </thead>
           <tbody>
             <tr><td><strong>Activiteit</strong></td><td>Volle pijl</td><td>Ja (duurtijd &gt; 0)</td><td>Ja</td><td>Een echte taak (bv. iOS bouwen)</td></tr>
-            <tr style={{ background: '#fffbeb' }}><td><strong>Schijnactiviteit</strong></td><td>Stippelpijl</td><td>Ja (wachttijd)</td><td>Nee</td><td>Technische wachttijd (bv. beton uitharden)</td></tr>
-            <tr style={{ background: '#eef5fb' }}><td><strong>Relatielijn</strong></td><td>Stippelpijl met <strong>0</strong></td><td><strong>Nee</strong> (duurtijd = 0)</td><td>Nee</td><td>Noodzakelijk logisch verband zonder tijdskost</td></tr>
+            <tr style={{ background: '#fffbeb' }}><td><strong>Wachttijd</strong></td><td>Stippelpijl</td><td>Ja (wachttijd)</td><td>Nee</td><td>Technische wachttijd (bv. beton uitharden)</td></tr>
+            <tr style={{ background: '#eef5fb' }}><td><strong>Schijnactiviteit</strong></td><td>Stippelpijl met <strong>0</strong></td><td><strong>Nee</strong> (duurtijd = 0)</td><td>Nee</td><td>Noodzakelijk logisch verband zonder tijdskost</td></tr>
           </tbody>
         </table>
         <div className="pass-grid">

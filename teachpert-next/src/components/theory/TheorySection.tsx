@@ -236,6 +236,10 @@ export function TheorySection() {
       {/* Begrippen */}
       <div className="card">
         <div className="card-title">📖 Begrippen</div>
+        <p style={{ color: 'var(--muted)', fontSize: '.9rem', marginBottom: '1.4rem' }}>
+          Een PERT-netwerk bouw je op met een klein aantal bouwstenen. Voor je een netwerk
+          kunt tekenen of lezen, moet je deze begrippen kennen.
+        </p>
         <div className="concepts-grid">
 
           <div className="concept-card">
@@ -248,7 +252,7 @@ export function TheorySection() {
               <text x="73" y="62" textAnchor="middle" fontFamily="Segoe UI,sans-serif" fontSize="10" fontWeight="700" fill="#004085">T<tspan fontSize="8" dy="1">L</tspan></text>
             </svg>
             <h3>Knooppunt</h3>
-            <p>Begin of einde van een activiteit. Neemt geen tijd, arbeid of grondstoffen in beslag.</p>
+            <p>Een gebeurtenis: het moment waarop een activiteit begint of eindigt. Een punt in de tijd, geen werk. Neemt geen tijd, arbeid of grondstoffen in beslag.</p>
           </div>
 
           <div className="concept-card">
@@ -264,7 +268,7 @@ export function TheorySection() {
               <line x1="158" y1="35" x2="176" y2="35" stroke="#333" strokeWidth="1.5"/>
             </svg>
             <h3>Activiteit</h3>
-            <p>Uitvoering van een taak. Vraagt tijd, mensen en middelen. Voorgesteld door een pijl.</p>
+            <p>De uitvoering van een taak. Kost wél tijd en middelen. Voorgesteld door een pijl tussen twee knooppunten; de lengte van de pijl zegt niets over de duurtijd.</p>
           </div>
 
           <div className="concept-card">
@@ -288,7 +292,7 @@ export function TheorySection() {
               <text x="160" y="49" textAnchor="middle" fontFamily="Segoe UI,sans-serif" fontSize="9" fill="#555">IV</text>
             </svg>
             <h3>Netwerk</h3>
-            <p>Brengt de logische volgorde van activiteiten in beeld: welke gaan vooraf, volgen of verlopen gelijktijdig.</p>
+            <p>Brengt alle activiteiten en hun volgorde samen in één tekening. Toont welke activiteiten elkaar voorafgaan, volgen of tegelijk lopen.</p>
           </div>
 
           <div className="concept-card">
@@ -303,8 +307,8 @@ export function TheorySection() {
               <line x1="158" y1="17" x2="158" y2="53" stroke="#333" strokeWidth="1.5"/>
               <line x1="158" y1="35" x2="176" y2="35" stroke="#333" strokeWidth="1.5"/>
             </svg>
-            <h3>Schijnactiviteit</h3>
-            <p>Technische wachttijd. Neemt <em>alleen tijd</em> in beslag, geen mankracht of materialen.</p>
+            <h3>Wachttijd</h3>
+            <p>Er verstrijkt tijd zonder eigen werk, bijvoorbeeld verf die droogt of wachten op een levering. Neemt <em>alleen tijd</em> in beslag, geen mankracht of hulpmiddelen.</p>
           </div>
 
           <div className="concept-card">
@@ -319,11 +323,17 @@ export function TheorySection() {
               <line x1="158" y1="17" x2="158" y2="53" stroke="#333" strokeWidth="1.5"/>
               <line x1="158" y1="35" x2="176" y2="35" stroke="#333" strokeWidth="1.5"/>
             </svg>
-            <h3>Relatielijn (0-lijn)</h3>
-            <p>Geeft een noodzakelijk verband aan. Neemt <em>geen tijd, mensen of middelen</em> in beslag.</p>
+            <h3>Schijnactiviteit</h3>
+            <p>Ook <em>relatielijn</em>, <em>0-lijn</em> of <em>dummy</em> genoemd. Legt een noodzakelijk verband tussen twee knooppunten, <em>zonder tijd of werk</em>. Voorgesteld door een stippellijn met een 0.</p>
           </div>
 
         </div>
+        <p style={{ fontSize: '.9rem', marginTop: '1.3rem' }}>
+          💡 Let vooral op het verschil tussen een <strong>wachttijd</strong> en een{' '}
+          <strong>schijnactiviteit</strong>: een wachttijd kost wél tijd maar geen werk, terwijl
+          een schijnactiviteit een noodzakelijk verband legt zonder dat er tijd of werk aan
+          verbonden is.
+        </p>
       </div>
 
       {/* Tijdsfactor */}
