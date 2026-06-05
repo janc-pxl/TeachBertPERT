@@ -38,7 +38,7 @@ export function Exercise5() {
       canvasHeight: 500,
       labels: ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'],
       edgeLabelFn: (act, dur) => 'Act ' + act + '(' + dur + ')',
-      optionLabelFn: (a) => `Act ${a.id} — ${a.desc}`,
+      optionLabelFn: (a) => `Act ${a.id}, ${a.desc}`,
       popupDurReadonly: true,
     });
     builderRef.current = builder;
@@ -79,7 +79,7 @@ export function Exercise5() {
     let cls = 'ex1-feedback';
     if (correct === ACTIVITIES.length) {
       cls = 'ex1-feedback success';
-      msg += ' — Alle tₑ waarden correct! Stap 2 is nu ontgrendeld.';
+      msg += ', Alle tₑ waarden correct! Stap 2 is nu ontgrendeld.';
       setLocked(false);
     } else {
       cls = correct >= 7 ? 'ex1-feedback partial' : 'ex1-feedback fail';
@@ -117,7 +117,7 @@ export function Exercise5() {
       const edge = actMap[a.id];
       if (edge && edge.dur === a.te) score++;
       else if (!edge) messages.push(`Activiteit ${a.id} ontbreekt`);
-      else messages.push(`Act ${a.id}: duur ${edge.dur} (verwacht ${a.te})`);
+      else messages.push(`Act ${a.id}: duurtijd ${edge.dur} (verwacht ${a.te})`);
     });
 
     ACTIVITIES.forEach((a) => {
@@ -172,14 +172,14 @@ export function Exercise5() {
 
     const pct = total > 0 ? Math.round(score / total * 100) : 0;
     let msg = `Score: ${score}/${total} (${pct}%)`;
-    if (messages.length > 0) msg += ' — ' + messages.slice(0, 3).join('; ');
+    if (messages.length > 0) msg += ', ' + messages.slice(0, 3).join('; ');
     if (cpTotal > 0) {
-      if (cpPerfect) msg += ' — Kritiek pad correct!';
-      else if (cpWrong > 0) msg += ' — Kritiek pad: niet correct.';
-      else if (cpCorrect === 0) msg += ' — Kritiek pad: niet aangeduid.';
-      else msg += ' — Kritiek pad: niet volledig.';
+      if (cpPerfect) msg += ', Kritiek pad correct!';
+      else if (cpWrong > 0) msg += ', Kritiek pad: niet correct.';
+      else if (cpCorrect === 0) msg += ', Kritiek pad: niet aangeduid.';
+      else msg += ', Kritiek pad: niet volledig.';
     }
-    if (score === total) msg = `Uitstekend! ${score}/${total} — Het netwerk is perfect!`;
+    if (score === total) msg = `Uitstekend! ${score}/${total}, Het netwerk is perfect!`;
     setNetFeedback(msg);
     setNetFeedbackClass(score === total ? 'ex1-feedback success' : pct >= 60 ? 'ex1-feedback partial' : 'ex1-feedback fail');
   }
@@ -202,19 +202,19 @@ export function Exercise5() {
         <div className="card-title">📜 Opdracht</div>
         <p style={{ color: 'var(--muted)', fontSize: '.9rem', lineHeight: 1.7 }}>
           Het bedrijf WalkerWhite wil een applicatie maken voor smartphones over de serie Game of Thrones.
-          De televisiezender HBO heeft voorlopig de goedkeuring gegeven aan het bedrijf indien zij de voorgestelde
-          deadline halen. De resources en tijd zijn beperkt. 3 projectmanagers stellen samen een PERT-planning op.
-          De ingeschatte duur is in dagen.
+          De televisiezender HBO geeft voorlopig groen licht, op voorwaarde dat het bedrijf de voorgestelde
+          deadline haalt. De middelen en de tijd zijn beperkt. 3 projectmanagers stellen samen een PERT-planning op.
+          De ingeschatte duurtijd is in dagen.
           <br/><br/>
           <strong>(1)</strong> Bereken eerst de verwachte tijd t<sub>e</sub> voor elke activiteit.{' '}
           <strong>(2)</strong> Bouw daarna het PERT-netwerk door knooppunten te plaatsen en verbindingen te tekenen.{' '}
-          <strong>(3)</strong> Vul de T<sub>E</sub> en T<sub>L</sub> waarden in en identificeer het kritieke pad.
+          <strong>(3)</strong> Vul de T<sub>E</sub>- en T<sub>L</sub>-waarden in en bepaal het kritieke pad.
         </p>
       </div>
 
       {/* STAP 1 */}
       <div className="card">
-        <div className="card-title">📊 Stap 1 — Bereken t<sub>e</sub></div>
+        <div className="card-title">📊 Stap 1, Bereken t<sub>e</sub></div>
         <p style={{ color: 'var(--muted)', fontSize: '.88rem', marginBottom: '1rem' }}>
           Gebruik de formule t<sub>e</sub> = (t<sub>o</sub> + 4 · t<sub>l</sub> + t<sub>p</sub>) / 6 en rond af naar het dichtstbijzijnde geheel getal.
         </p>
@@ -246,7 +246,7 @@ export function Exercise5() {
             </div>
           </div>
         )}
-        <div className="card-title">🔨 Stap 2 — Bouw het PERT-netwerk</div>
+        <div className="card-title">🔨 Stap 2, Bouw het PERT-netwerk</div>
         <div className="ex1-instructions" style={{ marginBottom: '1rem' }}>
           <strong>Instructies:</strong> Gebruik de werkbalk om knooppunten te plaatsen en verbindingen te tekenen.
           <strong>(1)</strong> Klik <em>Knooppunt</em> en klik op het canvas om een knooppunt toe te voegen.

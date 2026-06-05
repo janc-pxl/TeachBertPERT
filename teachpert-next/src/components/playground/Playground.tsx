@@ -87,16 +87,16 @@ export function Playground() {
     let cls = 'ex1-feedback';
 
     if (cpTotal > 0) {
-      if (cpPerfect) msg += ' — Kritiek pad correct!';
-      else if (cpWrong > 0) msg += ' — Kritiek pad: niet correct.';
-      else if (cpCorrect === 0) msg += ' — Kritiek pad: niet aangeduid.';
-      else msg += ' — Kritiek pad: niet volledig.';
+      if (cpPerfect) msg += ', Kritiek pad correct!';
+      else if (cpWrong > 0) msg += ', Kritiek pad: niet correct.';
+      else if (cpCorrect === 0) msg += ', Kritiek pad: niet aangeduid.';
+      else msg += ', Kritiek pad: niet volledig.';
     } else {
-      msg += ' — Vul de T\u1D38- en T\u1D38-waarden in bij alle knooppunten.';
+      msg += ', Vul de T\u1D31- en T\u1D38-waarden in bij alle knooppunten.';
     }
 
     if (score === total && total > 0) {
-      msg = `Uitstekend! ${score}/${total} — Alles correct!`;
+      msg = `Uitstekend! ${score}/${total}, Alles correct!`;
       cls = 'ex1-feedback success';
     } else if (pct >= 60) {
       cls = 'ex1-feedback partial';
@@ -125,7 +125,7 @@ export function Playground() {
       <div className="section-header">
         <div className="section-badge">PERT Playground</div>
         <h1>Vrije PERT-builder</h1>
-        <p>Bouw zelf een PERT-netwerk van nul. Geen voorgedefinieerde activiteiten — volledig vrij.</p>
+        <p>Bouw zelf een PERT-netwerk van nul. Geen voorgedefinieerde activiteiten, volledig vrij.</p>
       </div>
 
       <div className="card">
@@ -134,7 +134,7 @@ export function Playground() {
           <strong>Instructies:</strong> Gebruik de werkbalk om knooppunten te plaatsen en verbindingen te tekenen.{' '}
           <strong>(1)</strong> Klik <em>Knooppunt</em> en klik op het canvas om een knooppunt toe te voegen.{' '}
           <strong>(2)</strong> Klik <em>Activiteit</em> of <em>0-lijn</em> en klik achtereenvolgens op twee knooppunten.{' '}
-          <strong>(3)</strong> In het popup: vul de naam en duur van de activiteit in. Vul ook de T<sub>E</sub> en T<sub>L</sub> in bij elk knooppunt.{' '}
+          <strong>(3)</strong> In het popup: vul de naam en duurtijd van de activiteit in. Vul ook de T<sub>E</sub> en T<sub>L</sub> in bij elk knooppunt.{' '}
           <strong>(4)</strong> Duid het kritieke pad aan in <em>Selecteer</em>-modus en klik <em>Controleer</em>.
         </div>
 

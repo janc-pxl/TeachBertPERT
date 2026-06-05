@@ -112,19 +112,19 @@ export function TheorySection() {
 
       {/* Definitie */}
       <div className="definitie">
-        <div className="def-label">Definitie — PERT</div>
+        <div className="def-label">Definitie: PERT</div>
         <p>
           <strong>PERT</strong> (Program Evaluation and Review Technique) is een hulpmiddel voor de
           bedrijfsleiding bij de analyse en planning van projecten. Hierbij wordt gebruik gemaakt van
-          een grafische voorstelling — het <strong>netwerk</strong> — om de samenhang tussen de
+          een grafische voorstelling, het <strong>netwerk</strong>, om de samenhang tussen de
           verschillende werkzaamheden aan te geven.
         </p>
         <details>
-          <summary>Wist je dat? — Geschiedenis van PERT</summary>
+          <summary>Wist je dat? Geschiedenis van PERT</summary>
           <div className="detail-body">
             De PERT-methode werd uitgevonden door de <em>United States Department of Defense&apos;s US Navy
             Special Projects Office</em> in <strong>1958</strong> als onderdeel van het <strong>Polaris-project</strong> (de ontwikkeling van nucleaire onderzeeërs).
-            PERT lijkt sterk op de <em>kritieke pad methode</em> (CPM), maar bij PERT wordt een
+            PERT lijkt sterk op de <em>kritiekepadmethode</em> (CPM), maar bij PERT wordt een
             kansberekening toegepast op de duurtijden, terwijl CPM uitgaat van vaste tijden.
           </div>
         </details>
@@ -199,11 +199,11 @@ export function TheorySection() {
                 Het linker vlak bevat de naam of het volgnummer van het knooppunt
                 (<em>milestone</em>). Een knooppunt stelt het <strong>begin of einde</strong> van
                 een activiteit voor. Het neemt zelf <strong>geen tijd, arbeid of grondstoffen</strong>
-                in beslag — het is een moment, geen taak.
+                in beslag. Het is een moment, geen taak.
               </p>
             </div>
             <div className="nip-item" id="nip-te">
-              <span className="nip-tag nip-tag-te">T<sub>E</sub> — Vroegst mogelijke tijdstip</span>
+              <span className="nip-tag nip-tag-te">T<sub>E</sub>: Vroegst mogelijke tijdstip</span>
               <h3>Earliest Expected Time</h3>
               <p>
                 Het vroegst mogelijke tijdstip waarop dit knooppunt bereikt kan worden.
@@ -216,11 +216,11 @@ export function TheorySection() {
               </div>
             </div>
             <div className="nip-item" id="nip-tl">
-              <span className="nip-tag nip-tag-tl">T<sub>L</sub> — Laatste toelaatbare tijdstip</span>
+              <span className="nip-tag nip-tag-tl">T<sub>L</sub>: Laatste toelaatbare tijdstip</span>
               <h3>Latest Allowable Time</h3>
               <p>
                 Het laatste tijdstip waarop dit knooppunt bereikt <em>mag</em> worden zonder de
-                globale projectduur te overschrijden. Berekend via de
+                totale projectduur te overschrijden. Berekend via de
                 <strong>achterwaartse gang</strong> (rechts → links):
                 trek de duurtijden van de uitgaande activiteiten af van de T<sub>L</sub>
                 van het volgende knooppunt.
@@ -258,7 +258,7 @@ export function TheorySection() {
               <line x1="22" y1="35" x2="40" y2="35" stroke="#333" strokeWidth="1.5"/>
               <line x1="41" y1="35" x2="130" y2="35" stroke="#333" strokeWidth="2"/>
               <polygon points="130,29 144,35 130,41" fill="#333"/>
-              <text x="87" y="24" textAnchor="middle" fontFamily="Segoe UI,sans-serif" fontSize="10" fill="#555">Activiteit X — 5 weken</text>
+              <text x="87" y="24" textAnchor="middle" fontFamily="Segoe UI,sans-serif" fontSize="10" fill="#555">Activiteit X, 5 weken</text>
               <circle cx="158" cy="35" r="18" fill="#fff" stroke="#333" strokeWidth="2"/>
               <line x1="158" y1="17" x2="158" y2="53" stroke="#333" strokeWidth="1.5"/>
               <line x1="158" y1="35" x2="176" y2="35" stroke="#333" strokeWidth="1.5"/>
@@ -331,7 +331,7 @@ export function TheorySection() {
         <div className="card-title">⏱ Tijdsfactor &amp; t<sub>e</sub>-berekening</div>
         <p style={{ color: 'var(--muted)', fontSize: '.9rem', marginBottom: '1.1rem' }}>
           Bij PERT worden <strong>drie schattingen</strong> gebruikt om de verwachte duurtijd van
-          een activiteit te berekenen — zo wordt rekening gehouden met onzekerheid.
+          een activiteit te berekenen. Zo wordt rekening gehouden met onzekerheid.
         </p>
 
         <div className="formula-display">
@@ -342,22 +342,22 @@ export function TheorySection() {
           <div className="time-type-card">
             <div className="sym sym-to">t<sub>o</sub></div>
             <div className="name">Optimistisch</div>
-            <div className="desc">De kortst mogelijke duurtijd (best case scenario)</div>
+            <div className="desc">De kortst mogelijke duurtijd (beste geval)</div>
           </div>
           <div className="time-type-card">
             <div className="sym sym-tl">t<sub>l</sub></div>
             <div className="name">Realistisch</div>
-            <div className="desc">De meest waarschijnlijke duurtijd (most likely)</div>
+            <div className="desc">De meest waarschijnlijke duurtijd (meest waarschijnlijk)</div>
           </div>
           <div className="time-type-card">
             <div className="sym sym-tp">t<sub>p</sub></div>
             <div className="name">Pessimistisch</div>
-            <div className="desc">De langst mogelijke duurtijd (worst case scenario)</div>
+            <div className="desc">De langst mogelijke duurtijd (slechtste geval)</div>
           </div>
         </div>
 
         <div className="calc-wrap">
-          <p className="calc-label-row">🧮 Mini-calculator — vul de drie schattingen in:</p>
+          <p className="calc-label-row">🧮 Mini-calculator, vul de drie schattingen in:</p>
           <div className="calc-grid">
             <div className="calc-field">
               <label>t<sub>o</sub> (optimistisch)</label>

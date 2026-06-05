@@ -357,7 +357,7 @@ export default function Exercise2() {
         <strong>(2)</strong> Klik op de pijlen die op het{' '}
         <span style={{ color: 'var(--color-accent)', fontWeight: 700 }}>kritieke pad</span>{' '}
         liggen.{' '}
-        <strong>(3)</strong> Klik op <em>Controleer</em> om je antwoorden te checken.
+        <strong>(3)</strong> Klik op <em>Controleer</em> om je antwoorden te controleren.
       </div>
 
       {/* Activity reference table */}
@@ -369,7 +369,7 @@ export default function Exercise2() {
           <tr style={{ background: '#030203', color: '#fff' }}>
             <th style={{ padding: '.55rem .7rem', textAlign: 'left', borderRadius: '8px 0 0 0', fontSize: '.72rem', textTransform: 'uppercase', letterSpacing: '.5px' }}>Act</th>
             <th style={{ padding: '.55rem .7rem', textAlign: 'left', fontSize: '.72rem', textTransform: 'uppercase', letterSpacing: '.5px' }}>Omschrijving</th>
-            <th style={{ padding: '.55rem .7rem', textAlign: 'center', fontSize: '.72rem', textTransform: 'uppercase', letterSpacing: '.5px' }}>Duur</th>
+            <th style={{ padding: '.55rem .7rem', textAlign: 'center', fontSize: '.72rem', textTransform: 'uppercase', letterSpacing: '.5px' }}>Duurtijd</th>
             <th style={{ padding: '.55rem .7rem', textAlign: 'left', borderRadius: '0 8px 0 0', fontSize: '.72rem', textTransform: 'uppercase', letterSpacing: '.5px' }}>Voorganger(s)</th>
           </tr>
         </thead>

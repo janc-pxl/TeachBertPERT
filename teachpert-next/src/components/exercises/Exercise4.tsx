@@ -35,7 +35,7 @@ export function Exercise4() {
       canvasHeight: 600,
       labels: ['I','II','III','IV','VI','VII','VIII','IX','X','XI','XII','XIII','XIV'],
       edgeLabelFn: (act, dur) => `Act ${act}(${dur})`,
-      optionLabelFn: (a) => `Act ${a.id} — ${a.desc}`,
+      optionLabelFn: (a) => `Act ${a.id}, ${a.desc}`,
       popupDurReadonly: true,
     });
     builderRef.current = builder;
@@ -61,7 +61,7 @@ export function Exercise4() {
       const edge = actMap[a.id];
       if (edge && edge.dur === a.dur) score++;
       else if (!edge) messages.push(`Activiteit ${a.id} ontbreekt`);
-      else messages.push(`Act ${a.id}: duur ${edge.dur} (verwacht ${a.dur})`);
+      else messages.push(`Act ${a.id}: duurtijd ${edge.dur} (verwacht ${a.dur})`);
     });
 
     ACTIVITIES.forEach((a) => {
@@ -115,14 +115,14 @@ export function Exercise4() {
 
     const pct = total > 0 ? Math.round(score / total * 100) : 0;
     let msg = `Score: ${score}/${total} (${pct}%)`;
-    if (messages.length > 0) msg += ' — ' + messages.slice(0, 3).join('; ');
+    if (messages.length > 0) msg += ', ' + messages.slice(0, 3).join('; ');
     if (cpTotal > 0) {
-      if (cpPerfect) msg += ' — Kritiek pad correct!';
-      else if (cpWrong > 0) msg += ' — Kritiek pad: niet correct.';
-      else if (cpCorrect === 0) msg += ' — Kritiek pad: niet aangeduid.';
-      else msg += ' — Kritiek pad: niet volledig.';
+      if (cpPerfect) msg += ', Kritiek pad correct!';
+      else if (cpWrong > 0) msg += ', Kritiek pad: niet correct.';
+      else if (cpCorrect === 0) msg += ', Kritiek pad: niet aangeduid.';
+      else msg += ', Kritiek pad: niet volledig.';
     }
-    if (score === total) msg = `Uitstekend! ${score}/${total} — Het netwerk is perfect!`;
+    if (score === total) msg = `Uitstekend! ${score}/${total}, Het netwerk is perfect!`;
     setNetFeedback(msg);
     setNetFeedbackClass(score === total ? 'ex1-feedback success' : pct >= 60 ? 'ex1-feedback partial' : 'ex1-feedback fail');
   }
@@ -149,7 +149,7 @@ export function Exercise4() {
         <div style={{ overflowX: 'auto' }}>
           <table className="ex3-te-table">
             <thead>
-              <tr><th>Act</th><th>Beschrijving</th><th>Voorganger(s)</th><th>Duur (w)</th></tr>
+              <tr><th>Act</th><th>Beschrijving</th><th>Voorganger(s)</th><th>Duurtijd (w)</th></tr>
             </thead>
             <tbody>
               {ACTIVITIES.map((a) => (
