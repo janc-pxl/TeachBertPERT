@@ -124,8 +124,8 @@ export function Playground() {
     <section id="playground" style={{ marginTop: '3rem' }}>
       <div className="section-header">
         <div className="section-badge">PERT Playground</div>
-        <h1>Vrije PERT-builder</h1>
-        <p>Bouw zelf een PERT-netwerk van nul. Geen voorgedefinieerde activiteiten, volledig vrij.</p>
+        <h1>De PERT Playground</h1>
+        <p>Hier bepaal jij alles zelf: verzin een eigen project, plaats je knooppunten en activiteiten, en ontdek meteen waar het kritieke pad loopt.</p>
       </div>
 
       <div className="card">
@@ -134,7 +134,7 @@ export function Playground() {
           <strong>Instructies:</strong> Gebruik de werkbalk om knooppunten te plaatsen en verbindingen te tekenen.{' '}
           <strong>(1)</strong> Klik <em>Knooppunt</em> en klik op het canvas om een knooppunt toe te voegen.{' '}
           <strong>(2)</strong> Klik <em>Activiteit</em> of <em>0-lijn</em> en klik achtereenvolgens op twee knooppunten.{' '}
-          <strong>(3)</strong> In het popup: vul de naam en duurtijd van de activiteit in. Vul ook de T<sub>E</sub> en T<sub>L</sub> in bij elk knooppunt.{' '}
+          <strong>(3)</strong> In de pop-up: vul de naam en duurtijd van de activiteit in. Vul ook de T<sub>E</sub> en T<sub>L</sub> in bij elk knooppunt.{' '}
           <strong>(4)</strong> Duid het kritieke pad aan in <em>Selecteer</em>-modus en klik <em>Controleer</em>.
         </div>
 
