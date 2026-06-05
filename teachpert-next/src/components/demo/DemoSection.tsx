@@ -221,8 +221,10 @@ export function DemoSection() {
 
       <div className="definitie" style={{ marginBottom: '1.25rem' }}>
         <div className="def-label">Netwerk: Lancering van een mobiele app</div>
-        <p>Een softwarebedrijf wil een app lanceren. Er zijn twee parallelle ontwikkeltrajecten (iOS en Android),
-           een schijnactiviteit en een gezamenlijke release. Doorloop het netwerk stap voor stap.</p>
+        <p>Een softwarebedrijf ontwikkelt een app voor iOS en Android. Beide trajecten lopen parallel,
+           maar de app wordt voor de twee platforms tegelijk gelanceerd. De gezamenlijke release kan dus pas
+           starten zodra zowel iOS als Android klaar is. Een schijnactiviteit legt dat verband: ze laat de
+           release op beide ontwikkeltrajecten wachten. Doorloop het netwerk stap voor stap.</p>
       </div>
 
       {/* DEMO 1 */}
