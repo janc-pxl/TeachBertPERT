@@ -55,7 +55,7 @@ export function Exercise4() {
     if (actEdges.length === 14) score++; else messages.push(`Activiteiten: ${actEdges.length}/14`);
 
     total += 1;
-    const structErrs = structureErrors(nodes, edges);
+    const structErrs = structureErrors(edges);
     if (structErrs.length === 0) score++; else messages.push(...structErrs);
 
     const actMap: Record<string, typeof edges[0]> = {};

@@ -131,7 +131,7 @@ CSS uses `ex1-`, `ex2-`, `ex3-`, `ex4-`, `ex5-`, `play-` prefixes for IDs and cl
 - Canvas: 960x500, node labels use Roman numerals (I–XII)
 - Validation is flexible: accepts alternative topologies
 - Only checks activity edge count (12), not node or dummy counts
-- Project duration: 47 days
+- Project duration: 30 days
 - Critical path: Act 1 → Act 4 → Act 6 → Act 9 → Act 11 → Act 12
 
 ### Playground — Free-form PERT builder
@@ -147,7 +147,7 @@ CSS uses `ex1-`, `ex2-`, `ex3-`, `ex4-`, `ex5-`, `play-` prefixes for IDs and cl
 - **Don't give unnecessary hints** — feedback messages say "niet aangeduid" / "niet volledig" / "niet correct" without revealing counts of missing edges.
 - **Predecessor validation** uses `canReach()` graph traversal, which naturally handles dummy edges as intermediate hops.
 - **No extra dependencies** (`hasExtraDependency()` in `lib/pert/validation.ts`, ex3/4/5): an activity that is not a (transitive) predecessor must not reach the activity's start node. Without this, networks like "E after F" pass, because TE/TL are computed on the student's own (wrong) graph.
-- **Structure** (`structureErrors()`, ex3/4/5): exactly one end node (multiple start nodes are allowed), no two edges between the same pair of nodes.
+- **Structure** (`structureErrors()`, ex3/4/5): no two edges between the same pair of nodes (either direction); multiple start and end nodes are allowed. The builder also refuses to draw such a duplicate.
 - **Wrongly selected critical-path edges cost a point** (`score += max(0, correct - wrong)`), so a full score requires exactly the critical edges selected.
 - **TE/TL validation** uses `computeTE()` / `computeTL()` which traverse the actual student-built graph, so they work correctly for any valid topology.
 

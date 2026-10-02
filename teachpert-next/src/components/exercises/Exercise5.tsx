@@ -111,7 +111,7 @@ export function Exercise5() {
     if (actEdges.length === 12) score++; else messages.push(`Activiteiten: ${actEdges.length}/12`);
 
     total += 1;
-    const structErrs = structureErrors(nodes, edges);
+    const structErrs = structureErrors(edges);
     if (structErrs.length === 0) score++; else messages.push(...structErrs);
 
     const actMap: Record<string, typeof edges[0]> = {};
@@ -133,7 +133,7 @@ export function Exercise5() {
       if (a.pred.length === 0) {
         const incoming = edges.filter((e) => e.toId === srcId);
         if (incoming.length === 0) score++;
-        else messages.push(`${a.id}: bronknooppunt heeft onverwachte inkomende verbindingen`);
+        else messages.push(`Act ${a.id}: bronknooppunt heeft onverwachte inkomende verbindingen`);
       } else {
         let allOk = true;
         a.pred.forEach((predId) => {
@@ -141,8 +141,8 @@ export function Exercise5() {
           if (!predEdge) { allOk = false; return; }
           if (!canReach(predEdge.toId, srcId, {})) allOk = false;
         });
-        if (!allOk) messages.push(`${a.id}: voorgangers bereiken bronknooppunt niet`);
-        else if (hasExtraDependency(a.id, ACTIVITIES, actMap, canReach)) messages.push(`${a.id}: wacht op een activiteit die geen voorganger is`);
+        if (!allOk) messages.push(`Act ${a.id}: voorgangers bereiken bronknooppunt niet`);
+        else if (hasExtraDependency(a.id, ACTIVITIES, actMap, canReach)) messages.push(`Act ${a.id}: wacht op een activiteit die geen voorganger is`);
         else score++;
       }
     });
