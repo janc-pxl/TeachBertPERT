@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { createPertBuilder } from '@/lib/pert/createPertBuilder';
 import { downloadSvgAsJpg } from '@/lib/pert/download';
 import { exportNetwork, importNetwork } from '@/lib/pert/importExport';
+import { hasExtraDependency } from '@/lib/pert/validation';
 import type { Activity, PertBuilderAPI } from '@/lib/pert/types';
 
 const ACTIVITIES: Activity[] = [
@@ -132,7 +133,9 @@ export function Exercise3() {
           if (!predEdge) { allOk = false; return; }
           if (!canReach(predEdge.toId, srcId, {})) allOk = false;
         });
-        if (allOk) score++; else messages.push(`${a.id}: voorgangers bereiken bronknooppunt niet`);
+        if (!allOk) messages.push(`${a.id}: voorgangers bereiken bronknooppunt niet`);
+        else if (hasExtraDependency(a.id, ACTIVITIES, actMap, canReach)) messages.push(`${a.id}: wacht op een activiteit die geen voorganger is`);
+        else score++;
       }
     });
 

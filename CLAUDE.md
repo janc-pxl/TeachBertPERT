@@ -146,6 +146,7 @@ CSS uses `ex1-`, `ex2-`, `ex3-`, `ex4-`, `ex5-`, `play-` prefixes for IDs and cl
 - **Dynamic critical path computation** — since students build their own networks, critical edges are computed at validation time: an edge is critical if both endpoints have TE=TL and the edge is "tight" (fromTE + dur = toTE). This works for activity edges AND dummy edges.
 - **Don't give unnecessary hints** — feedback messages say "niet aangeduid" / "niet volledig" / "niet correct" without revealing counts of missing edges.
 - **Predecessor validation** uses `canReach()` graph traversal, which naturally handles dummy edges as intermediate hops.
+- **No extra dependencies** (`hasExtraDependency()` in `lib/pert/validation.ts`, ex3/4/5): an activity that is not a (transitive) predecessor must not reach the activity's start node. Without this, networks like "E after F" pass, because TE/TL are computed on the student's own (wrong) graph.
 - **TE/TL validation** uses `computeTE()` / `computeTL()` which traverse the actual student-built graph, so they work correctly for any valid topology.
 
 ## Edge selection (critical path)
