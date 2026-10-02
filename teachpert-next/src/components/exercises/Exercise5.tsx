@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { createPertBuilder } from '@/lib/pert/createPertBuilder';
 import { downloadSvgAsJpg } from '@/lib/pert/download';
 import { exportNetwork, importNetwork } from '@/lib/pert/importExport';
-import { hasExtraDependency } from '@/lib/pert/validation';
+import { hasExtraDependency, structureErrors } from '@/lib/pert/validation';
 import type { Activity, PertBuilderAPI } from '@/lib/pert/types';
 
 const ACTIVITIES: Activity[] = [
@@ -110,6 +110,10 @@ export function Exercise5() {
     total += 1;
     if (actEdges.length === 12) score++; else messages.push(`Activiteiten: ${actEdges.length}/12`);
 
+    total += 1;
+    const structErrs = structureErrors(nodes, edges);
+    if (structErrs.length === 0) score++; else messages.push(...structErrs);
+
     const actMap: Record<string, typeof edges[0]> = {};
     actEdges.forEach((e) => { if (e.act) actMap[e.act] = e; });
 
@@ -170,7 +174,7 @@ export function Exercise5() {
       if (!isCrit && e.selected) cpWrong++;
     });
     const cpTotal = criticalEdges.length;
-    total += cpTotal; score += cpCorrect;
+    total += cpTotal; score += Math.max(0, cpCorrect - cpWrong);
     const cpPerfect = cpCorrect === cpTotal && cpWrong === 0;
 
     const pct = total > 0 ? Math.round(score / total * 100) : 0;

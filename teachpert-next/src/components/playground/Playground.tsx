@@ -79,7 +79,7 @@ export function Playground() {
     });
     const cpTotal = criticalEdges.length;
     total += cpTotal;
-    score += cpCorrect;
+    score += Math.max(0, cpCorrect - cpWrong);
     const cpPerfect = cpCorrect === cpTotal && cpWrong === 0;
 
     const pct = total > 0 ? Math.round(score / total * 100) : 0;

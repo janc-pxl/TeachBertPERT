@@ -282,7 +282,7 @@ export default function Exercise1() {
 
     const pathPerfect = edgesCorrect === edgesTotal && wrongSelections === 0;
     total += edgesTotal;
-    correct += edgesCorrect;
+    correct += Math.max(0, edgesCorrect - wrongSelections);
 
     const pct = Math.round(correct / total * 100);
     let msg = `Score: ${correct}/${total} (${pct}%)`;
