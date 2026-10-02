@@ -65,7 +65,7 @@ export function Exercise3() {
     ACTIVITIES.forEach((a) => {
       const inp = teInputs[a.id];
       if (!inp) return;
-      const val = inp.value.trim() === '' ? NaN : Math.round(parseFloat(inp.value));
+      const val = inp.value.trim() === '' ? NaN : Number(inp.value.trim());
       if (val === a.te) {
         inp.classList.remove('wrong'); inp.classList.add('correct'); correct++;
       } else {
@@ -143,8 +143,8 @@ export function Exercise3() {
     nodes.forEach((n) => { const te = computeTE(n.id); if (te > projectEnd) projectEnd = te; });
 
     nodes.forEach((n) => {
-      const teVal = n._teInput.value.trim() === '' ? NaN : parseInt(n._teInput.value, 10);
-      const tlVal = n._tlInput.value.trim() === '' ? NaN : parseInt(n._tlInput.value, 10);
+      const teVal = n._teInput.value.trim() === '' ? NaN : Number(n._teInput.value.trim());
+      const tlVal = n._tlInput.value.trim() === '' ? NaN : Number(n._tlInput.value.trim());
       const expectedTE = computeTE(n.id), expectedTL = computeTL(n.id, projectEnd);
       total++;
       if (!isNaN(teVal) && teVal === expectedTE) { n._teInput.classList.remove('wrong'); n._teInput.classList.add('correct'); score++; }

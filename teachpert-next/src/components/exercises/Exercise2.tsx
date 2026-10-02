@@ -255,7 +255,7 @@ export default function Exercise2() {
 
     NODES.forEach(n => {
       const teEl  = inputEls[n.id + '-te'];
-      const teVal = teEl.value.trim() === '' ? NaN : parseInt(teEl.value, 10);
+      const teVal = teEl.value.trim() === '' ? NaN : Number(teEl.value.trim());
       total++;
       if (teVal === n.te) {
         teEl.classList.remove('wrong'); teEl.classList.add('correct'); correct++;
@@ -264,7 +264,7 @@ export default function Exercise2() {
       }
 
       const tlEl  = inputEls[n.id + '-tl'];
-      const tlVal = tlEl.value.trim() === '' ? NaN : parseInt(tlEl.value, 10);
+      const tlVal = tlEl.value.trim() === '' ? NaN : Number(tlEl.value.trim());
       total++;
       if (tlVal === n.tl) {
         tlEl.classList.remove('wrong'); tlEl.classList.add('correct'); correct++;

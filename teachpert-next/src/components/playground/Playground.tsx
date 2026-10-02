@@ -44,8 +44,8 @@ export function Playground() {
     nodes.forEach((n) => {
       const expectedTE = computeTE(n.id);
       const expectedTL = computeTL(n.id, projectEnd);
-      const teVal = n._teInput.value.trim() === '' ? NaN : parseInt(n._teInput.value, 10);
-      const tlVal = n._tlInput.value.trim() === '' ? NaN : parseInt(n._tlInput.value, 10);
+      const teVal = n._teInput.value.trim() === '' ? NaN : Number(n._teInput.value.trim());
+      const tlVal = n._tlInput.value.trim() === '' ? NaN : Number(n._tlInput.value.trim());
 
       total++;
       if (!isNaN(teVal) && teVal === expectedTE) {
