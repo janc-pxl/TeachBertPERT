@@ -372,8 +372,19 @@ export function createPertBuilder(cfg: PertBuilderConfig): PertBuilderAPI | null
           ghost.setAttribute('opacity', '0');
           nodes.forEach((n) => { n.gEl.classList.remove('source-highlight'); });
           const isDashed = (tool === 'relay');
-          const newEdge = addEdge(edgeSource, nid2, isDashed);
+          const src = edgeSource;
           edgeSource = null;
+          // Never allow two connections between the same pair of nodes (either direction)
+          if (edges.some((e) => (e.fromId === src && e.toId === nid2) || (e.fromId === nid2 && e.toId === src))) {
+            [src, nid2].forEach((id) => {
+              const g = findNode(id)?.gEl;
+              if (!g) return;
+              g.classList.add('edge-refused');
+              setTimeout(() => g.classList.remove('edge-refused'), 700);
+            });
+            return;
+          }
+          const newEdge = addEdge(src, nid2, isDashed);
           if (newEdge && !isDashed) {
             const fromN = findNode(newEdge.fromId)!, toN = findNode(newEdge.toId)!;
             const emx = (fromN.x + toN.x) / 2, emy = (fromN.y + toN.y) / 2;
