@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { Ben } from '@/components/ben/Ben';
 
 // ── DEMO 1 DATA ──
 const D1_NODES = ['I', 'II', 'III', 'IV'];
@@ -291,8 +292,11 @@ export function DemoSection() {
           </svg>
         </div>
 
-        <div className="demo-explanation" id="demo-explanation">
-          Dit netwerk heeft 4 knooppunten (I–IV) en 3 activiteiten + 1 schijnactiviteit. Klik op <strong>Volgende →</strong> om te starten.
+        <div className="demo-explanation with-ben">
+          <Ben pose="explaining" size="aside" />
+          <div className="demo-explanation-text" id="demo-explanation">
+            Dit netwerk heeft 4 knooppunten (I–IV) en 3 activiteiten + 1 schijnactiviteit. Klik op <strong>Volgende →</strong> om te starten.
+          </div>
         </div>
 
         <div className="demo-nav">
@@ -442,8 +446,11 @@ export function DemoSection() {
           </svg>
         </div>
 
-        <div className="demo-explanation" id="demo2-explanation">
-          Dit netwerk heeft 4 knooppunten, 4 activiteiten en een schijnactiviteit (0-lijn). Klik op <strong>Volgende →</strong>.
+        <div className="demo-explanation with-ben">
+          <Ben pose="explaining" size="aside" />
+          <div className="demo-explanation-text" id="demo2-explanation">
+            Dit netwerk heeft 4 knooppunten, 4 activiteiten en een schijnactiviteit (0-lijn). Klik op <strong>Volgende →</strong>.
+          </div>
         </div>
 
         <div className="demo-nav">

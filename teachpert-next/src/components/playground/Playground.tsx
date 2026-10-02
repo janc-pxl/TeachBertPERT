@@ -4,6 +4,8 @@ import { createPertBuilder } from '@/lib/pert/createPertBuilder';
 import { downloadSvgAsJpg } from '@/lib/pert/download';
 import { exportNetwork, importNetwork } from '@/lib/pert/importExport';
 import type { PertBuilderAPI } from '@/lib/pert/types';
+import { Ben } from '@/components/ben/Ben';
+import { BenFeedback } from '@/components/ben/BenFeedback';
 
 export function Playground() {
   const builderRef = useRef<PertBuilderAPI | null>(null);
@@ -122,10 +124,13 @@ export function Playground() {
 
   return (
     <section id="playground" style={{ marginTop: '3rem' }}>
-      <div className="section-header">
-        <div className="section-badge">PERT Playground</div>
-        <h1>De PERT Playground</h1>
-        <p>Hier bepaal jij alles zelf: verzin een eigen project, plaats je knooppunten en activiteiten, en ontdek meteen waar het kritieke pad loopt.</p>
+      <div className="section-header with-ben">
+        <div>
+          <div className="section-badge">PERT Playground</div>
+          <h1>De PERT Playground</h1>
+          <p>Hier bepaal jij alles zelf: verzin een eigen project, plaats je knooppunten en activiteiten, en ontdek meteen waar het kritieke pad loopt.</p>
+        </div>
+        <Ben pose="thinking" size="intro" />
       </div>
 
       <div className="card">
@@ -184,8 +189,8 @@ export function Playground() {
         <div className="ex1-controls" style={{ marginTop: '1rem' }}>
           <button className="ex1-check-btn" onClick={handleCheck}>Controleer</button>
           <button className="ex1-reset-btn" onClick={handleReset}>&#8634; Opnieuw beginnen</button>
-          <div className={feedbackClass}>{feedback}</div>
         </div>
+        <BenFeedback message={feedback} cls={feedbackClass} successPose="encouraging" watch="#play-canvas-wrap, #play-toolbar .ex3-tool-file:nth-of-type(2)" />
       </div>
     </section>
   );

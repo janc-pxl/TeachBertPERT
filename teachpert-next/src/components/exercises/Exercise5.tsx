@@ -5,6 +5,7 @@ import { downloadSvgAsJpg } from '@/lib/pert/download';
 import { exportNetwork, importNetwork } from '@/lib/pert/importExport';
 import { hasExtraDependency, structureErrors } from '@/lib/pert/validation';
 import type { Activity, PertBuilderAPI } from '@/lib/pert/types';
+import { BenFeedback } from '@/components/ben/BenFeedback';
 
 const ACTIVITIES: Activity[] = [
   { id:'1',  desc:'Behoefteanalyse maken',        pred:[],         to:3, tl:5, tp:7,   te:5  },
@@ -239,8 +240,8 @@ export function Exercise5() {
         <div className="ex1-controls" style={{ marginTop: '.75rem' }}>
           <button className="ex1-check-btn" onClick={handleTeCheck}>Controleer</button>
           <button className="ex1-reset-btn" onClick={handleTeReset}>Opnieuw</button>
-          <div className={teFeedbackClass}>{teFeedback}</div>
         </div>
+        <BenFeedback message={teFeedback} cls={teFeedbackClass} successPose="encouraging" watch="#ex5-te-table" suppress={netFeedbackClass.includes('success')} />
       </div>
 
       {/* STAP 2 */}
@@ -309,8 +310,8 @@ export function Exercise5() {
         <div className="ex1-controls" style={{ marginTop: '1rem' }}>
           <button className="ex1-check-btn" onClick={handleNetCheck}>Controleer</button>
           <button className="ex1-reset-btn" onClick={handleNetReset}>Opnieuw beginnen</button>
-          <div className={netFeedbackClass}>{netFeedback}</div>
         </div>
+        <BenFeedback message={netFeedback} cls={netFeedbackClass} successPose="completed" watch="#ex5-canvas-wrap, #ex5-toolbar .ex3-tool-file:nth-of-type(2)" />
       </div>
     </section>
   );

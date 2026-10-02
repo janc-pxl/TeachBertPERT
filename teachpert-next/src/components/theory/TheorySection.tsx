@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { Ben } from '@/components/ben/Ben';
 
 export function TheorySection() {
   const calcToRef = useRef<HTMLInputElement>(null);
@@ -104,10 +105,13 @@ export function TheorySection() {
 
   return (
     <section id="theorie">
-      <div className="section-header">
-        <div className="section-badge">Sectie 1</div>
-        <h1>Theorie</h1>
-        <p>Leer de basisconcepten van PERT: knooppunten, activiteiten, tijdsberekeningen en het kritieke pad.</p>
+      <div className="section-header with-ben">
+        <div>
+          <div className="section-badge">Sectie 1</div>
+          <h1>Theorie</h1>
+          <p>Leer de basisconcepten van PERT: knooppunten, activiteiten, tijdsberekeningen en het kritieke pad.</p>
+        </div>
+        <Ben pose="welcoming" size="intro" eager />
       </div>
 
       {/* Definitie */}
@@ -328,12 +332,15 @@ export function TheorySection() {
           </div>
 
         </div>
-        <p style={{ fontSize: '.9rem', marginTop: '1.3rem' }}>
+        <div className="ben-aside-row" style={{ marginTop: '1.3rem' }}>
+        <Ben pose="explaining" size="aside" />
+        <p style={{ fontSize: '.9rem' }}>
           💡 Let vooral op het verschil tussen een <strong>wachttijd</strong> en een{' '}
           <strong>schijnactiviteit</strong>: een wachttijd kost wél tijd maar geen werk, terwijl
           een schijnactiviteit een noodzakelijk verband legt zonder dat er tijd of werk aan
           verbonden is.
         </p>
+        </div>
       </div>
 
       {/* Tijdsfactor */}

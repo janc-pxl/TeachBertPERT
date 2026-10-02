@@ -523,6 +523,19 @@ details[open] summary::before { transform: rotate(90deg); }
 .ex3-lock-msg strong { color: #030203; }
 .ex3-lock-msg p { font-size: .88rem; color: #6b7280; margin-top: .3rem; }
 
+/* ── Ben (begeleider) ───────────────────────────────────────── */
+/* Decorative illustration beside existing text; never inside diagrams/canvas. */
+.ben { display: block; height: auto; object-fit: contain; flex-shrink: 0; }
+.ben-size-intro    { width: 130px; }
+.ben-size-aside    { width: 80px; }
+.ben-size-feedback { width: 76px; }
+.section-header.with-ben { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; }
+.section-header.with-ben .ben { margin-bottom: 1rem; }
+.ben-aside-row { display: flex; align-items: center; gap: 1rem; }
+.demo-explanation.with-ben { display: flex; align-items: center; gap: 1rem; }
+.demo-explanation-text { flex: 1; min-width: 0; }
+.ben-feedback.has-message { display: flex; align-items: center; gap: 1rem; margin-top: .9rem; }
+
 /* ── Responsive ─────────────────────────────────────────────── */
 @media (max-width: 640px) {
   .pass-grid     { grid-template-columns: 1fr; }
@@ -531,6 +544,9 @@ details[open] summary::before { transform: rotate(90deg); }
   .calc-result-box { grid-column: 1 / -1; }
   .concepts-grid { grid-template-columns: 1fr 1fr; }
   .node-anatomy  { gap: 1.25rem; }
+  .ben-size-intro    { width: 88px; }
+  .ben-size-aside, .ben-size-feedback { width: 60px; }
+  .section-header.with-ben { gap: .75rem; }
 }
 @media (max-width: 400px) {
   .concepts-grid { grid-template-columns: 1fr; }

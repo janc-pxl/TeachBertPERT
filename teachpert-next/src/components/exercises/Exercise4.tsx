@@ -5,6 +5,7 @@ import { downloadSvgAsJpg } from '@/lib/pert/download';
 import { exportNetwork, importNetwork } from '@/lib/pert/importExport';
 import { hasExtraDependency, structureErrors } from '@/lib/pert/validation';
 import type { Activity, PertBuilderAPI } from '@/lib/pert/types';
+import { BenFeedback } from '@/components/ben/BenFeedback';
 
 const ACTIVITIES: Activity[] = [
   { id:'1',  desc:'Projectanalyse',                pred:[],          dur:10 },
@@ -229,8 +230,8 @@ export function Exercise4() {
         <div className="ex1-controls" style={{ marginTop: '1rem' }}>
           <button className="ex1-check-btn" onClick={handleNetCheck}>Controleer</button>
           <button className="ex1-reset-btn" onClick={handleNetReset}>Opnieuw beginnen</button>
-          <div className={netFeedbackClass}>{netFeedback}</div>
         </div>
+        <BenFeedback message={netFeedback} cls={netFeedbackClass} successPose="completed" watch="#ex4-canvas-wrap, #ex4-toolbar .ex3-tool-file:nth-of-type(2)" />
       </div>
     </section>
   );

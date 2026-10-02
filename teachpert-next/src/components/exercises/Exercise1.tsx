@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { downloadSvgAsJpg } from '@/lib/pert/download';
+import { BenFeedback } from '@/components/ben/BenFeedback';
 
 // ── Data ────────────────────────────────────────────────────────────────────
 
@@ -421,8 +422,8 @@ export default function Exercise1() {
           >
             &#8681; Download
           </button>
-          <div className={feedbackClass}>{feedback}</div>
         </div>
+        <BenFeedback message={feedback} cls={feedbackClass} successPose="completed" watch="#ex1-svg" />
       </div>
     </section>
   );
