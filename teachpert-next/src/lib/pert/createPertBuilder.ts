@@ -141,7 +141,7 @@ export function createPertBuilder(cfg: PertBuilderConfig): PertBuilderAPI | null
     foTE.setAttribute('x', '2'); foTE.setAttribute('y', String(-R + 3));
     foTE.setAttribute('width', String(R - 4)); foTE.setAttribute('height', String(R - 3));
     const teInput = document.createElement('input');
-    teInput.type = 'number'; teInput.className = 'ex1-input';
+    teInput.type = 'text'; teInput.inputMode = 'decimal'; teInput.className = 'ex1-input';
     teInput.style.width = '26px'; teInput.style.height = '18px'; teInput.style.fontSize = '10px';
     teInput.placeholder = '?';
     foTE.appendChild(teInput);
@@ -152,7 +152,7 @@ export function createPertBuilder(cfg: PertBuilderConfig): PertBuilderAPI | null
     foTL.setAttribute('x', '2'); foTL.setAttribute('y', '2');
     foTL.setAttribute('width', String(R - 4)); foTL.setAttribute('height', String(R - 3));
     const tlInput = document.createElement('input');
-    tlInput.type = 'number'; tlInput.className = 'ex1-input';
+    tlInput.type = 'text'; tlInput.inputMode = 'decimal'; tlInput.className = 'ex1-input';
     tlInput.style.width = '26px'; tlInput.style.height = '18px'; tlInput.style.fontSize = '10px';
     tlInput.placeholder = '?';
     foTL.appendChild(tlInput);

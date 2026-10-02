@@ -9,8 +9,8 @@ export function exportNetwork(builder: PertBuilderAPI, context: string, filename
       label: n.label,
       x: Math.round(n.x),
       y: Math.round(n.y),
-      te: n._teInput.value.trim() !== '' ? Number(n._teInput.value.trim()) : null,
-      tl: n._tlInput.value.trim() !== '' ? Number(n._tlInput.value.trim()) : null,
+      te: n._teInput.value.trim() !== '' ? Number(n._teInput.value.trim().replace(',', '.')) : null,
+      tl: n._tlInput.value.trim() !== '' ? Number(n._tlInput.value.trim().replace(',', '.')) : null,
     })),
     edges: builder.edges.map(e => ({
       id: e.id,

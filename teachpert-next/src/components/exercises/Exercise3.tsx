@@ -53,7 +53,7 @@ export function Exercise3() {
         `<td style="text-align:left;font-size:.82rem;">${a.desc}</td>` +
         `<td>${a.pred.length ? a.pred.join(', ') : '—'}</td>` +
         `<td>${a.to}</td><td>${a.tl}</td><td>${a.tp}</td>` +
-        `<td><input type="number" class="ex3-te-input" data-act="${a.id}" placeholder="?"></td>`;
+        `<td><input type="text" inputmode="decimal" class="ex3-te-input" data-act="${a.id}" placeholder="?"></td>`;
       tbody.appendChild(tr);
       teInputsRef.current[a.id] = tr.querySelector('.ex3-te-input') as HTMLInputElement;
     });
@@ -65,7 +65,7 @@ export function Exercise3() {
     ACTIVITIES.forEach((a) => {
       const inp = teInputs[a.id];
       if (!inp) return;
-      const val = inp.value.trim() === '' ? NaN : Number(inp.value.trim());
+      const val = inp.value.trim() === '' ? NaN : Number(inp.value.trim().replace(',', '.'));
       if (val === a.te) {
         inp.classList.remove('wrong'); inp.classList.add('correct'); correct++;
       } else {
@@ -143,8 +143,8 @@ export function Exercise3() {
     nodes.forEach((n) => { const te = computeTE(n.id); if (te > projectEnd) projectEnd = te; });
 
     nodes.forEach((n) => {
-      const teVal = n._teInput.value.trim() === '' ? NaN : Number(n._teInput.value.trim());
-      const tlVal = n._tlInput.value.trim() === '' ? NaN : Number(n._tlInput.value.trim());
+      const teVal = n._teInput.value.trim() === '' ? NaN : Number(n._teInput.value.trim().replace(',', '.'));
+      const tlVal = n._tlInput.value.trim() === '' ? NaN : Number(n._tlInput.value.trim().replace(',', '.'));
       const expectedTE = computeTE(n.id), expectedTL = computeTL(n.id, projectEnd);
       total++;
       if (!isNaN(teVal) && teVal === expectedTE) { n._teInput.classList.remove('wrong'); n._teInput.classList.add('correct'); score++; }

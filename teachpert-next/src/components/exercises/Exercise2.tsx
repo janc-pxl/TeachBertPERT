@@ -218,7 +218,7 @@ export default function Exercise2() {
       foTE.setAttribute('x', '2'); foTE.setAttribute('y', String(-R + 4));
       foTE.setAttribute('width', String(R - 4)); foTE.setAttribute('height', String(R - 4));
       const teInput = document.createElement('input');
-      teInput.type = 'number'; teInput.className = 'ex1-input';
+      teInput.type = 'text'; teInput.inputMode = 'decimal'; teInput.className = 'ex1-input';
       teInput.placeholder = '?';
       teInput.setAttribute('aria-label', `TE knooppunt ${n.label}`);
       if (n.readonly_te) {
@@ -235,7 +235,7 @@ export default function Exercise2() {
       foTL.setAttribute('x', '2'); foTL.setAttribute('y', '2');
       foTL.setAttribute('width', String(R - 4)); foTL.setAttribute('height', String(R - 4));
       const tlInput = document.createElement('input');
-      tlInput.type = 'number'; tlInput.className = 'ex1-input';
+      tlInput.type = 'text'; tlInput.inputMode = 'decimal'; tlInput.className = 'ex1-input';
       tlInput.placeholder = '?';
       tlInput.setAttribute('aria-label', `TL knooppunt ${n.label}`);
       foTL.appendChild(tlInput);
@@ -255,7 +255,7 @@ export default function Exercise2() {
 
     NODES.forEach(n => {
       const teEl  = inputEls[n.id + '-te'];
-      const teVal = teEl.value.trim() === '' ? NaN : Number(teEl.value.trim());
+      const teVal = teEl.value.trim() === '' ? NaN : Number(teEl.value.trim().replace(',', '.'));
       total++;
       if (teVal === n.te) {
         teEl.classList.remove('wrong'); teEl.classList.add('correct'); correct++;
@@ -264,7 +264,7 @@ export default function Exercise2() {
       }
 
       const tlEl  = inputEls[n.id + '-tl'];
-      const tlVal = tlEl.value.trim() === '' ? NaN : Number(tlEl.value.trim());
+      const tlVal = tlEl.value.trim() === '' ? NaN : Number(tlEl.value.trim().replace(',', '.'));
       total++;
       if (tlVal === n.tl) {
         tlEl.classList.remove('wrong'); tlEl.classList.add('correct'); correct++;
