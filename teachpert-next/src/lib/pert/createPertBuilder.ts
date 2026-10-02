@@ -93,9 +93,16 @@ export function createPertBuilder(cfg: PertBuilderConfig): PertBuilderAPI | null
     return result;
   }
 
+  // Extra nodes continue numbering after the last predefined label
+  // (ex4's list skips V, so id 14 must become XV, not a second XIV)
+  const lastLabelNum = (() => {
+    for (let k = 1; k <= 100; k++) if (toRoman(k) === labels[labels.length - 1]) return k;
+    return labels.length;
+  })();
+
   function addNode(x: number, y: number): PertNode {
     const id = nextId++;
-    const label = labels[id - 1] || toRoman(id);
+    const label = labels[id - 1] || toRoman(lastLabelNum + id - labels.length);
     const node: PertNode = { id, label, x, y, gEl: null!, _teInput: null!, _tlInput: null! };
 
     const g = document.createElementNS('http://www.w3.org/2000/svg', 'g') as SVGGElement;
