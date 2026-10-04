@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Ben } from '@/components/ben/Ben';
+import { TheoryArt } from './TheoryArt';
 
 export function TheorySection() {
   const calcToRef = useRef<HTMLInputElement>(null);
@@ -115,7 +116,9 @@ export function TheorySection() {
       </div>
 
       {/* Definitie */}
-      <div className="definitie">
+      <div className="definitie with-art">
+        <TheoryArt name="projectplanning" eager />
+        <div className="art-text">
         <div className="def-label">Definitie: PERT</div>
         <p>
           <strong>PERT</strong> (Program Evaluation and Review Technique) is een hulpmiddel voor de
@@ -132,6 +135,7 @@ export function TheorySection() {
             kansberekening toegepast op de duurtijden, terwijl CPM uitgaat van vaste tijden.
           </div>
         </details>
+        </div>
       </div>
 
       {/* Node Anatomy */}
@@ -313,6 +317,7 @@ export function TheorySection() {
             </svg>
             <h3>Wachttijd</h3>
             <p>Er verstrijkt tijd zonder eigen werk, bijvoorbeeld verf die droogt of wachten op een levering. Neemt <em>alleen tijd</em> in beslag, geen mankracht of hulpmiddelen.</p>
+            <TheoryArt name="wachttijd" />
           </div>
 
           <div className="concept-card">
@@ -346,10 +351,13 @@ export function TheorySection() {
       {/* Tijdsfactor */}
       <div className="card">
         <div className="card-title">⏱ Tijdsfactor &amp; t<sub>e</sub>-berekening</div>
-        <p style={{ color: 'var(--muted)', fontSize: '.9rem', marginBottom: '1.1rem' }}>
+        <div className="art-row" style={{ marginBottom: '1.1rem' }}>
+        <p style={{ color: 'var(--muted)', fontSize: '.9rem' }}>
           Bij PERT worden <strong>drie schattingen</strong> gebruikt om de verwachte duurtijd van
           een activiteit te berekenen. Zo wordt rekening gehouden met onzekerheid.
         </p>
+        <TheoryArt name="tijdsschattingen" />
+        </div>
 
         <div className="formula-display">
           t<sub>e</sub> = (t<sub>o</sub> + 4 · t<sub>l</sub> + t<sub>p</sub>) / 6
@@ -464,10 +472,13 @@ export function TheorySection() {
       {/* Kritieke pad */}
       <div className="card">
         <div className="card-title">🔴 Kritieke pad</div>
-        <p style={{ fontSize: '.9rem', marginBottom: '.25rem' }}>
+        <div className="art-row" style={{ marginBottom: '.25rem' }}>
+        <p style={{ fontSize: '.9rem' }}>
           Het <strong>kritieke pad</strong> is het langste pad van het begin- naar het eindknooppunt.
           Elke vertraging op dit pad heeft rechtstreeks invloed op de totale projectduur.
         </p>
+        <TheoryArt name="kritieke-route" />
+        </div>
         <div className="slack-formula" style={{ fontSize: '.95rem', marginBottom: '1rem' }}>
           Speling op het kritieke pad = T<span style={{ fontSize: '.7em', verticalAlign: 'sub' }}>L</span> − T<span style={{ fontSize: '.7em', verticalAlign: 'sub' }}>E</span> = 0
         </div>

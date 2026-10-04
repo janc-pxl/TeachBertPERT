@@ -169,6 +169,10 @@ CSS uses `ex1-`, `ex2-`, `ex3-`, `ex4-`, `ex5-`, `play-` prefixes for IDs and cl
 - Fixed placements: welcoming (Theorie header), explaining (wachttijd vs schijnactiviteit note, both demo explanation panels), thinking (Playground header). Never inside diagrams/canvas.
 - `components/ben/BenFeedback.tsx` replaces the feedback div under the check buttons (must directly follow the `.ex1-controls` row). Pose comes only from the existing check result: `success` class → `successPose` (`completed` for a whole exercise, `encouraging` for te step 1 and Playground), otherwise `explaining`; no Ben before the first check. Any change in the `watch` area hides Ben until the next check (no stale success). Step-1 Ben is suppressed once the whole exercise succeeds.
 
+## Theorie-illustraties
+- `components/theory/TheoryArt.tsx` + `src/assets/theorie/*.webp` (3:2, soft alpha kept). Decorative concept art only (`alt=""`), never a technical PERT diagram or exact time measurement.
+- Placements: projectplanning left inside the PERT definition (Ben welcomes top-right, so the two don't stack), wachttijd at the bottom of the Wachttijd concept card (technical arrow example kept), tijdsschattingen beside the Tijdsfactor intro, kritieke-route beside the Kritieke pad definition. On mobile (≤640px) art sits above the text at ~110px.
+
 ## Styling (PXL Hogeschool huisstijl)
 - Based on `2025_10_huisstijlhandboek.pdf`
 - **Colors**: PXL zwart `#030203` (primary/text), PXL goud `#AE9A64` (UI accents), red `#e63946` (critical path in diagrams)

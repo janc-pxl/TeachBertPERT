@@ -536,6 +536,17 @@ details[open] summary::before { transform: rotate(90deg); }
 .demo-explanation-text { flex: 1; min-width: 0; }
 .ben-feedback.has-message { display: flex; align-items: center; gap: 1rem; margin-top: .9rem; }
 
+/* ── Theorie-illustraties (decoratief, conceptueel) ───────────── */
+.theory-art { display: block; height: auto; flex-shrink: 0; }
+.theory-art-projectplanning  { width: 180px; }
+.theory-art-tijdsschattingen { width: 175px; }
+.theory-art-kritieke-route   { width: 165px; }
+.theory-art-wachttijd        { width: 120px; margin: .6rem auto 0; }
+.art-row { display: flex; align-items: center; gap: 1.25rem; }
+.art-row > p { flex: 1; min-width: 0; margin-bottom: 0; }
+.definitie.with-art { display: flex; align-items: center; gap: 1.25rem; }
+.definitie.with-art .art-text { flex: 1; min-width: 0; }
+
 /* ── Responsive ─────────────────────────────────────────────── */
 @media (max-width: 640px) {
   .pass-grid     { grid-template-columns: 1fr; }
@@ -547,6 +558,10 @@ details[open] summary::before { transform: rotate(90deg); }
   .ben-size-intro    { width: 88px; }
   .ben-size-aside, .ben-size-feedback { width: 60px; }
   .section-header.with-ben { gap: .75rem; }
+  .art-row, .definitie.with-art { flex-direction: column; align-items: flex-start; gap: .5rem; }
+  .art-row > .theory-art { order: -1; }
+  .theory-art-projectplanning, .theory-art-tijdsschattingen, .theory-art-kritieke-route { width: 110px; }
+  .theory-art-wachttijd { width: 100px; }
 }
 @media (max-width: 400px) {
   .concepts-grid { grid-template-columns: 1fr; }
