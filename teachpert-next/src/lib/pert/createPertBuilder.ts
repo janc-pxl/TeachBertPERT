@@ -268,9 +268,12 @@ export function createPertBuilder(cfg: PertBuilderConfig): PertBuilderAPI | null
     const scaleY = svgRect.height / vb.height;
     const left = svgX * scaleX;
     const top = svgY * scaleY;
-    popup.style.left = Math.min(left, svgRect.width - 210) + 'px';
+    popup.style.left = left + 'px';
     popup.style.top = Math.max(0, top - 30) + 'px';
     popup.style.display = 'block';
+    // While open the popup may extend past the canvas (small screens); otherwise the
+    // wrap's overflow:hidden clips it and the OK button becomes unreachable.
+    canvasWrap.classList.add('popup-open');
 
     if (isFreeMode) {
       (popupAct as HTMLInputElement).value = edge.act || '';
@@ -297,11 +300,20 @@ export function createPertBuilder(cfg: PertBuilderConfig): PertBuilderAPI | null
         popupDur.value = a && durField ? String((a as unknown as Record<string, unknown>)[durField] || '') : '';
       };
     }
-    popupAct.focus();
+    // Keep the whole popup inside the canvas, using its real size (long activity names widen it)
+    const margin = 8;
+    const maxLeft = canvasWrap.clientWidth - popup.offsetWidth - margin;
+    const maxTop = canvasWrap.clientHeight - popup.offsetHeight - margin;
+    popup.style.left = Math.max(margin, Math.min(left, maxLeft)) + 'px';
+    popup.style.top = Math.max(margin, Math.min(top - 30, maxTop)) + 'px';
+
+    popupAct.focus({ preventScroll: true });
+    popup.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   }
 
   function hideEdgePopup() {
     popup.style.display = 'none';
+    canvasWrap.classList.remove('popup-open');
     pendingEdge = null;
   }
 

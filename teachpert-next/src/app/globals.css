@@ -481,6 +481,7 @@ details[open] summary::before { transform: rotate(90deg); }
   border-radius: 0 0 10px 10px; overflow: hidden; position: relative;
 }
 .ex3-canvas-wrap svg { display: block; width: 100%; height: auto; }
+.ex3-canvas-wrap.popup-open { overflow: visible; }
 .ex3-canvas-wrap.tool-node   { cursor: crosshair; }
 .ex3-canvas-wrap.tool-edge   { cursor: crosshair; }
 .ex3-canvas-wrap.tool-delete { cursor: pointer; }
@@ -496,6 +497,7 @@ details[open] summary::before { transform: rotate(90deg); }
 .ex3-edge-popup {
   position: absolute; background: #fff; border: 1px solid #dde2ea; border-radius: 10px;
   padding: 1rem; box-shadow: 0 4px 16px rgba(0,0,0,.12); z-index: 10; min-width: 190px;
+  scroll-margin: 90px 16px 16px; /* keep clear of the sticky nav when scrolled into view */
 }
 .ex3-edge-popup label { display: block; font-size: .76rem; font-weight: 700; color: #6b7280; margin-bottom: .25rem; }
 .ex3-edge-popup input, .ex3-edge-popup select {
