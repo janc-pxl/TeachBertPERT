@@ -499,6 +499,22 @@ details[open] summary::before { transform: rotate(90deg); }
   padding: 1rem; box-shadow: 0 4px 16px rgba(0,0,0,.12); z-index: 10; min-width: 190px;
   scroll-margin: 90px 16px 16px; /* keep clear of the sticky nav when scrolled into view */
 }
+.ex3-confirm-popup {
+  position: absolute; background: #fff; border: 1px solid #dde2ea; border-radius: 10px;
+  padding: 1rem; box-shadow: 0 4px 16px rgba(0,0,0,.12); z-index: 11; width: 240px;
+  scroll-margin: 90px 16px 16px;
+}
+.ex3-confirm-msg { font-size: .88rem; line-height: 1.45; margin-bottom: .2rem; }
+.ex3-confirm-popup .ex3-edge-popup-btns { margin-top: .75rem; }
+.ex3-confirm-delete {
+  flex: 1; padding: .45rem; border: none; border-radius: 6px; font-size: .82rem; font-weight: 700;
+  cursor: pointer; font-family: inherit; background: #dc2626; color: #fff;
+}
+.ex3-confirm-delete:hover { background: #b91c1c; }
+/* Element awaiting delete confirmation: amber + dashed, so it never looks like the red critical path */
+.ex3-node-group.delete-pending circle:last-of-type { stroke: #f59e0b !important; stroke-width: 3.5 !important; stroke-dasharray: 5 3; }
+g.delete-pending > line:first-of-type { stroke: #f59e0b !important; stroke-width: 3 !important; stroke-dasharray: 6 4; }
+g.delete-pending > text { fill: #b45309 !important; }
 .ex3-edge-popup label { display: block; font-size: .76rem; font-weight: 700; color: #6b7280; margin-bottom: .25rem; }
 .ex3-edge-popup input, .ex3-edge-popup select {
   width: 100%; padding: .4rem .5rem; border: 2px solid #dde2ea; border-radius: 6px;

@@ -162,6 +162,7 @@ CSS uses `ex1-`, `ex2-`, `ex3-`, `ex4-`, `ex5-`, `play-` prefixes for IDs and cl
 - Edge hit areas: invisible 18px-wide transparent lines for easy clicking
 - `toRoman()` helper in ex3, ex4 and ex5 IIFEs ensures extra nodes get proper Roman numeral labels
 - Edge popup for network builders: dropdown of unused activities, auto-fills duration
+- Delete tool asks for confirmation: `createPertBuilder` builds its own `.ex3-confirm-popup` (no JSX needed per exercise), highlights the target plus a node's connected arrows in amber + dashed (`.delete-pending`, amber marker `exN-m-del`; never red, which means critical path), focuses "Annuleer" by default; Escape or a click on the canvas cancels. Message is built from text nodes (labels can be user input).
 - `pxl-logo-64.png` — resized (64x64) PXL logo used in nav bar and footer. **Must be imported as a module** (`import pxlLogo from "../../../public/pxl-logo-64.png"`) — NOT as a string path. String paths don't get the `basePath` prefix in static export, causing 404s on GitHub Pages.
 
 ## Ben (begeleider)

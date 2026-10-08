@@ -333,8 +333,97 @@ export function createPertBuilder(cfg: PertBuilderConfig): PertBuilderAPI | null
   });
 
   // ── SVG EVENTS ──
+  // ── DELETE CONFIRMATION ──
+  // Built here (not in JSX) so every builder (ex3/4/5, playground) gets it.
+  const confirmBox = document.createElement('div');
+  confirmBox.className = 'ex3-confirm-popup';
+  confirmBox.setAttribute('role', 'alertdialog');
+  confirmBox.setAttribute('aria-labelledby', prefix + '-confirm-msg');
+  confirmBox.style.display = 'none';
+  confirmBox.innerHTML =
+    `<p id="${prefix}-confirm-msg" class="ex3-confirm-msg"></p>` +
+    '<div class="ex3-edge-popup-btns">' +
+    '<button type="button" class="ex3-confirm-delete">Verwijder</button>' +
+    '<button type="button" class="ex3-popup-cancel">Annuleer</button>' +
+    '</div>';
+  canvasWrap.appendChild(confirmBox);
+  // Amber arrowhead for arrows awaiting deletion (marker colours can't be changed via CSS)
+  const SVG_NS = 'http://www.w3.org/2000/svg';
+  const delMarker = document.createElementNS(SVG_NS, 'marker');
+  delMarker.id = prefix + '-m-del';
+  [['markerWidth', '9'], ['markerHeight', '7'], ['refX', '9'], ['refY', '3.5'], ['orient', 'auto']]
+    .forEach(([k, v]) => delMarker.setAttribute(k, v));
+  const delTip = document.createElementNS(SVG_NS, 'polygon');
+  delTip.setAttribute('points', '0 0,9 3.5,0 7');
+  delTip.setAttribute('fill', '#f59e0b');
+  delMarker.appendChild(delTip);
+  (svg.querySelector('defs') ?? svg).appendChild(delMarker);
+  const confirmMsg = confirmBox.querySelector('p') as HTMLElement;
+  const confirmYes = confirmBox.querySelector('.ex3-confirm-delete') as HTMLButtonElement;
+  const confirmNo = confirmBox.querySelector('.ex3-popup-cancel') as HTMLButtonElement;
+  let pendingDelete: { kind: 'node' | 'edge'; id: number; els: SVGGElement[] } | null = null;
+
+  function askDelete(kind: 'node' | 'edge', id: number, evt: PointerEvent) {
+    // Message built from text nodes: labels/activity names can be user input (playground, imports)
+    const strong = (t: string) => { const b = document.createElement('strong'); b.textContent = t; return b; };
+    const parts: (string | Node)[] = [];
+    let els: SVGGElement[];
+    if (kind === 'node') {
+      const node = findNode(id);
+      if (!node) return;
+      const connected = edges.filter((e) => e.fromId === id || e.toId === id);
+      els = [node.gEl, ...connected.map((e) => e.gEl)]; // connected arrows disappear too
+      const n = connected.length;
+      parts.push('Knooppunt ', strong(node.label), ' verwijderen?');
+      if (n) parts.push(document.createElement('br'),
+        `Ook ${n === 1 ? 'de verbonden pijl wordt' : `de ${n} verbonden pijlen worden`} verwijderd.`);
+    } else {
+      const edge = edges.find((e) => e.id === id);
+      if (!edge) return;
+      els = [edge.gEl];
+      if (edge.dashed) parts.push('Deze ', strong('0-lijn'), ' verwijderen?');
+      else if (edge.act) parts.push('Activiteit ', strong(edge._lbl.textContent || edge.act), ' verwijderen?');
+      else parts.push('Deze pijl verwijderen?');
+    }
+    pendingDelete = { kind, id, els };
+    els.forEach((el) => el.classList.add('delete-pending'));
+    els.forEach((el) => { const l = el.querySelector('line'); if (l && el.dataset.edgeId) l.style.markerEnd = `url(#${prefix}-m-del)`; });
+    confirmMsg.replaceChildren(...parts);
+    confirmBox.style.display = 'block';
+    canvasWrap.classList.add('popup-open');
+    // Next to the pointer, kept inside the canvas
+    const wr = canvasWrap.getBoundingClientRect();
+    const margin = 8;
+    const x = evt.clientX - wr.left + 12, y = evt.clientY - wr.top + 12;
+    confirmBox.style.left = Math.max(margin, Math.min(x, canvasWrap.clientWidth - confirmBox.offsetWidth - margin)) + 'px';
+    confirmBox.style.top = Math.max(margin, Math.min(y, canvasWrap.clientHeight - confirmBox.offsetHeight - margin)) + 'px';
+    confirmNo.focus({ preventScroll: true }); // safe default: Enter cancels
+    confirmBox.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+
+  function closeDeleteConfirm() {
+    if (pendingDelete) pendingDelete.els.forEach((el) => {
+      el.classList.remove('delete-pending');
+      const l = el.querySelector('line');
+      if (l) l.style.markerEnd = '';
+    });
+    pendingDelete = null;
+    confirmBox.style.display = 'none';
+    if (popup.style.display === 'none') canvasWrap.classList.remove('popup-open');
+  }
+
+  confirmYes.addEventListener('click', function () {
+    if (!pendingDelete) return;
+    const { kind, id } = pendingDelete;
+    closeDeleteConfirm();
+    if (kind === 'node') removeNode(id); else removeEdge(id);
+  });
+  confirmNo.addEventListener('click', closeDeleteConfirm);
+
   svg.addEventListener('pointerdown', function (evt: PointerEvent) {
     if (popup.style.display !== 'none') return;
+    // A click on the canvas while confirming = cancel
+    if (pendingDelete) { closeDeleteConfirm(); return; }
     const pt = svgPoint(evt);
     const target = evt.target as Element;
     const nodeG = target.closest('.ex3-node-group') as SVGGElement | null;
@@ -413,9 +502,9 @@ export function createPertBuilder(cfg: PertBuilderConfig): PertBuilderAPI | null
       }
     } else if (tool === 'delete') {
       if (nodeG) {
-        removeNode(parseInt((nodeG as unknown as HTMLElement).dataset.nodeId!));
+        askDelete('node', parseInt((nodeG as unknown as HTMLElement).dataset.nodeId!), evt);
       } else if (edgeG) {
-        removeEdge(parseInt((edgeG as unknown as HTMLElement).dataset.edgeId!));
+        askDelete('edge', parseInt((edgeG as unknown as HTMLElement).dataset.edgeId!), evt);
       }
     }
   });
@@ -458,6 +547,7 @@ export function createPertBuilder(cfg: PertBuilderConfig): PertBuilderAPI | null
 
   document.addEventListener('keydown', function (evt: KeyboardEvent) {
     if (evt.key === 'Escape') {
+      if (pendingDelete) closeDeleteConfirm();
       if (edgeSource !== null) {
         edgeSource = null;
         ghost.setAttribute('opacity', '0');
@@ -512,6 +602,7 @@ export function createPertBuilder(cfg: PertBuilderConfig): PertBuilderAPI | null
     nextId = 1; nextEdgeId = 1;
     edgeSource = null;
     ghost.setAttribute('opacity', '0');
+    closeDeleteConfirm();
     hideEdgePopup();
     setTool('select');
   }
