@@ -541,6 +541,18 @@ g.delete-pending > text { fill: #b45309 !important; }
 .ex3-lock-msg strong { color: #030203; }
 .ex3-lock-msg p { font-size: .88rem; color: #6b7280; margin-top: .3rem; }
 
+/* ── Activiteit-infobalk onder het canvas ─────────────────────── */
+.act-info {
+  margin-top: .6rem; padding: .45rem .85rem;
+  background: #f5f5f3; border-left: 3px solid #AE9A64; border-radius: 0 8px 8px 0;
+  font-size: .86rem; line-height: 1.45;
+}
+/* Fixed two-line height in every state: lines never wrap (cut off with … ; full text in title) */
+.act-info-main, .act-info-sub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.act-info.is-empty .act-info-main { color: #6b7280; }
+.act-info-sub { font-size: .8rem; color: #6b7280; }
+tr.act-row-active > td { background: #f6efda !important; }
+
 /* ── Ben (begeleider) ───────────────────────────────────────── */
 /* Decorative illustration beside existing text; never inside diagrams/canvas. */
 .ben { display: block; height: auto; object-fit: contain; flex-shrink: 0; }
@@ -576,6 +588,9 @@ g.delete-pending > text { fill: #b45309 !important; }
   .ben-size-intro    { width: 88px; }
   .ben-size-aside, .ben-size-feedback { width: 60px; }
   .section-header.with-ben { gap: .75rem; }
+  /* Narrow screens: allow wrapping, but reserve room for 2 + 2 lines so the height stays put */
+  .act-info { min-height: calc(.9rem + 2 * 1.45 * .86rem + 2 * 1.45 * .8rem); }
+  .act-info-main, .act-info-sub { white-space: normal; }
   .art-row, .definitie.with-art { flex-direction: column; align-items: flex-start; gap: .5rem; }
   .art-row > .theory-art { order: -1; }
   .theory-art-projectplanning, .theory-art-tijdsschattingen, .theory-art-kritieke-route { width: 110px; }

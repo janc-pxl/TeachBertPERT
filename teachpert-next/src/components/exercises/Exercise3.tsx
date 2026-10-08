@@ -6,6 +6,7 @@ import { exportNetwork, importNetwork } from '@/lib/pert/importExport';
 import { hasExtraDependency, structureErrors } from '@/lib/pert/validation';
 import type { Activity, PertBuilderAPI } from '@/lib/pert/types';
 import { BenFeedback } from '@/components/ben/BenFeedback';
+import { attachActivityInfo, type ActivityDetails } from '@/lib/pert/activityInfo';
 
 const ACTIVITIES: Activity[] = [
   { id:'A', desc:'Maak de plannen',               pred:[],        to:1, tl:2, tp:3,  te:2 },
@@ -40,7 +41,23 @@ export function Exercise3() {
       popupDurReadonly: true,
     });
     builderRef.current = builder;
-    return () => { builderRef.current = null; };
+    // Activity description info bar + table row highlight
+    const details: Record<string, ActivityDetails> = {};
+    ACTIVITIES.forEach((a) => {
+      details[a.id] = { label: a.id, desc: a.desc, dur: String(a.te), pred: a.pred.length ? a.pred.map((p) => p).join(', ') : '—' };
+    });
+    const svg = document.getElementById('ex3-svg') as unknown as SVGSVGElement | null;
+    const infoEl = document.getElementById('ex3-act-info');
+    const detachInfo = builder && svg && infoEl ? attachActivityInfo({
+      svg, infoEl, details,
+      table: document.querySelector('#ex3-te-table'),
+      resolve: (t) => {
+        const g = t.closest('[data-edge-id]') as SVGGElement | null;
+        const e = g ? builder.edges.find((x) => x.id === Number(g.dataset.edgeId)) : undefined;
+        return !e ? null : e.dashed ? 'dummy' : (e.act || null);
+      },
+    }) : undefined;
+    return () => { builderRef.current = null; detachInfo?.(); };
   }, []);
 
   // Populate TE table rows after mount
@@ -50,6 +67,7 @@ export function Exercise3() {
     tbody.innerHTML = '';
     ACTIVITIES.forEach((a) => {
       const tr = document.createElement('tr');
+      tr.dataset.act = a.id;
       tr.innerHTML = `<td><strong>${a.id}</strong></td>` +
         `<td style="text-align:left;font-size:.82rem;">${a.desc}</td>` +
         `<td>${a.pred.length ? a.pred.join(', ') : '—'}</td>` +
@@ -298,6 +316,8 @@ export function Exercise3() {
             </div>
           </div>
         </div>
+
+        <div className="act-info" id="ex3-act-info" />
 
         <div className="ex1-controls" style={{ marginTop: '1rem' }}>
           <button className="ex1-check-btn" onClick={handleNetCheck}>Controleer</button>

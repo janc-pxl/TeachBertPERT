@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { downloadSvgAsJpg } from '@/lib/pert/download';
 import { BenFeedback } from '@/components/ben/BenFeedback';
+import { attachActivityInfo, type ActivityDetails } from '@/lib/pert/activityInfo';
 
 // ── Data ────────────────────────────────────────────────────────────────────
 
@@ -132,6 +133,7 @@ export default function Exercise2() {
       hit.setAttribute('x1', String(x1)); hit.setAttribute('y1', String(y1));
       hit.setAttribute('x2', String(x2)); hit.setAttribute('y2', String(y2));
       hit.classList.add('ex1-edge-hit');
+      hit.dataset.act = e.dashed ? 'dummy' : (e.act ?? '');
       edgesG.appendChild(hit);
 
       const line = document.createElementNS(SVG_NS, 'line') as SVGLineElement;
@@ -248,6 +250,20 @@ export default function Exercise2() {
   }, []);
 
   // ── Validation ──────────────────────────────────────────────────────────────
+
+  // Activity description info bar + table row highlight
+  useEffect(() => {
+    const svg = document.getElementById('ex2-svg') as unknown as SVGSVGElement | null;
+    const infoEl = document.getElementById('ex2-act-info');
+    if (!svg || !infoEl) return;
+    const details: Record<string, ActivityDetails> = {};
+    ACTIVITIES.forEach((a) => { details[a.act] = { label: a.act, desc: a.desc, dur: a.dur, pred: a.pre }; });
+    return attachActivityInfo({
+      svg, infoEl, details,
+      table: document.querySelector('#oefening2 .ex2-act-table'),
+      resolve: (t) => (t as SVGElement).dataset?.act || null,
+    });
+  }, []);
 
   function handleCheck() {
     let correct = 0, total = 0;
@@ -382,7 +398,7 @@ export default function Exercise2() {
               borderBottom: isLast ? undefined : '1px solid #dde2ea',
             };
             return (
-              <tr key={row.act}>
+              <tr key={row.act} data-act={row.act}>
                 <td style={{ ...cellStyle, fontWeight: 700 }}>{row.act}</td>
                 <td style={cellStyle}>{row.desc}</td>
                 <td style={{ ...cellStyle, textAlign: 'center' }}>{row.dur}</td>
@@ -423,6 +439,8 @@ export default function Exercise2() {
             <g id="ex2-nodes" />
           </svg>
         </div>
+
+        <div className="act-info" id="ex2-act-info" />
 
         <div className="ex1-controls">
           <button className="ex1-check-btn" onClick={handleCheck}>Controleer</button>
