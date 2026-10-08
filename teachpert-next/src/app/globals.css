@@ -458,6 +458,14 @@ details[open] summary::before { transform: rotate(90deg); }
 .ex3-tool:last-child { border-right: none; }
 .ex3-tool:hover { background: #f5f5f3; }
 .ex3-tool.active { background: #f0f0ee; }
+/* Undo / redo (added by the builder) */
+.ex3-tool-hist {
+  padding: .45rem .75rem; border: none; border-right: 1px solid #dde2ea; background: #fff;
+  font-size: 1rem; font-weight: 700; line-height: 1; cursor: pointer; font-family: inherit; color: #030203;
+}
+.ex3-tool-hist:last-child { border-right: none; }
+.ex3-tool-hist:hover:not(:disabled) { background: #f5f5f3; }
+.ex3-tool-hist:disabled { color: #c4c7cc; cursor: default; }
 /* File tools — right-aligned group */
 .ex3-tool-file-group { margin-left: auto; display: flex; gap: .4rem; align-items: center; }
 .ex3-tool-file {

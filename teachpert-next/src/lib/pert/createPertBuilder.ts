@@ -1,5 +1,16 @@
 import type { PertBuilderConfig, PertBuilderAPI, PertNode, PertEdge, PertNetworkFile } from './types';
 
+// Several builders live on one page: Ctrl+Z / Ctrl+Y apply to the one used last.
+let activeHistoryOwner: string | null = null;
+
+/** Full builder state for undo/redo. TE/TL kept as raw input text (also half-typed values). */
+interface Snapshot {
+  nodes: { id: number; x: number; y: number; te: string; tl: string }[];
+  edges: { id: number; fromId: number; toId: number; dashed: boolean; act: string; dur: number; selected: boolean }[];
+  nextId: number;
+  nextEdgeId: number;
+}
+
 export function createPertBuilder(cfg: PertBuilderConfig): PertBuilderAPI | null {
   const prefix = cfg.prefix;
   const activities = cfg.activities;
@@ -17,6 +28,8 @@ export function createPertBuilder(cfg: PertBuilderConfig): PertBuilderAPI | null
   let edgeSource: number | null = null;
   let dragNode: PertNode | null = null;
   const dragOffset = { x: 0, y: 0 };
+  let dragBefore: Snapshot | null = null;
+  const dragStart = { x: 0, y: 0 };
   let nextId = 1;
   let nextEdgeId = 1;
 
@@ -166,6 +179,12 @@ export function createPertBuilder(cfg: PertBuilderConfig): PertBuilderAPI | null
     g.appendChild(foTL);
     node._tlInput = tlInput;
 
+    // One history step per committed value change (not per keystroke)
+    [teInput, tlInput].forEach((inp) => {
+      inp.addEventListener('focus', () => { inputBefore = snapshot(); });
+      inp.addEventListener('change', () => { if (inputBefore) pushUndo(inputBefore); inputBefore = null; });
+    });
+
     nodesG.appendChild(g);
     node.gEl = g;
     nodes.push(node);
@@ -258,10 +277,17 @@ export function createPertBuilder(cfg: PertBuilderConfig): PertBuilderAPI | null
 
   // ── EDGE POPUP ──
   let pendingEdge: PertEdge | null = null;
+  let pendingNew = false;                       // arrow created just now, not yet confirmed
+  let popupBefore: Snapshot | null = null;      // state before the arrow was added/edited
+  const popupPrev = { act: '', dur: 0 };
   const isFreeMode = popupAct.tagName !== 'SELECT';
 
-  function showEdgePopup(edge: PertEdge, svgX: number, svgY: number) {
+  function showEdgePopup(edge: PertEdge, svgX: number, svgY: number, before: Snapshot, isNew: boolean) {
     pendingEdge = edge;
+    pendingNew = isNew;
+    popupBefore = before;
+    popupPrev.act = edge.act;
+    popupPrev.dur = edge.dur;
     const svgRect = svg!.getBoundingClientRect();
     const vb = svg!.viewBox.baseVal;
     const scaleX = svgRect.width / vb.width;
@@ -315,6 +341,8 @@ export function createPertBuilder(cfg: PertBuilderConfig): PertBuilderAPI | null
     popup.style.display = 'none';
     canvasWrap.classList.remove('popup-open');
     pendingEdge = null;
+    pendingNew = false;
+    popupBefore = null;
   }
 
   document.getElementById(prefix + '-popup-ok')!.addEventListener('click', function () {
@@ -322,6 +350,8 @@ export function createPertBuilder(cfg: PertBuilderConfig): PertBuilderAPI | null
     pendingEdge.act = popupAct.value;
     pendingEdge.dur = parseInt(popupDur.value, 10) || 0;
     pendingEdge._lbl.textContent = pendingEdge.act ? edgeLabelFn(pendingEdge.act, pendingEdge.dur) : String(pendingEdge.dur);
+    const changed = pendingNew || pendingEdge.act !== popupPrev.act || pendingEdge.dur !== popupPrev.dur;
+    if (changed && popupBefore) pushUndo(popupBefore);
     hideEdgePopup();
   });
 
@@ -416,6 +446,7 @@ export function createPertBuilder(cfg: PertBuilderConfig): PertBuilderAPI | null
     if (!pendingDelete) return;
     const { kind, id } = pendingDelete;
     closeDeleteConfirm();
+    pushUndo(snapshot());
     if (kind === 'node') removeNode(id); else removeEdge(id);
   });
   confirmNo.addEventListener('click', closeDeleteConfirm);
@@ -435,6 +466,8 @@ export function createPertBuilder(cfg: PertBuilderConfig): PertBuilderAPI | null
         const node = findNode(nid);
         if (node) {
           dragNode = node;
+          dragBefore = snapshot();
+          dragStart.x = node.x; dragStart.y = node.y;
           dragOffset.x = pt.x - node.x;
           dragOffset.y = pt.y - node.y;
           nodeG.classList.add('dragging');
@@ -445,22 +478,14 @@ export function createPertBuilder(cfg: PertBuilderConfig): PertBuilderAPI | null
         const eid = parseInt((edgeG as unknown as HTMLElement).dataset.edgeId!);
         const edge = edges.find((e) => e.id === eid);
         if (edge) {
+          pushUndo(snapshot());
           edge.selected = !edge.selected;
-          if (edge.selected) {
-            edge._line.setAttribute('stroke', '#e63946');
-            edge._line.setAttribute('stroke-width', '3');
-            edge._line.setAttribute('marker-end', `url(#${prefix}-m-sel)`);
-            edge._lbl.setAttribute('fill', '#e63946');
-          } else {
-            edge._line.setAttribute('stroke', edge.dashed ? '#bbb' : '#888');
-            edge._line.setAttribute('stroke-width', edge.dashed ? '1.6' : '2');
-            edge._line.setAttribute('marker-end', edge.dashed ? `url(#${prefix}-m-dash)` : `url(#${prefix}-m-def)`);
-            edge._lbl.setAttribute('fill', edge.dashed ? '#bbb' : '#666');
-          }
+          styleEdgeSelection(edge);
         }
       }
     } else if (tool === 'node') {
       if (!nodeG) {
+        pushUndo(snapshot());
         addNode(pt.x, pt.y);
         setTool('select');
       }
@@ -492,11 +517,14 @@ export function createPertBuilder(cfg: PertBuilderConfig): PertBuilderAPI | null
             });
             return;
           }
+          const before = snapshot();
           const newEdge = addEdge(src, nid2, isDashed);
+          if (newEdge && isDashed) pushUndo(before);
           if (newEdge && !isDashed) {
+            // Recorded only when the activity popup is confirmed (cancel removes the arrow)
             const fromN = findNode(newEdge.fromId)!, toN = findNode(newEdge.toId)!;
             const emx = (fromN.x + toN.x) / 2, emy = (fromN.y + toN.y) / 2;
-            showEdgePopup(newEdge, emx, emy);
+            showEdgePopup(newEdge, emx, emy, before, true);
           }
         }
       }
@@ -528,6 +556,9 @@ export function createPertBuilder(cfg: PertBuilderConfig): PertBuilderAPI | null
   svg.addEventListener('pointerup', function (evt: PointerEvent) {
     if (dragNode) {
       dragNode.gEl.classList.remove('dragging');
+      // One history step per drag, only if the node actually moved
+      if (dragBefore && (dragNode.x !== dragStart.x || dragNode.y !== dragStart.y)) pushUndo(dragBefore);
+      dragBefore = null;
       dragNode = null;
       svg.releasePointerCapture(evt.pointerId);
     }
@@ -540,7 +571,7 @@ export function createPertBuilder(cfg: PertBuilderConfig): PertBuilderAPI | null
       const edge = edges.find((e) => e.id === eid);
       if (edge && !edge.dashed) {
         const fn = findNode(edge.fromId)!, tn = findNode(edge.toId)!;
-        showEdgePopup(edge, (fn.x + tn.x) / 2, (fn.y + tn.y) / 2);
+        showEdgePopup(edge, (fn.x + tn.x) / 2, (fn.y + tn.y) / 2, snapshot(), false);
       }
     }
   });
@@ -595,21 +626,145 @@ export function createPertBuilder(cfg: PertBuilderConfig): PertBuilderAPI | null
       .some((e) => canReach(e.toId, toId, { ...visited }));
   }
 
-  // ── RESET ──
-  function resetBuilder() {
+  // ── UNDO / REDO ──
+  // Snapshot-based: before each change the full state is pushed; undo restores it.
+  const MAX_HISTORY = 100;
+  const undoStack: Snapshot[] = [];
+  const redoStack: Snapshot[] = [];
+  let inputBefore: Snapshot | null = null; // TE/TL value before the field got focus
+
+  function snapshot(): Snapshot {
+    return {
+      nodes: nodes.map((n) => ({ id: n.id, x: n.x, y: n.y, te: n._teInput.value, tl: n._tlInput.value })),
+      // A new arrow whose activity popup is still open is not part of the network yet
+      edges: edges.filter((e) => !(pendingNew && e === pendingEdge))
+        .map((e) => ({ id: e.id, fromId: e.fromId, toId: e.toId, dashed: e.dashed, act: e.act, dur: e.dur, selected: e.selected })),
+      nextId,
+      nextEdgeId,
+    };
+  }
+
+  /** Remove everything from the canvas (no history, tool unchanged). */
+  function clearCanvas() {
     while (edges.length) { edges[0].gEl.remove(); edges.splice(0, 1); }
     while (nodes.length) { nodes[0].gEl.remove(); nodes.splice(0, 1); }
-    nextId = 1; nextEdgeId = 1;
     edgeSource = null;
     ghost.setAttribute('opacity', '0');
     closeDeleteConfirm();
     hideEdgePopup();
+  }
+
+  function restore(snap: Snapshot) {
+    clearCanvas();
+    snap.nodes.forEach((n) => {
+      nextId = n.id; // addNode uses nextId++ so the node gets exactly n.id
+      const node = addNode(n.x, n.y);
+      node._teInput.value = n.te;
+      node._tlInput.value = n.tl;
+    });
+    snap.edges.forEach((e) => {
+      nextEdgeId = e.id;
+      const edge = addEdge(e.fromId, e.toId, e.dashed, e.act, e.dur);
+      if (edge) { edge.selected = e.selected; styleEdgeSelection(edge); }
+    });
+    nextId = snap.nextId;
+    nextEdgeId = snap.nextEdgeId;
+    // Let listeners (e.g. Ben feedback) know the network changed
+    canvasWrap.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+
+  function pushUndo(snap: Snapshot) {
+    undoStack.push(snap);
+    if (undoStack.length > MAX_HISTORY) undoStack.shift();
+    redoStack.length = 0;
+    updateHistoryButtons();
+  }
+
+  // Not while a popup/confirmation is open, an arrow is being drawn or a node dragged
+  function historyBlocked() {
+    return popup.style.display !== 'none' || pendingDelete !== null || edgeSource !== null || dragNode !== null;
+  }
+
+  function undo() {
+    if (historyBlocked() || !undoStack.length) return;
+    redoStack.push(snapshot());
+    restore(undoStack.pop()!);
+    updateHistoryButtons();
+  }
+
+  function redo() {
+    if (historyBlocked() || !redoStack.length) return;
+    undoStack.push(snapshot());
+    restore(redoStack.pop()!);
+    updateHistoryButtons();
+  }
+
+  // Buttons added to the toolbar here, so every builder gets them without JSX changes
+  const histGroup = document.createElement('div');
+  histGroup.className = 'ex3-tool-group ex3-history-group';
+  const histBtn = (symbol: string, label: string, keys: string, onClick: () => void) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'ex3-tool-hist';
+    b.textContent = symbol;
+    b.setAttribute('aria-label', label);
+    b.title = `${label} (${keys})`;
+    b.addEventListener('click', onClick);
+    histGroup.appendChild(b);
+    return b;
+  };
+  const undoBtn = histBtn('↶', 'Ongedaan maken', 'Ctrl+Z', undo);
+  const redoBtn = histBtn('↷', 'Opnieuw', 'Ctrl+Y', redo);
+  toolbar.querySelector('.ex3-tool-group')?.after(histGroup);
+
+  function updateHistoryButtons() {
+    undoBtn.disabled = undoStack.length === 0;
+    redoBtn.disabled = redoStack.length === 0;
+  }
+  updateHistoryButtons();
+
+  const claimHistory = () => { activeHistoryOwner = prefix; };
+  canvasWrap.addEventListener('pointerdown', claimHistory, true);
+  toolbar.addEventListener('pointerdown', claimHistory, true);
+
+  document.addEventListener('keydown', function (evt: KeyboardEvent) {
+    if (activeHistoryOwner !== prefix || !(evt.ctrlKey || evt.metaKey) || evt.altKey) return;
+    // Inside a text field the browser's own undo stays in charge
+    const t = evt.target as HTMLElement;
+    if (t.closest('input, textarea, select, [contenteditable="true"]')) return;
+    const key = evt.key.toLowerCase();
+    if (key === 'z' && !evt.shiftKey) { evt.preventDefault(); undo(); }
+    else if (key === 'y' || (key === 'z' && evt.shiftKey)) { evt.preventDefault(); redo(); }
+  });
+
+  function styleEdgeSelection(edge: PertEdge) {
+    if (edge.selected) {
+      edge._line.setAttribute('stroke', '#e63946');
+      edge._line.setAttribute('stroke-width', '3');
+      edge._line.setAttribute('marker-end', `url(#${prefix}-m-sel)`);
+      edge._lbl.setAttribute('fill', '#e63946');
+    } else {
+      edge._line.setAttribute('stroke', edge.dashed ? '#bbb' : '#888');
+      edge._line.setAttribute('stroke-width', edge.dashed ? '1.6' : '2');
+      edge._line.setAttribute('marker-end', edge.dashed ? `url(#${prefix}-m-dash)` : `url(#${prefix}-m-def)`);
+      edge._lbl.setAttribute('fill', edge.dashed ? '#bbb' : '#666');
+    }
+  }
+
+  // ── RESET ──
+  // "Opnieuw beginnen" can be undone
+  function resetBuilder() {
+    if (nodes.length || edges.length) pushUndo(snapshot());
+    clearCanvas();
+    nextId = 1; nextEdgeId = 1;
     setTool('select');
   }
 
   // ── LOAD STATE ──
   function loadState(data: PertNetworkFile) {
-    resetBuilder();
+    pushUndo(snapshot()); // importing can be undone
+    clearCanvas();
+    setTool('select');
     data.nodes.forEach(n => {
       nextId = n.id; // addNode uses nextId++ so the node gets exactly n.id
       const node = addNode(n.x, n.y);
@@ -622,10 +777,7 @@ export function createPertBuilder(cfg: PertBuilderConfig): PertBuilderAPI | null
       const edge = addEdge(e.fromId, e.toId, e.dashed, e.act, e.dur);
       if (edge && e.selected) {
         edge.selected = true;
-        edge._line.setAttribute('stroke', '#e63946');
-        edge._line.setAttribute('stroke-width', '3');
-        edge._line.setAttribute('marker-end', `url(#${prefix}-m-sel)`);
-        edge._lbl.setAttribute('fill', '#e63946');
+        styleEdgeSelection(edge);
       }
     });
     // nextEdgeId is now max(e.id) + 1 — correct for future additions
